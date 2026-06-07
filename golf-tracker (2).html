@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Golf">
+<meta name="theme-color" content="#0a0a0a">
+<title>Golf Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0a;--s1:#141414;--s2:#1c1c1c;--s3:#242424;
+  --b:rgba(255,255,255,0.07);
+  --g:#4ade80;--bl:#60a5fa;--y:#fbbf24;--r:#f87171;--o:#f97316;--p:#a78bfa;--pk:#f472b6;
+  --t:#fff;--mu:#777;--di:#3a3a3a;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--t);font-family:'DM Sans',sans-serif;max-width:480px;margin:0 auto;display:flex;flex-direction:column}
+
+/* PLAYER BAR */
+.pbar{display:flex;gap:6px;padding:calc(var(--st)+10px) 14px 10px;background:rgba(10,10,10,.97);border-bottom:1px solid var(--b);flex-shrink:0}
+.pbtn{flex:1;padding:8px 6px;border-radius:10px;border:2px solid transparent;background:var(--s2);color:var(--mu);font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;text-align:center}
+.pbtn .pn{font-size:13px;display:block}
+.pbtn .ph{font-size:9px;opacity:.7;font-family:'DM Mono',monospace;display:block;margin-top:1px}
+.pbtn.ak-on{border-color:var(--g);background:rgba(74,222,128,.1);color:var(--g)}
+.pbtn.mac-on{border-color:var(--pk);background:rgba(244,114,182,.1);color:var(--pk)}
+.pbtn.vs-on{border-color:var(--bl);background:rgba(96,165,250,.1);color:var(--bl)}
+
+/* HEADER */
+.hdr{flex-shrink:0;background:rgba(10,10,10,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--b);padding:10px 14px 0}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}
+.hdr-l{flex:1;min-width:0}
+.app-lbl{font-size:9px;color:var(--di);letter-spacing:3px;text-transform:uppercase}
+.rname{font-size:15px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.rname span{color:var(--mu);font-weight:400;font-size:12px}
+.spill{display:flex;align-items:center;gap:8px;background:var(--s1);border:1px solid var(--b);border-radius:12px;padding:6px 12px;flex-shrink:0}
+.snum{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1}
+.smeta{display:flex;flex-direction:column}
+.sdiff{font-size:12px;font-weight:800}
+.sholes{font-size:9px;color:var(--mu)}
+.tabs{display:flex;gap:2px;padding-bottom:10px}
+.tab{flex:1;padding:6px 0;border-radius:8px;border:none;cursor:pointer;font-size:10px;font-weight:700;background:transparent;color:var(--mu);font-family:'DM Sans',sans-serif}
+.tab.on{background:var(--t);color:var(--bg)}
+
+/* SCROLL */
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 14px calc(var(--sb)+72px)}
+.scroll::-webkit-scrollbar{display:none}
+
+/* FAB */
+.fab{position:fixed;bottom:calc(var(--sb)+14px);right:14px;z-index:50;width:54px;height:54px;border-radius:50%;border:none;font-size:26px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s}
+.fab:active{transform:scale(.9)}
+
+/* BBAR */
+.bbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(10,10,10,.97);border-top:1px solid var(--b);padding:7px 14px calc(var(--sb)+3px);font-size:10px;color:var(--di);font-family:'DM Mono',monospace;text-align:center;z-index:40}
+
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--b);border-radius:12px;padding:13px;margin-bottom:9px}
+.ctitle{font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.sg{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:9px}
+.sc{background:var(--s1);border:1px solid var(--b);border-radius:11px;padding:10px 12px;flex:1 1 75px;text-align:center}
+.sv{font-family:'Bebas Neue',sans-serif;font-size:24px}
+.sl{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-top:1px}
+.ss{font-size:9px;color:var(--di);margin-top:1px}
+
+/* HCP */
+.hcpbox{border-radius:10px;padding:11px 13px;margin-bottom:9px;display:flex;align-items:center;gap:12px}
+.hcpval{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1}
+.hcpsub{font-size:11px;color:var(--mu);line-height:1.6}
+
+/* HOLE LIST */
+.hl{background:var(--s1);border:1px solid var(--b);border-left:3px solid;border-radius:10px;margin-bottom:6px;overflow:hidden;cursor:pointer}
+.hlh{display:flex;align-items:center;padding:10px 12px;gap:7px}
+.hlnum{font-family:'Bebas Neue',sans-serif;font-size:21px;min-width:28px;line-height:1}
+.hlbadges{display:flex;gap:4px;flex:1;flex-wrap:wrap;align-items:center}
+.badge{font-size:9px;border-radius:4px;padding:2px 5px;font-weight:700}
+.b-par{color:var(--mu);background:#1a1a1a}
+.b-dist{color:var(--bl);background:rgba(96,165,250,.1);font-family:'DM Mono',monospace}
+.b-res{font-size:9px;border-radius:4px;padding:2px 6px;font-weight:800}
+.hlscore{font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1}
+
+.hlbody{display:none;padding:0 12px 10px;border-top:1px solid rgba(255,255,255,.05)}
+.hlbody.open{display:block;padding-top:9px}
+.hlmeta{display:flex;gap:8px;margin-bottom:8px;font-size:11px;color:var(--mu);flex-wrap:wrap}
+.shotrow{display:flex;align-items:flex-start;gap:6px;background:rgba(255,255,255,.02);border-radius:6px;padding:5px 7px;margin-bottom:4px}
+.qdot{width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#000;flex-shrink:0;margin-top:1px}
+.scl{color:var(--bl);font-size:11px;font-weight:700;min-width:38px;font-family:'DM Mono',monospace}
+.sre{color:#aaa;font-size:11px;flex:1;line-height:1.4}
+.sdi{color:var(--di);font-size:10px;font-family:'DM Mono',monospace;white-space:nowrap}
+.hnote{margin-top:6px;font-size:11px;color:var(--mu);font-style:italic;background:rgba(255,255,255,.02);border-radius:6px;padding:5px 7px}
+.raw-text{margin-top:6px;font-size:11px;color:#555;font-family:'DM Mono',monospace;background:rgba(255,255,255,.01);border-radius:6px;padding:5px 7px;word-break:break-word}
+
+/* CLUBS */
+.cbr{margin-bottom:10px}
+.cbrtop{display:flex;justify-content:space-between;margin-bottom:3px}
+.cbrname{font-size:12px;color:#ccc;font-weight:700;font-family:'DM Mono',monospace}
+.cbrn{font-size:10px;color:var(--di)}
+.bar{display:flex;border-radius:5px;overflow:hidden;height:8px;background:#1e1e1e}
+.bg{background:var(--g)}.by{background:var(--y)}.br2{background:var(--r)}
+.cleg{display:flex;gap:8px;margin-top:3px;font-size:10px}
+
+/* SCORECARD */
+.sct{width:100%;border-collapse:collapse;font-size:11px;font-family:'DM Mono',monospace}
+.sct th{background:#1a1a1a;color:var(--mu);font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:5px 5px;text-align:center;border-bottom:1px solid var(--b)}
+.sct td{padding:6px 5px;text-align:center;border-bottom:1px solid rgba(255,255,255,.03)}
+.sct tfoot td{background:#1a1a1a;font-weight:700}
+.sc-bir{color:#000;background:var(--g);border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}
+.sc-par{color:var(--bl)}.sc-bog{color:var(--y)}.sc-dbl{color:var(--r);font-weight:700}.sc-tri{color:var(--r);font-weight:900;text-decoration:underline}
+
+/* EVO */
+.evo-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--b)}
+.evo-row:last-child{border-bottom:none}
+.evo-l{flex:1;min-width:0}
+.evo-date{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace}
+.evo-course{font-size:12px;color:#ccc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.evo-bw{background:#1e1e1e;border-radius:4px;height:5px;margin-top:4px}
+.evo-b{height:5px;border-radius:4px}
+.evo-r{text-align:right;flex-shrink:0}
+.evo-s{font-family:'Bebas Neue',sans-serif;font-size:20px}
+.evo-d{font-size:10px;font-weight:800}
+
+/* ROUND CHIPS */
+.rchips{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;margin-bottom:12px;scrollbar-width:none}
+.rchips::-webkit-scrollbar{display:none}
+.rchip{flex-shrink:0;padding:4px 10px;border-radius:20px;border:1px solid var(--b);background:transparent;color:var(--mu);font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.rchip.on{background:var(--t);color:var(--bg);border-color:transparent;font-weight:700}
+
+/* VS */
+.h2h-row{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.h2h-row:last-child{border-bottom:none}
+.h2h-ak{flex:1;text-align:right;font-family:'Bebas Neue',sans-serif;font-size:20px}
+.h2h-mac{flex:1;text-align:left;font-family:'Bebas Neue',sans-serif;font-size:20px}
+.h2h-mid{font-size:9px;color:var(--di);text-align:center;min-width:60px}
+
+/* MODAL */
+.ov{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.88);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s}
+.ov.open{opacity:1;pointer-events:all}
+.sheet{width:100%;max-width:480px;margin:0 auto;background:#111;border-radius:20px 20px 0 0;max-height:94vh;overflow-y:auto;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1)}
+.ov.open .sheet{transform:translateY(0)}
+.drag{width:36px;height:4px;background:#2a2a2a;border-radius:2px;margin:14px auto 14px}
+.shtitle{font-size:17px;font-weight:900;margin-bottom:14px;padding:0 16px}
+.shbody{padding:0 16px calc(var(--sb)+20px)}
+
+/* PLAY STEP 0 */
+.fl{font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;margin-top:11px;display:block}
+.fi{background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:8px 10px;color:var(--t);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:100%;-webkit-appearance:none}
+.fi:focus{border-color:var(--g)}
+.fi.mac:focus{border-color:var(--pk)}
+.form-row{display:flex;gap:7px}
+.tee-btns{display:flex;gap:6px;margin-top:4px}
+.tee-btn{flex:1;padding:9px;border-radius:9px;border:2px solid var(--b);background:transparent;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--mu);transition:all .15s}
+.tee-btn.sel-y{border-color:#fbbf24;background:rgba(251,191,36,.1);color:#fbbf24}
+.tee-btn.sel-r{border-color:#f87171;background:rgba(248,113,113,.1);color:#f87171}
+
+/* PLAY STEP 1 — hole entry */
+.play-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.ph-num{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:1}
+.ph-result{font-size:13px;font-weight:800;margin-top:2px}
+.ph-info{text-align:right}
+.ph-dist{font-size:20px;font-weight:900;color:var(--bl);font-family:'DM Mono',monospace}
+.ph-par{font-size:12px;color:var(--mu)}
+.ph-hcp{font-size:10px;color:var(--di)}
+
+/* Hole nav */
+.hnav{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.hn{width:calc(100%/9 - 4px);aspect-ratio:1;border-radius:7px;border:1px solid var(--b);background:transparent;color:var(--mu);font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center}
+.hn.done{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.3);color:var(--g)}
+.hn.cur{background:var(--g);border-color:var(--g);color:#000}
+.hn.mac-done{background:rgba(244,114,182,.12);border-color:rgba(244,114,182,.3);color:var(--pk)}
+.hn.mac-cur{background:var(--pk);border-color:var(--pk);color:#000}
+
+/* Score stepper */
+.steppers{display:flex;gap:10px;margin-bottom:12px}
+.stepw{flex:1;background:var(--s2);border-radius:10px;padding:9px 8px;text-align:center}
+.steplbl{font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.stepr{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.stepbtn{width:36px;height:36px;border-radius:50%;border:1px solid var(--b);background:var(--s1);color:var(--t);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700}
+.stepbtn:active{background:var(--g);color:#000;border-color:var(--g)}
+.stepval{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;min-width:30px}
+
+/* Toggles */
+.togrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.toglbl{font-size:13px;color:#ccc}
+.tog{width:42px;height:24px;border-radius:12px;background:#2a2a2a;border:none;cursor:pointer;position:relative;transition:background .18s;flex-shrink:0}
+.tog.on{background:var(--g)}
+.tog.mac-on{background:var(--pk)}
+.tog::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .18s}
+.tog.on::after,.tog.mac-on::after{left:21px}
+
+/* FREE TEXT ENTRY */
+.freetext-wrap{margin-top:10px}
+.freetext-lbl{font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center}
+.freetext-hint{font-size:9px;color:var(--di);cursor:pointer;text-decoration:underline}
+.freetext-inp{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:10px 12px;color:var(--t);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:none;min-height:80px;line-height:1.6}
+.freetext-inp:focus{border-color:var(--g)}
+.freetext-inp.mac:focus{border-color:var(--pk)}
+.hint-box{background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:11px;margin-top:6px;display:none}
+.hint-box.open{display:block}
+.hint-row{font-size:11px;color:var(--mu);padding:3px 0;line-height:1.6}
+.hint-row strong{color:#ccc;font-family:'DM Mono',monospace}
+.parsed-preview{margin-top:8px;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:8px;padding:9px;display:none}
+.parsed-preview.open{display:block}
+.parsed-shot{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;color:#aaa}
+
+/* Notes */
+.notes-inp{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:8px 10px;color:var(--t);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;resize:none;min-height:52px;margin-top:3px}
+
+/* Buttons */
+.btnp{width:100%;padding:13px;border:none;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:12px}
+.btnp.ak{background:var(--g);color:#000}
+.btnp.mac{background:var(--pk);color:#000}
+.btns{width:100%;padding:10px;background:transparent;color:var(--mu);border:none;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:5px}
+
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.scroll>*{animation:fi .18s ease}
+</style>
+</head>
+<body>
+
+<div class="pbar">
+  <button class="pbtn ak-on" id="pbAK" onclick="setPlayer('ak')">
+    <span class="pn">AK</span><span class="ph" id="hcpAK">HCP —</span>
+  </button>
+  <button class="pbtn" id="pbMAC" onclick="setPlayer('mac')">
+    <span class="pn">Macarena</span><span class="ph" id="hcpMAC">HCP —</span>
+  </button>
+  <button class="pbtn" id="pbVS" onclick="setPlayer('vs')">
+    <span class="pn">📊 Versus</span><span class="ph">comparativa</span>
+  </button>
+</div>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="hdr-l">
+      <div class="app-lbl">⛳ Golf Tracker</div>
+      <div class="rname" id="rname">—</div>
+    </div>
+    <div class="spill">
+      <div class="snum" id="snum">—</div>
+      <div class="smeta">
+        <div class="sdiff" id="sdiff"></div>
+        <div class="sholes" id="sholes"></div>
+      </div>
+    </div>
+  </div>
+  <div class="tabs" id="tabbar">
+    <button class="tab on" onclick="tab('stats')">Stats</button>
+    <button class="tab" onclick="tab('card')">Tarjeta</button>
+    <button class="tab" onclick="tab('clubs')">Palos</button>
+    <button class="tab" onclick="tab('evo')">Evolución</button>
+  </div>
+</div>
+
+<div class="scroll" id="scroll"></div>
+<button class="fab" id="fab" onclick="openPlay()">+</button>
+<div class="bbar" id="bbar">—</div>
+
+<!-- MODAL -->
+<div class="ov" id="playOv">
+<div class="sheet">
+<div class="drag"></div>
+
+<!-- STEP 0 -->
+<div id="step0">
+  <div class="shtitle" id="s0title">Nueva ronda</div>
+  <div class="shbody">
+    <span class="fl">Añadir a ronda existente</span>
+    <select class="fi" id="pRoundSel" onchange="onRoundSel()"></select>
+
+    <div id="newRoundFields">
+      <div class="form-row" style="margin-top:10px">
+        <div style="flex:1"><span class="fl">Fecha</span><input type="date" class="fi" id="pDate"></div>
+        <div style="flex:1"><span class="fl">Campo</span><input type="text" class="fi" id="pCourse" placeholder="Nombre del campo"></div>
+      </div>
+      <span class="fl">Ciudad</span>
+      <input type="text" class="fi" id="pCity" placeholder="Ej: Segovia">
+      <div id="teeWrap" style="display:none">
+        <span class="fl">Tees</span>
+        <div class="tee-btns">
+          <button class="tee-btn sel-y" id="teeY" onclick="selTee('amarillas')">🟡 Amarillas</button>
+          <button class="tee-btn" id="teeR" onclick="selTee('rojas')">🔴 Rojas</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="btnp ak" id="s0btn" onclick="goPlay()">Empezar →</button>
+    <button class="btns" onclick="closePlay()">Cancelar</button>
+  </div>
+</div>
+
+<!-- STEP 1 -->
+<div id="step1" style="display:none">
+<div class="shbody" style="padding-top:0">
+  <div class="play-hdr">
+    <div>
+      <div class="ph-num" id="phNum">H1</div>
+      <div class="ph-result" id="phResult"></div>
+    </div>
+    <div class="ph-info">
+      <div class="ph-dist" id="phDist">—</div>
+      <div class="ph-par" id="phPar">Par —</div>
+      <div class="ph-hcp" id="phHcp"></div>
+    </div>
+  </div>
+
+  <div class="hnav" id="hnav"></div>
+
+  <div class="steppers">
+    <div class="stepw">
+      <div class="steplbl">Score</div>
+      <div class="stepr">
+        <button class="stepbtn" onclick="step('score',-1)">−</button>
+        <div class="stepval" id="scoreVal">4</div>
+        <button class="stepbtn" onclick="step('score',1)">+</button>
+      </div>
+    </div>
+    <div class="stepw">
+      <div class="steplbl">Putts</div>
+      <div class="stepr">
+        <button class="stepbtn" onclick="step('putts',-1)">−</button>
+        <div class="stepval" id="puttsVal" style="color:var(--bl)">2</div>
+        <button class="stepbtn" onclick="step('putts',1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:10px">
+    <div class="togrow" id="trFW">
+      <span class="toglbl">Fairway hit</span>
+      <button class="tog" id="tFW" onclick="tog('tFW')"></button>
+    </div>
+    <div class="togrow">
+      <span class="toglbl">Green en regulación (GIR)</span>
+      <button class="tog" id="tGIR" onclick="tog('tGIR')"></button>
+    </div>
+    <div class="togrow">
+      <span class="toglbl">Bunker</span>
+      <button class="tog" id="tBK" onclick="tog('tBK')"></button>
+    </div>
+    <div class="togrow">
+      <span class="toglbl">Bunker save</span>
+      <button class="tog" id="tBS" onclick="tog('tBS')"></button>
+    </div>
+  </div>
+
+  <!-- FREE TEXT -->
+  <div class="freetext-wrap">
+    <div class="freetext-lbl">
+      <span>Golpes — escribe libremente</span>
+      <span class="freetext-hint" onclick="toggleHint()">Ver ejemplos</span>
+    </div>
+    <div class="hint-box" id="hintBox">
+      <div class="hint-row"><strong>Driver centro 220</strong> → palo, dirección, distancia</div>
+      <div class="hint-row"><strong>5M izq fade 180</strong> → con dirección y tipo de curva</div>
+      <div class="hint-row"><strong>8H fat bunker</strong> → resultado del golpe</div>
+      <div class="hint-row"><strong>SW 50m green ok</strong> → distancia + calidad</div>
+      <div class="hint-row"><strong>9I sin commit fringe der</strong> → observaciones libres</div>
+      <div class="hint-row"><strong>PW perfecto a 2m</strong> → calidad y detalle</div>
+      <div class="hint-row" style="margin-top:6px;color:var(--di)">Separa golpes con coma o salto de línea. Escribe como quieras — se interpreta automáticamente.</div>
+    </div>
+    <textarea class="freetext-inp" id="freetextInp" placeholder="Ej: Driver centro 220, 7H sin commit fringe izq, SW perfecto green..." oninput="onFreetext()"></textarea>
+    <div class="parsed-preview" id="parsedPreview"></div>
+  </div>
+
+  <div style="font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-top:11px;margin-bottom:3px">Notas adicionales</div>
+  <textarea class="notes-inp" id="pNotes" placeholder="Sensaciones, condiciones, lo que quieras..."></textarea>
+
+  <button class="btnp ak" id="saveBtn" onclick="saveHole()">Guardar hoyo →</button>
+  <button class="btns" onclick="closePlay()">Cerrar sin guardar</button>
+</div>
+</div>
+
+</div>
+</div>
+
+<script>
+// ── COURSE DATA ───────────────────────────────────────────────────────────────
+const FAISANERA = {
+  id:'faisanera', name:'La Faisanera Golf', city:'Segovia',
+  tees:{
+    amarillas:{par:71, total:3237, holes:[
+      {h:1,par:5,m:469,hcp:5},{h:2,par:3,m:133,hcp:17},{h:3,par:4,m:436,hcp:1},
+      {h:4,par:3,m:172,hcp:13},{h:5,par:4,m:439,hcp:3},{h:6,par:5,m:517,hcp:7},
+      {h:7,par:3,m:158,hcp:11},{h:8,par:4,m:388,hcp:9},{h:9,par:4,m:279,hcp:16},
+      // back 9 — usando datos de la tarjeta (in side)
+      {h:10,par:3,m:172,hcp:10},{h:11,par:4,m:436,hcp:2},{h:12,par:3,m:133,hcp:18},
+      {h:13,par:5,m:517,hcp:6},{h:14,par:4,m:439,hcp:4},{h:15,par:5,m:525,hcp:14},
+      {h:16,par:4,m:388,hcp:8},{h:17,par:3,m:158,hcp:12},{h:18,par:4,m:469,hcp:16}
+    ]},
+    rojas:{par:70, total:2646, holes:[
+      {h:1,par:5,m:423,hcp:5},{h:2,par:3,m:97,hcp:17},{h:3,par:4,m:312,hcp:1},
+      {h:4,par:3,m:131,hcp:13},{h:5,par:4,m:342,hcp:3},{h:6,par:5,m:425,hcp:7},
+      {h:7,par:3,m:145,hcp:11},{h:8,par:4,m:316,hcp:9},{h:9,par:4,m:227,hcp:16},
+      {h:10,par:3,m:115,hcp:10},{h:11,par:4,m:358,hcp:2},{h:12,par:3,m:110,hcp:18},
+      {h:13,par:5,m:434,hcp:6},{h:14,par:4,m:357,hcp:4},{h:15,par:5,m:443,hcp:14},
+      {h:16,par:4,m:321,hcp:8},{h:17,par:3,m:113,hcp:12},{h:18,par:4,m:395,hcp:16}
+    ]}
+  }
+};
+
+// Known courses registry
+const COURSE_REG = { faisanera: FAISANERA };
+
+function getCH(courseId, tee, holeNum){
+  const c = COURSE_REG[courseId];
+  if(!c) return {par:4,m:null,hcp:null};
+  const t = c.tees[tee||'amarillas'];
+  if(!t) return {par:4,m:null,hcp:null};
+  return t.holes.find(h=>h.h===holeNum)||{par:4,m:null,hcp:null};
+}
+
+// ── FREE TEXT PARSER ──────────────────────────────────────────────────────────
+const CLUB_MAP = {
+  'driver':'Driver','dr':'Driver','drv':'Driver',
+  '3m':'3M','3madera':'3M','madera3':'3M',
+  '5m':'5M','5madera':'5M','madera5':'5M',
+  '7m':'7M','7madera':'7M',
+  '2h':'2H','3h':'3H','4h':'4H','5h':'5H','6h':'6H','7h':'7H','8h':'8H','9h':'9H',
+  '2i':'2I','3i':'3I','4i':'4I','5i':'5I','6i':'6I','7i':'7I','8i':'8I','9i':'9I',
+  'hierro2':'2I','hierro3':'3I','hierro4':'4I','hierro5':'5I','hierro6':'6I','hierro7':'7I','hierro8':'8I','hierro9':'9I',
+  'pw':'PW','pitching':'PW','pitchingwedge':'PW',
+  'aw':'AW','gw':'GW','sw':'SW','sandwedge':'SW','sand':'SW',
+  'lw':'LW','lobwedge':'LW',
+  'putter':'Putter','putt':'Putter','p':'Putter'
+};
+const DIR_WORDS = ['centro','center','izquierda','izq','left','derecha','der','right','centro-izq','centro-der','draw','fade','pull','pulled','push'];
+const QUAL_GOOD = ['perfecto','perfect','bueno','bien','great','good','excelente','excellent','ok','decente','decent','genial'];
+const QUAL_BAD = ['malo','mal','bad','terrible','horrible','fatal','pésimo'];
+const RESULT_WORDS = ['green','fringe','bunker','rough','agua','water','ob','fuera','fairway','árbol','arbol','tree'];
+const COMMIT_WORDS = ['sin commit','no commit','sin confianza','no confianza','sin compromiso','dudé','dudando'];
+
+function parseClub(word){
+  const w = word.toLowerCase().replace(/[^a-z0-9]/g,'');
+  return CLUB_MAP[w] || null;
+}
+
+function parseShots(text){
+  if(!text||!text.trim()) return [];
+  // Split by comma or newline
+  const parts = text.split(/[,\n]+/).map(s=>s.trim()).filter(Boolean);
+  const shots = [];
+  for(const part of parts){
+    const tokens = part.toLowerCase().split(/\s+/);
+    let club = null, dist = null, dirs = [], quals = [], results = [], notes = [];
+    let noCommit = false;
+
+    // Check for no-commit phrases first
+    const lp = part.toLowerCase();
+    if(COMMIT_WORDS.some(c=>lp.includes(c))) noCommit = true;
+
+    for(let i=0;i<tokens.length;i++){
+      const tok = tokens[i];
+      // Club
+      if(!club){
+        const c = parseClub(tok);
+        if(c){club=c;continue;}
+        // two-token club (e.g. "hierro 8")
+        if(i+1<tokens.length){
+          const c2 = parseClub(tok+tokens[i+1]);
+          if(c2){club=c2;i++;continue;}
+        }
+      }
+      // Distance
+      const dm = tok.match(/^(\d+)m?$/);
+      if(dm && parseInt(dm[1])>10 && parseInt(dm[1])<400){dist=parseInt(dm[1]);continue;}
+      // Direction
+      if(DIR_WORDS.includes(tok)){dirs.push(tok);continue;}
+      // Quality
+      if(QUAL_GOOD.includes(tok)){quals.push('bueno');continue;}
+      if(QUAL_BAD.includes(tok)){quals.push('malo');continue;}
+      // Result words
+      if(RESULT_WORDS.includes(tok)){results.push(tok);continue;}
+      // Leftovers → notes
+      if(tok.length>1 && !['a','de','el','la','en','un','y','con','sin','no'].includes(tok)){
+        notes.push(tok);
+      }
+    }
+
+    // Build result string
+    const resParts = [...dirs, ...results, ...(noCommit?['sin commit']:[]), ...notes];
+    const resStr = resParts.join(' ') || part;
+
+    // Quality
+    let q = 'ok';
+    if(quals.includes('malo')) q='malo';
+    else if(quals.includes('bueno')) q='bueno';
+    else if(results.includes('bunker')||results.includes('agua')||results.includes('ob')) q='malo';
+    else if(results.includes('green')&&!noCommit) q='bueno';
+
+    shots.push({
+      c: club||'?',
+      r: resStr,
+      d: dist,
+      q: q,
+      raw: part
+    });
+  }
+  return shots;
+}
+
+// ── INITIAL DATA ──────────────────────────────────────────────────────────────
+// AK — La Faisanera, torneo 07/06/2026, salida H5, tees amarillas
+// Scores from scorecard photos. Shots/putts from notes (ordered H1-H18).
+const AK_FAIS = {
+  id:'ak_r1', player:'ak', date:'2026-06-07',
+  course:'La Faisanera Golf', courseId:'faisanera', city:'Segovia',
+  tee:'amarillas', tournament:true, startHole:5,
+  holes:[
+    // H1 — score 6, par 5 (469m amarillas)
+    {h:1,par:5,score:6,putts:1,fw:true,gir:false,bk:false,bs:false,
+     shots:parseShots('Driver decente fade 200, 5M terrible, 5M perfecto 180, PW fringe bueno a 2m'),
+     notes:'5M horrible al primero, perfecto al segundo'},
+    // H2 — score 3, par 3 (133m)
+    {h:2,par:3,score:3,putts:2,fw:null,gir:true,bk:false,bs:false,
+     shots:parseShots('6I perfecto'),notes:''},
+    // H3 — score 5, par 4 (436m)
+    {h:3,par:4,score:5,putts:3,fw:true,gir:true,bk:false,bs:false,
+     shots:parseShots('Driver perfecto centro 230, 9I perfecto a 7m'),
+     notes:'3 putts desde 7m... qué pena con tan buena llegada'},
+    // H4 — score 4, par 3 (172m)
+    {h:4,par:3,score:4,putts:1,fw:null,gir:false,bk:false,bs:false,
+     shots:parseShots('5I fat der, PW fringe terrible 2m adelante, PW fringe perfecto a 1m'),
+     notes:'PW desde fringe mejoró al segundo intento'},
+    // H5 — score 5, par 4 (439m) — primera salida del torneo
+    {h:5,par:4,score:5,putts:2,fw:false,gir:true,bk:true,bs:true,
+     shots:parseShots('Driver izq 190, 8H bunker ok, SW 50m 10 pasados centro green'),
+     notes:'Drive a la izquierda. Salida del torneo desde este hoyo'},
+    // H6 — score 7, par 5 (517m)
+    {h:6,par:5,score:7,putts:3,fw:false,gir:false,bk:true,bs:false,
+     shots:parseShots('Driver izq 210, 6H bueno, 8H izq bunker mal, SW bunker ok'),
+     notes:'3 putts — cortos los dos últimos'},
+    // H7 — score 4, par 3 (158m)
+    {h:7,par:3,score:4,putts:2,fw:null,gir:false,bk:false,bs:false,
+     shots:parseShots('5M fringe izq 20m al hoyo, SW bueno'),
+     notes:'Par 3 de 158m — fringe izquierda'},
+    // H8 — score 5, par 4 (388m)
+    {h:8,par:4,score:5,putts:2,fw:true,gir:true,bk:false,bs:false,
+     shots:parseShots('Driver centro fairway 230, 8H sin commit fat, 6H punch centro green bueno'),
+     notes:'Fat por falta de commit en 8H'},
+    // H9 — score 5, par 4 (279m)
+    {h:9,par:4,score:5,putts:2,fw:true,gir:false,bk:false,bs:false,
+     shots:parseShots('Driver centro perfecto 205, SW malo corto 40m, PW perfecto a 3m'),
+     notes:'SW corto — no hizo break el putt de 3m'},
+    // H10 — score 3, par 3 (172m)
+    {h:10,par:3,score:3,putts:1,fw:null,gir:false,bk:false,bs:false,
+     shots:parseShots('8H malo corto, PW fat fringe terrible'),
+     notes:'Gran putt de 10m para salvar'},
+    // H11 — score 4, par 4 (436m)
+    {h:11,par:4,score:4,putts:2,fw:true,gir:true,bk:false,bs:false,
+     shots:parseShots('Driver bueno 210, 5M green bueno'),
+     notes:'Casi birdie'},
+    // H12 — score 3, par 3 (133m)
+    {h:12,par:3,score:3,putts:2,fw:null,gir:true,bk:false,bs:false,
+     shots:parseShots('PW bueno green'),notes:''},
+    // H13 — score 6, par 5 (517m)
+    {h:13,par:5,score:6,putts:2,fw:true,gir:false,bk:false,bs:false,
+     shots:parseShots('Driver draw centro-izq 200, 5M sin commit 175, SW sin commit fringe corto 80, PW fringe corto'),
+     notes:'Sin commit en 5M y SW — falta de confianza recurrente'},
+    // H14 — score 5, par 4 (439m)
+    {h:14,par:4,score:5,putts:2,fw:false,gir:false,bk:true,bs:false,
+     shots:parseShots('Driver pulled 220, 5M excelente 180 bunker, SW bunker malo corto'),
+     notes:'Driver pulled — bunker malo'},
+    // H15 — score 5, par 5 (525m)
+    {h:15,par:5,score:5,putts:2,fw:false,gir:true,bk:false,bs:false,
+     shots:parseShots('Driver fade 230, 5M sin commit decente 170, 9H sin commit green'),
+     notes:'Sin commit recurrente'},
+    // H16 — score 3, par 4 (388m) — BIRDIE
+    {h:16,par:4,score:3,putts:1,fw:true,gir:true,bk:false,bs:false,
+     shots:parseShots('Driver perfecto centro fairway 220, 6H perfecto a 1m'),
+     notes:'BIRDIE 🦅 — el mejor hoyo de la ronda'},
+    // H17 — score 3, par 3 (158m)
+    {h:17,par:3,score:3,putts:2,fw:null,gir:true,bk:false,bs:false,
+     shots:parseShots('5I decente green sin commit'),notes:''},
+    // H18 — score 6, par 4 (469m)
+    {h:18,par:4,score:6,putts:2,fw:true,gir:false,bk:false,bs:false,
+     shots:parseShots('Driver bueno fade, 6I muy malo, PW punch para mantener en juego, SW bueno green'),
+     notes:'6I muy malo — par 4 de 469m el más largo'}
+  ]
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let data = { ak:{rounds:[]}, mac:{rounds:[]} };
+let activePlayer = 'ak';
+let activeR = 0;
+let activeTab = 'stats';
+let expanded = new Set();
+
+// Play state
+let playPlayer = 'ak';
+let playRoundIdx = -1;
+let playHole = 1;
+let playScore = 4;
+let playPutts = 2;
+let playTee = 'amarillas';
+let playToggles = {tFW:false,tGIR:false,tBK:false,tBS:false};
+
+function load(){
+  const s = localStorage.getItem('gt5');
+  if(s){ data = JSON.parse(s); }
+  else { data = {ak:{rounds:[AK_FAIS]}, mac:{rounds:[]}}; save(); }
+}
+function save(){ localStorage.setItem('gt5', JSON.stringify(data)); }
+
+// ── STATS ─────────────────────────────────────────────────────────────────────
+function calcStats(holes){
+  if(!holes||!holes.length) return null;
+  const ts=holes.reduce((a,h)=>a+h.score,0);
+  const tp=holes.reduce((a,h)=>a+h.par,0);
+  const puH=holes.filter(h=>h.putts!==null&&h.putts!==undefined);
+  const tpu=puH.reduce((a,h)=>a+h.putts,0);
+  const fwH=holes.filter(h=>h.fw!==null&&h.fw!==undefined);
+  const fwOk=fwH.filter(h=>h.fw).length;
+  const girH=holes.filter(h=>h.gir!==null&&h.gir!==undefined);
+  const girOk=girH.filter(h=>h.gir).length;
+  const bkH=holes.filter(h=>h.bk);
+  const bkS=bkH.filter(h=>h.bs).length;
+  const tp3=puH.filter(h=>h.putts>=3).length;
+  const bir=holes.filter(h=>h.score<h.par).length;
+  const par=holes.filter(h=>h.score===h.par).length;
+  const bog=holes.filter(h=>h.score===h.par+1).length;
+  const dbl=holes.filter(h=>h.score>=h.par+2).length;
+  const cm={};
+  holes.forEach(h=>(h.shots||[]).forEach(s=>{
+    if(!s.c||s.c==='?') return;
+    if(!cm[s.c]) cm[s.c]={bueno:0,ok:0,malo:0,t:0};
+    cm[s.c][s.q]++;cm[s.c].t++;
+  }));
+  const all=holes.flatMap(h=>h.shots||[]);
+  return{ts,tp,diff:ts-tp,tpu,avgP:puH.length?(tpu/puH.length).toFixed(1):null,
+    fwPct:fwH.length?Math.round(fwOk/fwH.length*100):null,
+    girPct:girH.length?Math.round(girOk/girH.length*100):null,
+    bkCt:bkH.length,bkPct:bkH.length?Math.round(bkS/bkH.length*100):0,
+    tp3,bir,par,bog,dbl,cm,total:holes.length,
+    noC:all.filter(s=>/commit|confianza/i.test(s.r||'')).length,
+    fat:all.filter(s=>/fat/i.test(s.r||'')).length,
+    left:all.filter(s=>/izq|left|pull/i.test(s.r||'')).length
+  };
+}
+
+function estHcp(rounds){
+  const v=rounds.filter(r=>r.holes&&r.holes.length>=9);
+  if(!v.length) return null;
+  const diffs=v.map(r=>{
+    const ts=r.holes.reduce((a,h)=>a+h.score,0);
+    const tp=r.holes.reduce((a,h)=>a+h.par,0);
+    return ts-tp;
+  });
+  diffs.sort((a,b)=>a-b);
+  const best=diffs.slice(0,Math.max(1,Math.floor(diffs.length*.4)));
+  return (best.reduce((a,d)=>a+d,0)/best.length*.96).toFixed(1);
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function qc(q){return q==='bueno'?'#4ade80':q==='ok'?'#fbbf24':'#f87171'}
+function qi(q){return q==='bueno'?'✓':q==='ok'?'~':'✗'}
+function hc(h){return h.score<h.par?'#4ade80':h.score===h.par?'#60a5fa':h.score===h.par+1?'#fbbf24':'#f87171'}
+function hl(h){return h.score<h.par?'BIRDIE':h.score===h.par?'PAR':h.score===h.par+1?'BOGEY':`+${h.score-h.par}`}
+function hll(h){return h.score<h.par?(h.score===h.par-2?'EAGLE':'BIRDIE'):h.score===h.par?'PAR':h.score===h.par+1?'BOGEY':h.score===h.par+2?'DOBLE':'TRIPLE+'}
+function dc(d){return d<0?'#4ade80':d===0?'#60a5fa':d===1?'#fbbf24':'#f87171'}
+function sc2(s,p){const d=s-p;return d<0?'sc-bir':d===0?'sc-par':d===1?'sc-bog':d===2?'sc-dbl':'sc-tri'}
+function pac(player){return player==='mac'?'var(--pk)':'var(--g)'}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render(){
+  const isVS = activePlayer==='vs';
+  const pdata = isVS?null:data[activePlayer];
+  const rounds = pdata?pdata.rounds:[];
+  const round = rounds[activeR];
+  const stats = round?calcStats(round.holes):null;
+  const hcpAK = estHcp(data.ak.rounds);
+  const hcpMAC = estHcp(data.mac.rounds);
+  const ac = pac(activePlayer);
+
+  // Player bar
+  document.getElementById('hcpAK').textContent = hcpAK!==null?`HCP +${hcpAK}`:'HCP —';
+  document.getElementById('hcpMAC').textContent = hcpMAC!==null?`HCP +${hcpMAC}`:'HCP —';
+  ['ak','mac','vs'].forEach(p=>{
+    const el=document.getElementById(p==='vs'?'pbVS':p==='ak'?'pbAK':'pbMAC');
+    el.className='pbtn'+(activePlayer===p?' '+(p==='vs'?'vs-on':p==='ak'?'ak-on':'mac-on'):'');
+  });
+
+  const fab=document.getElementById('fab');
+  fab.style.background=activePlayer==='mac'?'var(--pk)':'var(--g)';
+  fab.style.color='#000';
+  fab.style.boxShadow=`0 4px 20px rgba(${activePlayer==='mac'?'244,114,182':'74,222,128'},.3)`;
+  fab.style.display=isVS?'none':'flex';
+  document.getElementById('tabbar').style.display=isVS?'none':'';
+
+  if(isVS){
+    document.getElementById('rname').innerHTML='AK vs Macarena';
+    document.getElementById('snum').textContent='VS';document.getElementById('snum').style.color='var(--bl)';
+    document.getElementById('sdiff').textContent='';document.getElementById('sholes').textContent='';
+    document.getElementById('bbar').textContent='Comparativa de rendimiento';
+    renderVS(); return;
+  }
+
+  document.getElementById('snum').style.color=ac;
+  document.getElementById('sdiff').style.color=ac;
+  if(round){
+    const teeLabel=round.tee==='rojas'?'🔴 Rojas':'🟡 Amarillas';
+    document.getElementById('rname').innerHTML=`${round.course} <span>${round.date}${round.city?' · '+round.city:''} · ${teeLabel}</span>`;
+    if(stats){
+      document.getElementById('snum').textContent=stats.ts;
+      const d=stats.diff;
+      document.getElementById('sdiff').textContent=d>=0?`+${d}`:d;
+      document.getElementById('sholes').textContent=`${stats.total} hoyos · Par ${stats.tp}`;
+    }
+  } else {
+    document.getElementById('rname').innerHTML='Sin rondas';
+    document.getElementById('snum').textContent='—';
+    document.getElementById('sdiff').textContent='';document.getElementById('sholes').textContent='';
+  }
+  const hcp=activePlayer==='ak'?hcpAK:hcpMAC;
+  document.getElementById('bbar').textContent=stats?`Par ${stats.tp} · ${stats.total} hoyos · HCP est. ${hcp?'+'+hcp:'—'}`:'Sin datos';
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',['stats','card','clubs','evo'][i]===activeTab));
+
+  let html='';
+  if(rounds.length>1){
+    html+=`<div class="rchips">`;
+    rounds.forEach((r,i)=>{const s=calcStats(r.holes);html+=`<button class="rchip ${i===activeR?'on':''}" onclick="selR(${i})">${r.date} · ${r.course}${s?` · ${s.ts}`:''}</button>`;});
+    html+=`</div>`;
+  }
+  if(!round||!round.holes.length){
+    html+=`<div style="text-align:center;color:var(--mu);padding:50px 20px;font-size:14px;line-height:2">Sin rondas.<br>Pulsa <strong style="color:${ac}">+</strong> para empezar.</div>`;
+    document.getElementById('scroll').innerHTML=html;return;
+  }
+
+  // ── STATS ──
+  if(activeTab==='stats'&&stats){
+    if(hcp!==null) html+=`<div class="hcpbox" style="background:rgba(${activePlayer==='mac'?'244,114,182':'74,222,128'},.06);border:1px solid rgba(${activePlayer==='mac'?'244,114,182':'74,222,128'},.2)"><div class="hcpval" style="color:${ac}">+${hcp}</div><div class="hcpsub">Handicap estimado<br>${rounds.length} ronda${rounds.length>1?'s':''} · Cálculo simplificado</div></div>`;
+    html+=`<div class="sg">
+      <div class="sc"><div class="sv" style="color:${ac}">${stats.ts}</div><div class="sl">Score</div><div class="ss">Par ${stats.tp}</div></div>
+      <div class="sc"><div class="sv" style="color:var(--bl)">${stats.tpu??'—'}</div><div class="sl">Putts</div>${stats.avgP?`<div class="ss">${stats.avgP}/h</div>`:''}</div>
+      ${stats.fwPct!==null?`<div class="sc"><div class="sv" style="color:var(--p)">${stats.fwPct}%</div><div class="sl">FW</div></div>`:''}
+      ${stats.girPct!==null?`<div class="sc"><div class="sv" style="color:var(--y)">${stats.girPct}%</div><div class="sl">GIR</div></div>`:''}
+    </div>
+    <div class="sg">
+      <div class="sc"><div class="sv" style="color:var(--g)">${stats.bir}</div><div class="sl">Birdies</div></div>
+      <div class="sc"><div class="sv" style="color:var(--bl)">${stats.par}</div><div class="sl">Pares</div></div>
+      <div class="sc"><div class="sv" style="color:var(--y)">${stats.bog}</div><div class="sl">Bogeys</div></div>
+      <div class="sc"><div class="sv" style="color:var(--r)">${stats.dbl}</div><div class="sl">+2 o más</div></div>
+    </div>`;
+    if(stats.avgP) html+=`<div class="card"><div class="ctitle">Putting</div><div style="display:flex;gap:18px;align-items:center"><div><div class="sv" style="color:var(--bl);font-size:28px">${stats.tp3}</div><div class="ss">3-putts</div></div><div><div class="sv" style="color:var(--bl);font-size:28px">${stats.avgP}</div><div class="ss">avg/hoyo</div></div><div style="flex:1"><div style="background:#1e1e1e;border-radius:4px;height:8px;overflow:hidden"><div style="width:${Math.min(100,stats.tpu/(stats.total*2)*100)}%;height:100%;background:${parseFloat(stats.avgP)>2?'#f87171':'#60a5fa'};border-radius:4px"></div></div><div style="font-size:9px;color:var(--di);margin-top:3px">objetivo ≤ 2.0</div></div></div></div>`;
+    if(stats.bkCt>0) html+=`<div class="card" style="border-left:3px solid var(--o)"><div class="ctitle" style="color:var(--o)">Bunkers</div><span class="sv" style="color:var(--o);font-size:26px">${stats.bkPct}%</span> <span style="font-size:11px;color:var(--mu)">saves · ${stats.bkCt} bunkers</span></div>`;
+
+    html+=`<div class="ctitle" style="margin-top:2px">Hoyos</div>`;
+    [...round.holes].sort((a,b)=>a.h-b.h).forEach((h,i)=>{
+      const col=hc(h);const lbl=hl(h);
+      const ch=getCH(round.courseId,round.tee,h.h);
+      const open=expanded.has(h.h);
+      html+=`<div class="hl" style="border-color:${col}" onclick="togExp(${h.h})">
+        <div class="hlh">
+          <div class="hlnum" style="color:${col}">H${h.h}</div>
+          <div class="hlbadges">
+            <span class="badge b-par">P${h.par}</span>
+            ${ch.m?`<span class="badge b-dist">${ch.m}m</span>`:''}
+            ${h.bk?`<span class="badge" style="color:var(--o);background:rgba(249,115,22,.1)">Bk</span>`:''}
+            ${h.putts>=3?`<span class="badge" style="color:var(--r);background:rgba(248,113,113,.1)">3P</span>`:''}
+            <span class="b-res" style="color:${col};background:rgba(${col==='#4ade80'?'74,222,128':col==='#60a5fa'?'96,165,250':col==='#fbbf24'?'251,191,36':'248,113,113'},.12)">${lbl}</span>
+          </div>
+          <div class="hlscore" style="color:${col}">${h.score}</div>
+        </div>
+        <div class="hlbody ${open?'open':''}">
+          <div class="hlmeta">
+            ${(h.shots||[]).length?`<span>🏌️ ${h.shots.length}g</span>`:''}
+            ${h.putts!=null?`<span>🎯 ${h.putts}p</span>`:''}
+            ${h.fw!=null?`<span style="color:${h.fw?'#4ade80':'#f87171'}">${h.fw?'✓':'✗'} FW</span>`:''}
+            ${h.gir!=null?`<span style="color:${h.gir?'#4ade80':'#f87171'}">${h.gir?'✓':'✗'} GIR</span>`:''}
+          </div>
+          ${(h.shots||[]).map(s=>`<div class="shotrow"><div class="qdot" style="background:${qc(s.q)}">${qi(s.q)}</div><span class="scl">${s.c}</span><span class="sre">${s.r}${s.d?` <span style="color:var(--di)">${s.d}m</span>`:''}</span></div>`).join('')}
+          ${h.notes?`<div class="hnote">📝 ${h.notes}</div>`:''}
+        </div>
+      </div>`;
+    });
+
+    // Patterns
+    if(stats.noC||stats.fat||stats.left||stats.tp3){
+      html+=`<div class="ctitle" style="margin-top:6px">Patrones de error</div>`;
+      [{icon:'🧠',l:'Sin commit/confianza',v:stats.noC,c:'var(--p)',d:'Decide el palo antes de acercarte. Ejecuta sin dudar.'},
+       {icon:'⬅️',l:'Driver izquierda/pulled',v:stats.left,c:'var(--r)',d:'Tendencia consistente. Revisa alineación de hombros.'},
+       {icon:'💥',l:'Fat shots',v:stats.fat,c:'var(--o)',d:'Consecuencia de falta de convicción. Transfiere el peso.'},
+       {icon:'🎯',l:'3-putts',v:stats.tp3,c:'var(--bl)',d:'Foco en velocidad en putts de 5-8 metros.'}
+      ].filter(p=>p.v>0).forEach(p=>{
+        html+=`<div style="border-left:3px solid ${p.c};border-radius:10px;padding:11px;margin-bottom:7px;background:var(--s1);border-top:1px solid var(--b);border-right:1px solid var(--b);border-bottom:1px solid var(--b)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:12px;color:#ccc">${p.icon} ${p.l}</span><span style="font-family:'Bebas Neue';font-size:22px;color:${p.c}">${p.v}×</span></div><p style="font-size:11px;color:var(--mu);line-height:1.6">${p.d}</p></div>`;
+      });
+    }
+  }
+
+  // ── SCORECARD ──
+  else if(activeTab==='card'){
+    const oh={};round.holes.forEach(h=>oh[h.h]=h);
+    const courseInfo=COURSE_REG[round.courseId];
+    const teeData=courseInfo?courseInfo.tees[round.tee||'amarillas']:null;
+    const choles=teeData?teeData.holes:Array.from({length:18},(_,i)=>({h:i+1,par:oh[i+1]?.par||4,m:null,hcp:null}));
+    let ts=0,tp=0,tpu=0;
+    html+=`<div class="card" style="padding:0;overflow:hidden"><table class="sct"><thead><tr><th>H</th><th>Par</th><th>m</th><th>HCP</th><th>Score</th><th>+/-</th><th>Pts</th></tr></thead><tbody>`;
+    choles.forEach(ch=>{
+      const h=oh[ch.h];
+      if(h){
+        ts+=h.score;tp+=h.par;if(h.putts!=null)tpu+=h.putts;
+        const d=h.score-h.par;const ds=d<0?d:d===0?'E':`+${d}`;
+        html+=`<tr><td style="color:#ccc;font-weight:700">${ch.h}</td><td style="color:var(--mu)">${ch.par}</td><td style="color:var(--bl)">${ch.m||'—'}</td><td style="color:var(--di)">${ch.hcp||'—'}</td><td><span class="${sc2(h.score,h.par)}">${h.score}</span></td><td style="color:${dc(d)};font-weight:700">${ds}</td><td style="color:#aaa">${h.putts!=null?h.putts:'—'}</td></tr>`;
+      } else {
+        html+=`<tr style="opacity:.2"><td>${ch.h}</td><td>${ch.par}</td><td style="color:var(--bl)">${ch.m||'—'}</td><td>${ch.hcp||'—'}</td><td colspan="3">—</td></tr>`;
+      }
+    });
+    html+=`</tbody><tfoot><tr><td colspan="2">TOTAL</td><td style="color:var(--bl)">${teeData?teeData.total:'—'}</td><td></td><td style="color:${ac};font-size:14px">${ts}</td><td style="color:${dc(ts-tp)};font-weight:700">${ts-tp>=0?'+':''}${ts-tp}</td><td style="color:#aaa">${tpu||'—'}</td></tr></tfoot></table></div>`;
+  }
+
+  // ── CLUBS ──
+  else if(activeTab==='clubs'&&stats){
+    if(Object.keys(stats.cm).length){
+      html+=`<div class="ctitle">Rendimiento por palo</div>`;
+      Object.entries(stats.cm).sort((a,b)=>b[1].t-a[1].t).forEach(([club,d])=>{
+        const p=v=>d.t?Math.round(v/d.t*100):0;
+        html+=`<div class="cbr"><div class="cbrtop"><span class="cbrname">${club}</span><span class="cbrn">${d.t} golpes</span></div><div class="bar">${d.bueno?`<div class="bg" style="width:${p(d.bueno)}%"></div>`:''}${d.ok?`<div class="by" style="width:${p(d.ok)}%"></div>`:''}${d.malo?`<div class="br2" style="width:${p(d.malo)}%"></div>`:''}</div><div class="cleg"><span style="color:var(--g)">✓ ${d.bueno}</span><span style="color:var(--y)">~ ${d.ok}</span><span style="color:var(--r)">✗ ${d.malo}</span></div></div>`;
+      });
+    } else html+=`<div style="text-align:center;color:var(--mu);padding:30px;font-size:13px">Sin datos de golpes en esta ronda.</div>`;
+  }
+
+  // ── EVO ──
+  else if(activeTab==='evo'){
+    if(rounds.length<2) html+=`<div style="text-align:center;color:var(--mu);padding:40px 20px;font-size:13px;line-height:2">La evolución aparecerá con 2+ rondas.</div>`;
+    else{
+      const maxS=Math.max(...rounds.map(r=>calcStats(r.holes)?.ts||0));
+      html+=`<div class="ctitle">Evolución de score</div>`;
+      rounds.forEach(r=>{
+        const s=calcStats(r.holes);if(!s)return;const d=s.diff;
+        html+=`<div class="evo-row"><div class="evo-l"><div class="evo-date">${r.date}${r.tee==='rojas'?' 🔴':' 🟡'}</div><div class="evo-course">${r.course}${r.city?' · '+r.city:''}</div><div class="evo-bw"><div class="evo-b" style="width:${Math.round(s.ts/maxS*100)}%;background:${ac}"></div></div></div><div class="evo-r"><div class="evo-s" style="color:${ac}">${s.ts}</div><div class="evo-d" style="color:${dc(d)}">${d>=0?'+':''}${d}</div></div></div>`;
+      });
+    }
+  }
+
+  document.getElementById('scroll').innerHTML=html;
+}
+
+// ── VS ────────────────────────────────────────────────────────────────────────
+function renderVS(){
+  const hcpAK=estHcp(data.ak.rounds);
+  const hcpMAC=estHcp(data.mac.rounds);
+  const akAll=data.ak.rounds.flatMap(r=>r.holes);
+  const macAll=data.mac.rounds.flatMap(r=>r.holes);
+  const akS=calcStats(akAll);const macS=calcStats(macAll);
+  let html=`<div class="ctitle">Comparativa global</div>
+  <div style="display:flex;gap:8px;margin-bottom:10px">
+    <div style="flex:1;background:var(--s1);border:2px solid rgba(74,222,128,.3);border-radius:12px;padding:12px;text-align:center">
+      <div style="font-size:9px;color:var(--g);letter-spacing:1px;text-transform:uppercase;font-weight:700">AK</div>
+      <div style="font-family:'Bebas Neue';font-size:32px;color:var(--g)">${hcpAK!==null?'+'+hcpAK:'—'}</div>
+      <div style="font-size:9px;color:var(--mu)">HCP estimado</div>
+    </div>
+    <div style="display:flex;align-items:center;font-size:14px;color:var(--di);font-weight:900">VS</div>
+    <div style="flex:1;background:var(--s1);border:2px solid rgba(244,114,182,.3);border-radius:12px;padding:12px;text-align:center">
+      <div style="font-size:9px;color:var(--pk);letter-spacing:1px;text-transform:uppercase;font-weight:700">Macarena</div>
+      <div style="font-family:'Bebas Neue';font-size:32px;color:var(--pk)">${hcpMAC!==null?'+'+hcpMAC:'—'}</div>
+      <div style="font-size:9px;color:var(--mu)">HCP estimado</div>
+    </div>
+  </div>`;
+
+  if(akS&&macS){
+    const rows=[
+      {l:'Rondas jugadas',ak:data.ak.rounds.length,mac:data.mac.rounds.length,lb:false},
+      {l:'Score medio',ak:(akS.ts/data.ak.rounds.length).toFixed(1),mac:(macS.ts/data.mac.rounds.length).toFixed(1),lb:true},
+      {l:'Birdies totales',ak:akS.bir,mac:macS.bir,lb:false},
+      {l:'Bogeys totales',ak:akS.bog,mac:macS.bog,lb:true},
+      {l:'+2 o más',ak:akS.dbl,mac:macS.dbl,lb:true},
+    ];
+    if(akS.avgP&&macS.avgP) rows.splice(2,0,{l:'Putts/hoyo',ak:akS.avgP,mac:macS.avgP,lb:true});
+    html+=`<div class="card" style="padding:0 13px">`;
+    rows.forEach(m=>{
+      const an=parseFloat(m.ak);const mn=parseFloat(m.mac);
+      const aw=!isNaN(an)&&!isNaN(mn)&&(m.lb?an<mn:an>mn);
+      const mw=!isNaN(an)&&!isNaN(mn)&&(m.lb?mn<an:mn>an);
+      html+=`<div class="h2h-row"><div class="h2h-ak" style="color:${aw?'var(--g)':'var(--mu)'}">${m.ak}</div><div class="h2h-mid">${m.l}</div><div class="h2h-mac" style="color:${mw?'var(--pk)':'var(--mu)'}">${m.mac}</div></div>`;
+    });
+    html+=`</div>`;
+  }
+
+  if(!data.mac.rounds.length) html+=`<div style="text-align:center;color:var(--pk);padding:20px;font-size:13px;border:1px dashed rgba(244,114,182,.3);border-radius:10px;margin-top:10px;line-height:2">Macarena aún no tiene rondas.<br>Selecciónala arriba y pulsa + para empezar.</div>`;
+  document.getElementById('scroll').innerHTML=html;
+}
+
+function tab(t){activeTab=t;expanded.clear();render();}
+function selR(i){activeR=i;expanded.clear();render();}
+function togExp(h){expanded.has(h)?expanded.delete(h):expanded.add(h);render();}
+function setPlayer(p){activePlayer=p;activeR=0;expanded.clear();if(p!=='vs')activeTab='stats';render();}
+
+// ── PLAY ──────────────────────────────────────────────────────────────────────
+let playTeeChosen='amarillas';
+
+function openPlay(){
+  playPlayer=activePlayer==='mac'?'mac':'ak';
+  playTeeChosen='amarillas';
+  playScore=4;playPutts=2;
+  Object.keys(playToggles).forEach(k=>playToggles[k]=false);
+  document.querySelectorAll('.tog').forEach(t=>t.className='tog');
+  document.getElementById('freetextInp').value='';
+  document.getElementById('parsedPreview').className='parsed-preview';
+  document.getElementById('pNotes').value='';
+  document.getElementById('pDate').value=new Date().toISOString().split('T')[0];
+  document.getElementById('pCourse').value='';document.getElementById('pCity').value='';
+  document.getElementById('hintBox').className='hint-box';
+
+  const isMac=playPlayer==='mac';
+  document.getElementById('s0title').textContent=isMac?'Nueva ronda — Macarena':'Nueva entrada — AK';
+  document.getElementById('teeWrap').style.display=isMac?'':'none';
+  document.getElementById('s0btn').className='btnp '+(isMac?'mac':'ak');
+  document.getElementById('saveBtn').className='btnp '+(isMac?'mac':'ak');
+  document.getElementById('freetextInp').className='freetext-inp'+(isMac?' mac':'');
+
+  const rounds=data[playPlayer].rounds;
+  const sel=document.getElementById('pRoundSel');
+  sel.innerHTML=`<option value="new">+ Nueva ronda</option>`;
+  rounds.forEach((r,i)=>sel.innerHTML+=`<option value="${i}">${r.date} — ${r.course} (${r.tee==='rojas'?'Rojas':'Amarillas'})</option>`);
+  onRoundSel();
+
+  document.getElementById('step0').style.display='';
+  document.getElementById('step1').style.display='none';
+  document.getElementById('playOv').classList.add('open');
+}
+
+function onRoundSel(){
+  document.getElementById('newRoundFields').style.display=document.getElementById('pRoundSel').value==='new'?'':'none';
+}
+
+let selTeeVal='amarillas';
+function selTee(t){
+  selTeeVal=t;
+  document.getElementById('teeY').className='tee-btn'+(t==='amarillas'?' sel-y':'');
+  document.getElementById('teeR').className='tee-btn'+(t==='rojas'?' sel-r':'');
+}
+
+function goPlay(){
+  const sel=document.getElementById('pRoundSel').value;
+  if(sel==='new'){
+    const course=document.getElementById('pCourse').value.trim()||'Campo';
+    const date=document.getElementById('pDate').value;
+    const city=document.getElementById('pCity').value.trim();
+    const tee=playPlayer==='mac'?selTeeVal:'amarillas';
+    // match courseId
+    let courseId='custom_'+Date.now();
+    const cn=course.toLowerCase();
+    if(cn.includes('faisanera')) courseId='faisanera';
+    data[playPlayer].rounds.push({id:'r'+Date.now(),player:playPlayer,date,course,courseId,city,tee,holes:[]});
+    playRoundIdx=data[playPlayer].rounds.length-1;
+    save();
+  } else { playRoundIdx=parseInt(sel); }
+  activeR=playRoundIdx;
+  playHole=1;
+  document.getElementById('step0').style.display='none';
+  document.getElementById('step1').style.display='';
+  loadHole();
+}
+
+function loadHole(){
+  const round=data[playPlayer].rounds[playRoundIdx];
+  const tee=round.tee||'amarillas';
+  const ch=getCH(round.courseId,tee,playHole);
+  const isMac=playPlayer==='mac';
+  const ac=isMac?'var(--pk)':'var(--g)';
+
+  document.getElementById('phNum').textContent=`H${playHole}`;
+  document.getElementById('phNum').style.color=ac;
+  document.getElementById('phDist').textContent=ch.m?`${ch.m}m`:'—';
+  document.getElementById('phPar').textContent=`Par ${ch.par}`;
+  document.getElementById('phHcp').textContent=ch.hcp?`HCP ${ch.hcp} · ${tee==='rojas'?'🔴':'🟡'}`:'';
+
+  playScore=ch.par;playPutts=2;
+  document.getElementById('scoreVal').textContent=playScore;
+  document.getElementById('puttsVal').textContent=playPutts;
+  document.getElementById('trFW').style.display=ch.par===3?'none':'flex';
+
+  // Hole nav
+  const existH=new Set(round.holes.map(h=>h.h));
+  document.getElementById('hnav').innerHTML=Array.from({length:18},(_,i)=>{
+    const n=i+1;const done=existH.has(n);const cur=n===playHole;
+    let cl='hn';
+    if(cur) cl+=isMac?' mac-cur':' cur';
+    else if(done) cl+=isMac?' mac-done':' done';
+    return `<button class="${cl}" onclick="jumpH(${n})">${n}</button>`;
+  }).join('');
+
+  Object.keys(playToggles).forEach(k=>{playToggles[k]=false;document.getElementById(k).className='tog';});
+  document.getElementById('freetextInp').value='';
+  document.getElementById('parsedPreview').className='parsed-preview';
+  document.getElementById('pNotes').value='';
+  updateScoreUI();
+}
+
+function jumpH(n){playHole=n;loadHole();}
+
+function step(f,d){
+  if(f==='score'){playScore=Math.max(1,Math.min(15,playScore+d));document.getElementById('scoreVal').textContent=playScore;}
+  else{playPutts=Math.max(0,Math.min(9,playPutts+d));document.getElementById('puttsVal').textContent=playPutts;}
+  updateScoreUI();
+}
+
+function updateScoreUI(){
+  const round=data[playPlayer].rounds[playRoundIdx];
+  const ch=getCH(round?.courseId,round?.tee,playHole);
+  const d=playScore-ch.par;
+  document.getElementById('scoreVal').style.color=dc(d);
+  document.getElementById('phResult').textContent=hll({score:playScore,par:ch.par});
+  document.getElementById('phResult').style.color=dc(d);
+}
+
+function tog(id){
+  const isMac=playPlayer==='mac';
+  playToggles[id]=!playToggles[id];
+  const el=document.getElementById(id);
+  el.className='tog'+(playToggles[id]?(isMac?' mac-on':' on'):'');
+}
+
+function toggleHint(){
+  const b=document.getElementById('hintBox');
+  b.className=b.className.includes('open')?'hint-box':'hint-box open';
+}
+
+function onFreetext(){
+  const val=document.getElementById('freetextInp').value;
+  const shots=parseShots(val);
+  const prev=document.getElementById('parsedPreview');
+  if(!shots.length){prev.className='parsed-preview';return;}
+  prev.className='parsed-preview open';
+  prev.innerHTML=`<div style="font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Vista previa interpretada</div>`+
+    shots.map(s=>`<div class="parsed-shot"><div class="qdot" style="background:${qc(s.q)};width:14px;height:14px;font-size:8px">${qi(s.q)}</div><span style="color:var(--bl);font-size:11px;font-weight:700;min-width:36px;font-family:'DM Mono',monospace">${s.c}</span><span style="color:#aaa;font-size:11px;flex:1">${s.r}${s.d?` · ${s.d}m`:''}</span></div>`).join('');
+}
+
+function saveHole(){
+  const round=data[playPlayer].rounds[playRoundIdx];
+  const ch=getCH(round.courseId,round.tee,playHole);
+  const rawText=document.getElementById('freetextInp').value;
+  const shots=parseShots(rawText);
+  const hole={
+    h:playHole,par:ch.par,score:playScore,putts:playPutts,
+    fw:ch.par===3?null:playToggles.tFW,
+    gir:playToggles.tGIR,bk:playToggles.tBK,bs:playToggles.tBS,
+    notes:document.getElementById('pNotes').value,
+    shots,rawText
+  };
+  round.holes=round.holes.filter(h=>h.h!==playHole);
+  round.holes.push(hole);
+  save();activeR=playRoundIdx;render();
+
+  const next=playHole<18?playHole+1:1;
+  playHole=next;loadHole();
+
+  const btn=document.getElementById('saveBtn');
+  const orig=btn.textContent;
+  btn.textContent='✓ Guardado!';btn.style.opacity='.7';
+  setTimeout(()=>{btn.textContent=orig;btn.style.opacity='';},900);
+}
+
+function closePlay(){document.getElementById('playOv').classList.remove('open');}
+document.getElementById('playOv').addEventListener('click',e=>{if(e.target===document.getElementById('playOv'))closePlay();});
+
+load();render();
+</script>
+</body>
+</html>
