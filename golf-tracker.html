@@ -381,22 +381,21 @@ body{background:var(--bg);color:var(--t);font-family:'DM Sans',sans-serif;max-wi
 const FAISANERA = {
   id:'faisanera', name:'La Faisanera Golf', city:'Segovia',
   tees:{
-    amarillas:{par:71, total:3237, holes:[
-      {h:1,par:5,m:469,hcp:5},{h:2,par:3,m:133,hcp:17},{h:3,par:4,m:436,hcp:1},
-      {h:4,par:3,m:172,hcp:13},{h:5,par:4,m:439,hcp:3},{h:6,par:5,m:517,hcp:7},
-      {h:7,par:3,m:158,hcp:11},{h:8,par:4,m:388,hcp:9},{h:9,par:4,m:279,hcp:16},
-      // back 9 — usando datos de la tarjeta (in side)
-      {h:10,par:3,m:172,hcp:10},{h:11,par:4,m:436,hcp:2},{h:12,par:3,m:133,hcp:18},
-      {h:13,par:5,m:517,hcp:6},{h:14,par:4,m:439,hcp:4},{h:15,par:5,m:525,hcp:14},
-      {h:16,par:4,m:388,hcp:8},{h:17,par:3,m:158,hcp:12},{h:18,par:4,m:469,hcp:16}
+    amarillas:{par:71, total:3027, holes:[
+      {h:1,par:5,m:492,hcp:8},{h:2,par:3,m:126,hcp:18},{h:3,par:4,m:363,hcp:4},
+      {h:4,par:3,m:149,hcp:14},{h:5,par:4,m:388,hcp:2},{h:6,par:5,m:470,hcp:10},
+      {h:7,par:3,m:179,hcp:12},{h:8,par:4,m:363,hcp:6},{h:9,par:4,m:268,hcp:16},
+      {h:10,par:3,m:160,hcp:13},{h:11,par:4,m:407,hcp:1},{h:12,par:3,m:126,hcp:17},
+      {h:13,par:5,m:487,hcp:7},{h:14,par:4,m:401,hcp:3},{h:15,par:5,m:494,hcp:15},
+      {h:16,par:4,m:365,hcp:9},{h:17,par:3,m:144,hcp:11},{h:18,par:5,m:443,hcp:5}
     ]},
-    rojas:{par:70, total:2646, holes:[
+    rojas:{par:71, total:2646, holes:[
       {h:1,par:5,m:423,hcp:5},{h:2,par:3,m:97,hcp:17},{h:3,par:4,m:312,hcp:1},
       {h:4,par:3,m:131,hcp:13},{h:5,par:4,m:342,hcp:3},{h:6,par:5,m:425,hcp:7},
       {h:7,par:3,m:145,hcp:11},{h:8,par:4,m:316,hcp:9},{h:9,par:4,m:227,hcp:16},
       {h:10,par:3,m:115,hcp:10},{h:11,par:4,m:358,hcp:2},{h:12,par:3,m:110,hcp:18},
       {h:13,par:5,m:434,hcp:6},{h:14,par:4,m:357,hcp:4},{h:15,par:5,m:443,hcp:14},
-      {h:16,par:4,m:321,hcp:8},{h:17,par:3,m:113,hcp:12},{h:18,par:4,m:395,hcp:16}
+      {h:16,par:4,m:321,hcp:8},{h:17,par:3,m:113,hcp:12},{h:18,par:5,m:395,hcp:16}
     ]}
   }
 };
@@ -503,81 +502,64 @@ function parseShots(text){
 
 // ── INITIAL DATA ──────────────────────────────────────────────────────────────
 // AK — La Faisanera, torneo 07/06/2026, salida H5, tees amarillas
-// Scores from scorecard photos. Shots/putts from notes (ordered H1-H18).
+// Scores from scorecard photos. Shots/putts from notes.
+// Pars from real scorecard (amarillas): Par 71, 3027m
 const AK_FAIS = {
   id:'ak_r1', player:'ak', date:'2026-06-07',
   course:'La Faisanera Golf', courseId:'faisanera', city:'Segovia',
   tee:'amarillas', tournament:true, startHole:5,
   holes:[
-    // H1 — score 6, par 5 (469m amarillas)
     {h:1,par:5,score:6,putts:1,fw:true,gir:false,bk:false,bs:false,
      shots:parseShots('Driver decente fade 200, 5M terrible, 5M perfecto 180, PW fringe bueno a 2m'),
      notes:'5M horrible al primero, perfecto al segundo'},
-    // H2 — score 3, par 3 (133m)
     {h:2,par:3,score:3,putts:2,fw:null,gir:true,bk:false,bs:false,
      shots:parseShots('6I perfecto'),notes:''},
-    // H3 — score 5, par 4 (436m)
     {h:3,par:4,score:5,putts:3,fw:true,gir:true,bk:false,bs:false,
      shots:parseShots('Driver perfecto centro 230, 9I perfecto a 7m'),
-     notes:'3 putts desde 7m... qué pena con tan buena llegada'},
-    // H4 — score 4, par 3 (172m)
+     notes:'3 putts desde 7m — qué pena con tan buena llegada'},
     {h:4,par:3,score:4,putts:1,fw:null,gir:false,bk:false,bs:false,
      shots:parseShots('5I fat der, PW fringe terrible 2m adelante, PW fringe perfecto a 1m'),
-     notes:'PW desde fringe mejoró al segundo intento'},
-    // H5 — score 5, par 4 (439m) — primera salida del torneo
+     notes:'PW desde fringe mejoró al segundo intento — bogey'},
     {h:5,par:4,score:5,putts:2,fw:false,gir:true,bk:true,bs:true,
      shots:parseShots('Driver izq 190, 8H bunker ok, SW 50m 10 pasados centro green'),
-     notes:'Drive a la izquierda. Salida del torneo desde este hoyo'},
-    // H6 — score 7, par 5 (517m)
+     notes:'Drive a la izquierda — primera salida del torneo'},
     {h:6,par:5,score:7,putts:3,fw:false,gir:false,bk:true,bs:false,
-     shots:parseShots('Driver izq 210, 6H bueno, 8H izq bunker mal, SW bunker ok'),
+     shots:parseShots('Driver izq 210, 6H bueno, 8H izq bunker malo, SW bunker ok'),
      notes:'3 putts — cortos los dos últimos'},
-    // H7 — score 4, par 3 (158m)
     {h:7,par:3,score:4,putts:2,fw:null,gir:false,bk:false,bs:false,
      shots:parseShots('5M fringe izq 20m al hoyo, SW bueno'),
-     notes:'Par 3 de 158m — fringe izquierda'},
-    // H8 — score 5, par 4 (388m)
+     notes:'Par 3 de 179m — fringe izquierda'},
     {h:8,par:4,score:5,putts:2,fw:true,gir:true,bk:false,bs:false,
      shots:parseShots('Driver centro fairway 230, 8H sin commit fat, 6H punch centro green bueno'),
      notes:'Fat por falta de commit en 8H'},
-    // H9 — score 5, par 4 (279m)
     {h:9,par:4,score:5,putts:2,fw:true,gir:false,bk:false,bs:false,
      shots:parseShots('Driver centro perfecto 205, SW malo corto 40m, PW perfecto a 3m'),
      notes:'SW corto — no hizo break el putt de 3m'},
-    // H10 — score 3, par 3 (172m)
     {h:10,par:3,score:3,putts:1,fw:null,gir:false,bk:false,bs:false,
      shots:parseShots('8H malo corto, PW fat fringe terrible'),
      notes:'Gran putt de 10m para salvar'},
-    // H11 — score 4, par 4 (436m)
     {h:11,par:4,score:4,putts:2,fw:true,gir:true,bk:false,bs:false,
      shots:parseShots('Driver bueno 210, 5M green bueno'),
-     notes:'Casi birdie'},
-    // H12 — score 3, par 3 (133m)
+     notes:'Casi birdie — par 4 de 407m'},
     {h:12,par:3,score:3,putts:2,fw:null,gir:true,bk:false,bs:false,
      shots:parseShots('PW bueno green'),notes:''},
-    // H13 — score 6, par 5 (517m)
     {h:13,par:5,score:6,putts:2,fw:true,gir:false,bk:false,bs:false,
      shots:parseShots('Driver draw centro-izq 200, 5M sin commit 175, SW sin commit fringe corto 80, PW fringe corto'),
      notes:'Sin commit en 5M y SW — falta de confianza recurrente'},
-    // H14 — score 5, par 4 (439m)
     {h:14,par:4,score:5,putts:2,fw:false,gir:false,bk:true,bs:false,
      shots:parseShots('Driver pulled 220, 5M excelente 180 bunker, SW bunker malo corto'),
      notes:'Driver pulled — bunker malo'},
-    // H15 — score 5, par 5 (525m)
     {h:15,par:5,score:5,putts:2,fw:false,gir:true,bk:false,bs:false,
      shots:parseShots('Driver fade 230, 5M sin commit decente 170, 9H sin commit green'),
      notes:'Sin commit recurrente'},
-    // H16 — score 3, par 4 (388m) — BIRDIE
     {h:16,par:4,score:3,putts:1,fw:true,gir:true,bk:false,bs:false,
      shots:parseShots('Driver perfecto centro fairway 220, 6H perfecto a 1m'),
      notes:'BIRDIE 🦅 — el mejor hoyo de la ronda'},
-    // H17 — score 3, par 3 (158m)
     {h:17,par:3,score:3,putts:2,fw:null,gir:true,bk:false,bs:false,
      shots:parseShots('5I decente green sin commit'),notes:''},
-    // H18 — score 6, par 4 (469m)
-    {h:18,par:4,score:6,putts:2,fw:true,gir:false,bk:false,bs:false,
+    {h:18,par:5,score:6,putts:2,fw:true,gir:false,bk:false,bs:false,
      shots:parseShots('Driver bueno fade, 6I muy malo, PW punch para mantener en juego, SW bueno green'),
-     notes:'6I muy malo — par 4 de 469m el más largo'}
+     notes:'6I muy malo — bogey en par 5'}
   ]
 };
 
@@ -751,17 +733,26 @@ function render(){
       const col=hc(h);const lbl=hl(h);
       const ch=getCH(round.courseId,round.tee,h.h);
       const open=expanded.has(h.h);
+      const diff=h.score-h.par;const diffStr=diff===0?'E':diff>0?`+${diff}`:diff;
       html+=`<div class="hl" style="border-color:${col}" onclick="togExp(${h.h})">
         <div class="hlh">
           <div class="hlnum" style="color:${col}">H${h.h}</div>
           <div class="hlbadges">
-            <span class="badge b-par">P${h.par}</span>
             ${ch.m?`<span class="badge b-dist">${ch.m}m</span>`:''}
             ${h.bk?`<span class="badge" style="color:var(--o);background:rgba(249,115,22,.1)">Bk</span>`:''}
             ${h.putts>=3?`<span class="badge" style="color:var(--r);background:rgba(248,113,113,.1)">3P</span>`:''}
-            <span class="b-res" style="color:${col};background:rgba(${col==='#4ade80'?'74,222,128':col==='#60a5fa'?'96,165,250':col==='#fbbf24'?'251,191,36':'248,113,113'},.12)">${lbl}</span>
           </div>
-          <div class="hlscore" style="color:${col}">${h.score}</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+            <div style="text-align:center;background:#1a1a1a;border-radius:7px;padding:3px 8px">
+              <div style="font-size:8px;color:var(--mu);text-transform:uppercase;letter-spacing:1px">Par</div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--mu);line-height:1">${h.par}</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:8px;color:${col};text-transform:uppercase;letter-spacing:1px;font-weight:700">${lbl}</div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:${col};line-height:1">${h.score}</div>
+              <div style="font-size:9px;color:${col};font-weight:800;opacity:.8">${diffStr}</div>
+            </div>
+          </div>
         </div>
         <div class="hlbody ${open?'open':''}">
           <div class="hlmeta">
