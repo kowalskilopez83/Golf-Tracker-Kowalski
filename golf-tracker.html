@@ -663,15 +663,54 @@ function render(){
   else if(AT==='clubs'&&stats){
     const clubs=Object.entries(stats.cm).sort((a,b)=>b[1].t-a[1].t);
     if(clubs.length){
+      const totalShots=clubs.reduce((a,[,d])=>a+d.t,0);
+      const maxShots=clubs[0][1].t;
+      // DISTRIBUCION DE USO
+      html+=`<div class="slbl">Distribución de uso</div>`;
+      html+=`<div class="cc"><div class="ct">Golpes por palo · ${totalShots} total</div>`;
+      clubs.forEach(([cl,d])=>{
+        const pct=Math.round(d.t/totalShots*100);
+        const barW=Math.round(d.t/maxShots*100);
+        let clr='var(--blu)';
+        if(cl==='Driver'||cl==='3M'||cl==='5M'||cl==='7M') clr='var(--pur)';
+        else if(cl.endsWith('H')) clr='var(--ak)';
+        else if(cl==='PW'||cl==='AW'||cl==='GW'||cl==='SW'||cl==='LW') clr='var(--yel)';
+        else if(cl==='Putter') clr='var(--red)';
+        html+=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#ccc;min-width:48px">${cl}</div>
+          <div style="flex:1;background:var(--s3);border-radius:4px;height:10px;overflow:hidden">
+            <div style="width:${barW}%;height:100%;background:${clr};border-radius:4px"></div>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mu);min-width:42px;text-align:right">${d.t}g · ${pct}%</div>
+        </div>`;
+      });
+      const cats={};
+      clubs.forEach(([cl,d])=>{
+        let cat='Hierros';
+        if(cl==='Driver'||cl==='3M'||cl==='5M'||cl==='7M') cat='Madera/Driver';
+        else if(cl.endsWith('H')) cat='Híbridos';
+        else if(cl==='PW'||cl==='AW'||cl==='GW'||cl==='SW'||cl==='LW') cat='Wedges';
+        else if(cl==='Putter') cat='Putter';
+        if(!cats[cat]) cats[cat]=0;
+        cats[cat]+=d.t;
+      });
+      html+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--b)">`;
+      const catColors={'Madera/Driver':'var(--pur)','Híbridos':'var(--ak)','Hierros':'var(--blu)','Wedges':'var(--yel)','Putter':'var(--red)'};
+      Object.entries(cats).forEach(([cat,n])=>{
+        const pct=Math.round(n/totalShots*100);
+        html+=`<div style="background:var(--s2);border-radius:8px;padding:5px 10px;display:flex;align-items:center;gap:5px"><div style="width:7px;height:7px;border-radius:50%;background:${catColors[cat]||'var(--mu)'}"></div><span style="font-size:9px;color:#aaa;font-family:'JetBrains Mono',monospace">${cat}</span><span style="font-size:9px;color:var(--mu);font-family:'JetBrains Mono',monospace"> ${pct}%</span></div>`;
+      });
+      html+=`</div></div>`;
+      // RENDIMIENTO POR PALO
       html+=`<div class="slbl">Rendimiento por palo</div>`;
       clubs.forEach(([cl,d])=>{
         const p=v=>d.t?Math.round(v/d.t*100):0;
         html+=`<div class="crow"><div class="ctop"><span class="cname">${cl}</span><span class="ccnt">${d.t} golpes</span></div>
           <div class="cbar">${d.bueno?`<div class="cg" style="width:${p(d.bueno)}%"></div>`:''}${d.ok?`<div class="co" style="width:${p(d.ok)}%"></div>`:''}${d.malo?`<div class="cb" style="width:${p(d.malo)}%"></div>`:''}</div>
-          <div class="cleg"><span style="color:var(--ak)">✓ ${d.bueno} bien</span><span style="color:var(--yel)">~ ${d.ok} ok</span><span style="color:var(--red)">✗ ${d.malo} mal</span></div>
+          <div class="cleg"><span style="color:var(--ak)">\u2713 ${d.bueno} bien</span><span style="color:var(--yel)">~ ${d.ok} ok</span><span style="color:var(--red)">\u2717 ${d.malo} mal</span></div>
         </div>`;
       });
-    }else html+=`<div class="empty"><div class="empty-ico">🏌️</div>Sin datos de golpes.<br>Añade texto libre al registrar hoyos.</div>`;
+    }else html+=`<div class="empty"><div class="empty-ico">\ud83c\udfcc\ufe0f</div>Sin datos de golpes.<br>A\u00f1ade texto libre al registrar hoyos.</div>`;
   }
 
   else if(AT==='evo'){
