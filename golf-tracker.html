@@ -7,310 +7,391 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Golf">
-<meta name="theme-color" content="#080808">
-<title>Golf Tracker · Kowalski</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#000000">
+<title>Golf · Kowalski</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#080808;--s1:#111;--s2:#181818;--s3:#202020;--b:rgba(255,255,255,.06);--b2:rgba(255,255,255,.1);--t:#f0f0f0;--mu:#666;--dim:#333;--ak:#34d399;--ak2:rgba(52,211,153,.12);--mac:#f472b6;--mac2:rgba(244,114,182,.12);--blu:#60a5fa;--yel:#fbbf24;--red:#f87171;--ora:#fb923c;--pur:#a78bfa;--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+:root{
+  --bg:#000;--s1:#0a0a0a;--s2:#111;--s3:#1a1a1a;--s4:#222;
+  --b:rgba(255,255,255,.05);--b2:rgba(255,255,255,.09);--b3:rgba(255,255,255,.15);
+  --t:#f5f5f5;--t2:#aaa;--t3:#555;--t4:#333;
+  --ak:#3ddc84;--ak2:rgba(61,220,132,.1);--ak3:rgba(61,220,132,.2);
+  --mac:#ff6eb4;--mac2:rgba(255,110,180,.1);--mac3:rgba(255,110,180,.2);
+  --blu:#4da6ff;--yel:#ffd166;--red:#ff6b6b;--ora:#ff9f43;--pur:#c084fc;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+  --r:16px;--r2:12px;--r3:8px;
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:var(--bg)}
-body::before{content:'';position:fixed;top:0;left:0;right:0;height:var(--st);background:var(--bg);z-index:999}
-body{font-family:'Inter',sans-serif;color:var(--t);max-width:480px;margin:0 auto;display:flex;flex-direction:column}
+html,body{height:100%;overflow:hidden;background:#000}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:var(--st);background:#000;z-index:999}
+body{font-family:'Outfit',sans-serif;color:var(--t);max-width:430px;margin:0 auto;display:flex;flex-direction:column}
 ::-webkit-scrollbar{display:none}
+input,select,textarea,button{font-family:'Outfit',sans-serif}
 
-/* PLAYER SWITCHER */
-.psw{flex-shrink:0;padding:calc(var(--st) + 16px) 14px 0;display:flex;gap:6px}
-.psw-btn{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 6px;border-radius:14px;border:1.5px solid var(--b);background:var(--s1);cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
-.psw-btn.ak-on{border-color:var(--ak);background:var(--ak2)}
-.psw-btn.mac-on{border-color:var(--mac);background:var(--mac2)}
-.psw-btn.vs-on{border-color:var(--blu);background:rgba(96,165,250,.1)}
-.psw-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--mu);transition:color .18s}
-.psw-btn.ak-on .psw-name{color:var(--ak)}
-.psw-btn.mac-on .psw-name{color:var(--mac)}
-.psw-btn.vs-on .psw-name{color:var(--blu)}
-.psw-hcp{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--dim);margin-top:2px;transition:color .18s}
-.psw-btn.ak-on .psw-hcp{color:rgba(52,211,153,.6)}
-.psw-btn.mac-on .psw-hcp{color:rgba(244,114,182,.6)}
-.psw-dot{position:absolute;top:7px;right:7px;width:5px;height:5px;border-radius:50%;opacity:0;transition:opacity .18s}
-.psw-btn.ak-on .psw-dot{background:var(--ak);opacity:1}
-.psw-btn.mac-on .psw-dot{background:var(--mac);opacity:1}
-.psw-btn.vs-on .psw-dot{background:var(--blu);opacity:1}
+/* ── PLAYER BAR ── */
+.pbar{
+  flex-shrink:0;
+  padding:calc(var(--st) + 18px) 16px 12px;
+  display:flex;gap:8px;
+  background:#000;
+}
+.pb{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:10px 8px;border-radius:14px;
+  border:1px solid var(--b2);
+  background:var(--s1);
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:all .2s;
+}
+.pb.ak-on{border-color:var(--ak);background:var(--ak2)}
+.pb.mac-on{border-color:var(--mac);background:var(--mac2)}
+.pb.vs-on{border-color:var(--blu);background:rgba(77,166,255,.08)}
+.pb-dot{position:absolute;top:8px;right:8px;width:5px;height:5px;border-radius:50%;opacity:0;transition:opacity .2s}
+.pb.ak-on .pb-dot{background:var(--ak);opacity:1}
+.pb.mac-on .pb-dot{background:var(--mac);opacity:1}
+.pb.vs-on .pb-dot{background:var(--blu);opacity:1}
+.pb-name{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px;transition:color .2s}
+.pb.ak-on .pb-name{color:var(--ak)}
+.pb.mac-on .pb-name{color:var(--mac)}
+.pb.vs-on .pb-name{color:var(--blu)}
+.pb-hcp{font-family:JetBrains Mono,monospace;font-size:8px;color:var(--t4);margin-top:2px;transition:color .2s}
+.pb.ak-on .pb-hcp{color:rgba(61,220,132,.5)}
+.pb.mac-on .pb-hcp{color:rgba(255,110,180,.5)}
 
-/* HEADER */
-.hdr{flex-shrink:0;padding:12px 14px 0}
-.hdr-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
-.hdr-course{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;line-height:1.2;flex:1;min-width:0}
-.hdr-meta{font-size:10px;color:var(--mu);margin-top:3px;font-family:'JetBrains Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hdr-pill{display:flex;align-items:center;gap:8px;background:var(--s1);border:1px solid var(--b);border-radius:14px;padding:8px 14px;flex-shrink:0}
-.hdr-num{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;line-height:1}
-.hdr-right{display:flex;flex-direction:column;gap:1px}
-.hdr-diff{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700}
-.hdr-holes{font-size:9px;color:var(--mu);font-family:'JetBrains Mono',monospace}
+/* ── HEADER ── */
+.hdr{flex-shrink:0;padding:0 16px;background:#000}
+.hdr-main{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--b)}
+.hdr-left{flex:1;min-width:0}
+.hdr-course{font-family:DM Serif Display,serif;font-size:20px;line-height:1.15;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-meta{font-family:JetBrains Mono,monospace;font-size:9px;color:var(--t3);margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.hdr-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--t4)}
+.hdr-score{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0}
+.hdr-num{font-family:DM Serif Display,serif;font-size:44px;line-height:1;letter-spacing:-1px}
+.hdr-diff{font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;margin-top:2px}
+.hdr-holes{font-size:9px;color:var(--t3);font-family:JetBrains Mono,monospace}
 
-/* ROUND CHIPS */
-.rchips-wrap{overflow-x:auto;margin-bottom:8px;padding-bottom:2px}
-.rchips{display:flex;gap:5px;width:max-content}
-.rchip{padding:5px 12px;border-radius:20px;border:1px solid var(--b);background:transparent;color:var(--mu);font-size:10px;font-family:'JetBrains Mono',monospace;cursor:pointer;white-space:nowrap;transition:all .15s}
-.rchip.on.ak{background:var(--ak);color:#000;border-color:transparent;font-weight:700}
-.rchip.on.mac{background:var(--mac);color:#000;border-color:transparent;font-weight:700}
+/* ── ROUND CHIPS ── */
+.rchips{display:flex;gap:5px;overflow-x:auto;padding:10px 0 0;scrollbar-width:none}
+.rchip{flex-shrink:0;padding:5px 12px;border-radius:20px;border:1px solid var(--b2);background:transparent;color:var(--t3);font-size:9px;font-family:JetBrains Mono,monospace;cursor:pointer;white-space:nowrap;transition:all .15s}
+.rchip.on{font-weight:700;border-color:transparent}
+.rchip.on.ak{background:var(--ak);color:#000}
+.rchip.on.mac{background:var(--mac);color:#000}
 
-/* TABS */
-.tabs{display:flex;gap:2px;padding-bottom:10px;border-bottom:1px solid var(--b)}
-.tabB{flex:1;padding:7px 4px;border:none;border-radius:8px;background:transparent;color:var(--mu);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:.3px}
-.tabB.on{color:var(--t);background:var(--s2)}
+/* ── TABS ── */
+.tabs{display:flex;gap:2px;padding:10px 0;background:#000}
+.tabB{flex:1;padding:7px 2px;border:none;border-radius:var(--r3);background:transparent;color:var(--t3);font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:.2px}
+.tabB.on{color:var(--t);background:var(--s3)}
 
-/* SCROLL */
-.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px calc(var(--sb) + 80px)}
+/* ── SCROLL ── */
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(var(--sb) + 88px)}
 
-/* FAB */
-.fab{position:fixed;bottom:calc(var(--sb) + 18px);right:18px;z-index:100;width:58px;height:58px;border-radius:18px;border:none;font-size:28px;font-weight:300;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s;font-family:'Inter',sans-serif}
-.fab:active{transform:scale(.92)}
-.fab.ak{background:var(--ak);color:#000;box-shadow:0 8px 32px rgba(52,211,153,.35)}
-.fab.mac{background:var(--mac);color:#000;box-shadow:0 8px 32px rgba(244,114,182,.35)}
+/* ── FAB ── */
+.fab{
+  position:fixed;bottom:calc(var(--sb) + 20px);right:20px;
+  z-index:100;width:56px;height:56px;
+  border-radius:18px;border:none;
+  font-size:26px;font-weight:300;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:transform .12s;
+}
+.fab:active{transform:scale(.9)}
+.fab.ak{background:var(--ak);color:#000;box-shadow:0 8px 24px rgba(61,220,132,.3)}
+.fab.mac{background:var(--mac);color:#000;box-shadow:0 8px 24px rgba(255,110,180,.3)}
 
-/* BBAR */
-.bbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(8,8,8,.96);border-top:1px solid var(--b);padding:7px 14px calc(var(--sb) + 4px);font-size:9px;color:var(--dim);font-family:'JetBrains Mono',monospace;text-align:center;z-index:40}
+/* ── BBAR ── */
+.bbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(0,0,0,.95);border-top:1px solid var(--b);padding:6px 16px calc(var(--sb) + 4px);font-size:9px;color:var(--t4);font-family:JetBrains Mono,monospace;text-align:center;z-index:40;backdrop-filter:blur(10px)}
 
-/* SECTION LABEL */
-.slbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin:16px 0 8px}
+/* ── SECTION LABEL ── */
+.slbl{font-family:JetBrains Mono,monospace;font-size:8px;color:var(--t3);letter-spacing:2.5px;text-transform:uppercase;margin:20px 0 10px}
 .slbl:first-child{margin-top:0}
 
-/* HCP BOX */
-.hcp-box{border-radius:16px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;border:1px solid}
-.hcp-box.ak{background:var(--ak2);border-color:rgba(52,211,153,.2)}
-.hcp-box.mac{background:var(--mac2);border-color:rgba(244,114,182,.2)}
-.hcp-val{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;line-height:1}
-.hcp-sub{font-size:11px;color:var(--mu);line-height:1.7}
+/* ── HCP BOX ── */
+.hcp-box{border-radius:var(--r);padding:18px;margin-bottom:12px;border:1px solid}
+.hcp-box.ak{background:var(--ak2);border-color:var(--ak3)}
+.hcp-box.mac{background:var(--mac2);border-color:var(--mac3)}
+.hcp-row{display:flex;align-items:flex-end;gap:10px;margin-bottom:4px}
+.hcp-val{font-family:DM Serif Display,serif;font-size:52px;line-height:1}
+.hcp-trend{font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;margin-bottom:8px;font-family:JetBrains Mono,monospace}
+.hcp-sub{font-size:10px;color:var(--t2);line-height:1.7}
 
-/* STAT GRID */
-.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px}
-.scell{background:var(--s1);border:1px solid var(--b);border-radius:12px;padding:12px 8px;text-align:center}
-.sval{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1}
-.slb{font-size:8px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-top:4px;font-family:'JetBrains Mono',monospace}
-.ssb{font-size:8px;color:var(--dim);margin-top:2px;font-family:'JetBrains Mono',monospace}
+/* ── STAT GRID ── */
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:5px}
+.sgrid.two{grid-template-columns:repeat(2,1fr)}
+.scell{background:var(--s1);border:1px solid var(--b);border-radius:var(--r2);padding:12px 8px;text-align:center;position:relative;overflow:hidden}
+.sv{font-family:DM Serif Display,serif;font-size:24px;line-height:1}
+.sl{font-size:7px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px;font-family:JetBrains Mono,monospace}
+.ss{font-size:8px;color:var(--t4);margin-top:2px;font-family:JetBrains Mono,monospace}
 
-/* CHART CARD */
-.cc{background:var(--s1);border:1px solid var(--b);border-radius:16px;padding:14px;margin-bottom:8px}
-.ct{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;color:var(--mu);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px}
+/* ── CHART CARD ── */
+.cc{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:16px;margin-bottom:8px}
+.ct{font-size:9px;font-weight:600;color:var(--t3);margin-bottom:14px;text-transform:uppercase;letter-spacing:1.5px;font-family:JetBrains Mono,monospace;display:flex;justify-content:space-between;align-items:center}
 
-/* MINI BARS */
-.mbars{display:flex;align-items:flex-end;gap:4px;height:52px}
-.mbw{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
-.mb{width:100%;border-radius:3px 3px 0 0;min-height:2px}
-.mbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--mu)}
+/* ── SCORE DISTRIBUTION ── */
+.dist-bars{display:flex;align-items:flex-end;gap:6px;height:56px}
+.dist-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.dist-bar{width:100%;border-radius:4px 4px 0 0;min-height:3px;transition:height .4s ease}
+.dist-num{font-family:JetBrains Mono,monospace;font-size:10px;font-weight:700}
+.dist-lbl{font-family:JetBrains Mono,monospace;font-size:7px;color:var(--t3)}
 
-/* PUTTING */
-.putt-row{display:flex;align-items:center;gap:14px}
-.putt-circ{width:72px;height:72px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid;flex-shrink:0}
-.putt-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1}
-.putt-unit{font-size:8px;color:var(--mu);font-family:'JetBrains Mono',monospace;margin-top:1px}
-.pbar-bg{background:var(--s3);border-radius:4px;height:6px;overflow:hidden;margin-bottom:3px}
-.pbar-fill{height:100%;border-radius:4px}
-.pbar-lbl{font-size:9px;color:var(--mu);font-family:'JetBrains Mono',monospace;display:flex;justify-content:space-between}
+/* ── PUTTING ── */
+.putt-layout{display:flex;align-items:center;gap:16px}
+.putt-ring{width:76px;height:76px;flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center}
+.putt-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.putt-center{text-align:center}
+.putt-big{font-family:DM Serif Display,serif;font-size:24px;line-height:1}
+.putt-unit{font-size:7px;color:var(--t3);font-family:JetBrains Mono,monospace;letter-spacing:1px}
+.putt-stats{flex:1;display:flex;flex-direction:column;gap:6px}
+.putt-stat-row{display:flex;justify-content:space-between;align-items:center;font-size:11px}
+.putt-stat-lbl{color:var(--t2)}
+.putt-stat-val{font-family:JetBrains Mono,monospace;font-weight:700;font-size:12px}
 
-/* PATTERN */
-.pat{background:var(--s1);border:1px solid var(--b);border-left:3px solid;border-radius:12px;padding:12px 13px;margin-bottom:7px;display:flex;align-items:flex-start;gap:12px}
-.pat-ico{font-size:20px;flex-shrink:0;line-height:1;margin-top:2px}
-.pat-lbl{font-size:12px;color:#ccc;font-weight:600;margin-bottom:3px;display:flex;justify-content:space-between}
-.pat-cnt{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
-.pat-desc{font-size:11px;color:var(--mu);line-height:1.6}
+/* ── STROKES GAINED ── */
+.sg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:6px}
+.sg-card{background:var(--s2);border:1px solid var(--b);border-radius:var(--r2);padding:12px;position:relative;overflow:hidden}
+.sg-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.sg-card.pos::before{background:var(--ak)}
+.sg-card.neg::before{background:var(--red)}
+.sg-card.neu::before{background:var(--t4)}
+.sg-label{font-size:8px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;font-family:JetBrains Mono,monospace}
+.sg-val{font-family:DM Serif Display,serif;font-size:28px;line-height:1}
+.sg-desc{font-size:9px;color:var(--t3);margin-top:4px;line-height:1.5}
+.sg-bar-bg{background:var(--s4);border-radius:3px;height:3px;margin-top:8px;overflow:hidden}
+.sg-bar-fill{height:100%;border-radius:3px}
 
-/* HOLE CARDS */
-.hc{background:var(--s1);border:1px solid var(--b);border-left:3px solid;border-radius:12px;margin-bottom:6px;overflow:hidden;cursor:pointer}
-.hch{display:flex;align-items:center;padding:10px 12px;gap:8px}
-.hnum{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;min-width:32px;line-height:1}
+/* ── RADAR CHART ── */
+.radar-wrap{display:flex;align-items:center;justify-content:center;padding:8px 0}
+
+/* ── DISTANCE TABLE ── */
+.dist-table{width:100%}
+.dist-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--b)}
+.dist-row:last-child{border-bottom:none}
+.dist-club{font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;color:var(--t);min-width:44px}
+.dist-bar-wrap{flex:1;background:var(--s3);border-radius:3px;height:5px;overflow:hidden}
+.dist-bar-inner{height:100%;border-radius:3px}
+.dist-avg{font-family:JetBrains Mono,monospace;font-size:10px;color:var(--t2);min-width:50px;text-align:right}
+.dist-n{font-family:JetBrains Mono,monospace;font-size:8px;color:var(--t4);min-width:30px;text-align:right}
+
+/* ── PATTERN CARDS ── */
+.pat{background:var(--s1);border:1px solid var(--b);border-left:2px solid;border-radius:var(--r2);padding:13px;margin-bottom:6px;display:flex;align-items:flex-start;gap:12px}
+.pat-ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.pat-lbl{font-size:12px;color:var(--t);font-weight:600;margin-bottom:3px;display:flex;justify-content:space-between;align-items:center}
+.pat-cnt{font-family:DM Serif Display,serif;font-size:20px}
+.pat-desc{font-size:10px;color:var(--t2);line-height:1.6}
+.pat-tip{font-size:10px;color:var(--t3);margin-top:5px;padding-top:5px;border-top:1px solid var(--b);line-height:1.6;font-style:italic}
+
+/* ── HOLE CARDS ── */
+.hc{background:var(--s1);border:1px solid var(--b);border-left:2px solid;border-radius:var(--r2);margin-bottom:5px;overflow:hidden;cursor:pointer;transition:background .15s}
+.hc:active{background:var(--s2)}
+.hch{display:flex;align-items:center;padding:11px 13px;gap:8px}
+.hnum{font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;min-width:56px;color:var(--t2)}
 .hbadges{display:flex;gap:4px;flex:1;flex-wrap:wrap;align-items:center}
-.badge{font-size:8px;border-radius:4px;padding:2px 5px;font-weight:700;font-family:'JetBrains Mono',monospace}
-.b-d{color:var(--blu);background:rgba(96,165,250,.1)}
-.b-bk{color:var(--ora);background:rgba(251,146,60,.1)}
-.b-3p{color:var(--red);background:rgba(248,113,113,.1)}
-.hright{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.hpar{background:var(--s2);border-radius:7px;padding:4px 8px;text-align:center}
-.hpar-l{font-size:7px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;font-family:'JetBrains Mono',monospace}
-.hpar-n{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;line-height:1.1;color:var(--mu)}
-.hscbox{text-align:center}
-.hres{font-size:7px;text-transform:uppercase;letter-spacing:1px;font-weight:700;font-family:'JetBrains Mono',monospace}
-.hscn{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1}
-.hdiff{font-size:8px;font-weight:800;opacity:.75;font-family:'JetBrains Mono',monospace}
-.hbody{display:none;padding:0 12px 10px;border-top:1px solid rgba(255,255,255,.04)}
+.badge{font-size:7px;border-radius:4px;padding:2px 6px;font-weight:700;font-family:JetBrains Mono,monospace;letter-spacing:.3px}
+.b-dist{color:var(--blu);background:rgba(77,166,255,.1)}
+.b-bk{color:var(--ora);background:rgba(255,159,67,.1)}
+.b-3p{color:var(--red);background:rgba(255,107,107,.1)}
+.hright{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.hpar{background:var(--s3);border-radius:6px;padding:4px 8px;text-align:center}
+.hpar-l{font-size:6px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-family:JetBrains Mono,monospace}
+.hpar-n{font-family:DM Serif Display,serif;font-size:18px;color:var(--t2);line-height:1.1}
+.hscbox{text-align:center;min-width:38px}
+.hres{font-size:6px;text-transform:uppercase;letter-spacing:1px;font-weight:700;font-family:JetBrains Mono,monospace}
+.hscn{font-family:DM Serif Display,serif;font-size:30px;line-height:1}
+.hdiff{font-size:8px;font-weight:700;opacity:.8;font-family:JetBrains Mono,monospace}
+.hbody{display:none;padding:0 13px 12px;border-top:1px solid var(--b)}
 .hbody.open{display:block;padding-top:10px}
-.hmeta{display:flex;gap:10px;margin-bottom:8px;font-size:10px;color:var(--mu);flex-wrap:wrap;font-family:'JetBrains Mono',monospace}
-.srow{display:flex;align-items:flex-start;gap:6px;background:rgba(255,255,255,.02);border-radius:7px;padding:5px 8px;margin-bottom:4px}
-.sdot{width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#000;flex-shrink:0;margin-top:1px}
-.sclub{color:var(--blu);font-size:10px;font-weight:700;min-width:40px;font-family:'JetBrains Mono',monospace}
-.sres{color:#999;font-size:10px;flex:1;line-height:1.5}
-.hnote{margin-top:6px;font-size:10px;color:var(--mu);font-style:italic;background:rgba(255,255,255,.02);border-radius:6px;padding:5px 8px;line-height:1.5}
+.hmeta{display:flex;gap:10px;margin-bottom:8px;font-size:9px;color:var(--t3);flex-wrap:wrap;font-family:JetBrains Mono,monospace}
+.srow{display:flex;align-items:flex-start;gap:7px;padding:5px 8px;margin-bottom:3px;border-radius:6px;background:rgba(255,255,255,.02)}
+.sdot{width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#000;flex-shrink:0;margin-top:1px}
+.sclub{color:var(--blu);font-size:10px;font-weight:700;min-width:42px;font-family:JetBrains Mono,monospace}
+.sres{color:var(--t2);font-size:10px;flex:1;line-height:1.5}
+.hnote{margin-top:6px;font-size:10px;color:var(--t3);font-style:italic;background:rgba(255,255,255,.02);border-radius:6px;padding:6px 8px;line-height:1.5}
 
-/* SCORECARD */
-.sct{width:100%;border-collapse:collapse;font-size:10px;font-family:'JetBrains Mono',monospace}
-.sct th{background:var(--s2);color:var(--mu);font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:6px 4px;text-align:center;border-bottom:1px solid var(--b)}
-.sct td{padding:7px 4px;text-align:center;border-bottom:1px solid rgba(255,255,255,.025)}
-.sct tfoot td{background:var(--s2);font-weight:700;font-size:11px;border-top:1px solid var(--b);border-bottom:none}
-.s-bir{background:var(--ak);color:#000;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-weight:800}
+/* ── SCORECARD ── */
+.sct-wrap{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);overflow:hidden}
+.sct{width:100%;border-collapse:collapse;font-size:10px;font-family:JetBrains Mono,monospace}
+.sct th{background:var(--s2);color:var(--t3);font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:7px 5px;text-align:center;border-bottom:1px solid var(--b)}
+.sct td{padding:8px 5px;text-align:center;border-bottom:1px solid rgba(255,255,255,.025)}
+.sct tfoot td{background:var(--s2);font-weight:700;font-size:11px;border-top:1px solid var(--b2);border-bottom:none}
+.sc-out{background:var(--s3)!important;font-weight:700;font-size:9px}
 .s-eag{background:var(--yel);color:#000;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-weight:800}
+.s-bir{background:var(--ak);color:#000;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-weight:800}
 .s-par{color:var(--blu)}.s-bog{color:var(--yel)}.s-dbl{color:var(--red);font-weight:700}.s-tri{color:var(--red);font-weight:900;text-decoration:underline}
 
-/* CLUBS */
-.crow{margin-bottom:12px}
-.ctop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
-.cname{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#ccc}
-.ccnt{font-size:9px;color:var(--mu);font-family:'JetBrains Mono',monospace}
-.cbar{display:flex;height:7px;border-radius:4px;overflow:hidden;background:var(--s3)}
-.cg{background:var(--ak)}.co{background:var(--yel)}.cb{background:var(--red)}
-.cleg{display:flex;gap:10px;margin-top:4px}
-.cleg span{font-size:9px;font-family:'JetBrains Mono',monospace}
+/* ── ANALYSIS TAB ── */
+.anal-section{margin-bottom:16px}
+.sg-summary{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:16px;margin-bottom:8px}
+.sg-total-row{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
+.sg-total-val{font-family:DM Serif Display,serif;font-size:42px;line-height:1}
+.sg-total-lbl{font-size:11px;color:var(--t2)}
+.sg-cats{display:flex;flex-direction:column;gap:8px}
+.sg-cat-row{display:flex;align-items:center;gap:10px}
+.sg-cat-name{font-size:10px;color:var(--t2);min-width:80px}
+.sg-cat-bar-bg{flex:1;background:var(--s3);border-radius:3px;height:5px;overflow:visible;position:relative}
+.sg-cat-bar{height:5px;border-radius:3px;position:absolute;top:0}
+.sg-cat-zero{position:absolute;top:-4px;bottom:-4px;width:1px;background:var(--b3)}
+.sg-cat-val{font-family:JetBrains Mono,monospace;font-size:10px;font-weight:700;min-width:40px;text-align:right}
 
-/* EVO */
-.ei{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--b)}
-.ei:last-child{border-bottom:none}
-.el{flex:1;min-width:0}
-.edate{font-size:9px;color:var(--mu);font-family:'JetBrains Mono',monospace}
-.ename{font-size:12px;color:#ccc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:1px 0 4px}
-.ebw{background:var(--s3);border-radius:3px;height:4px;overflow:hidden}
-.ebar{height:100%;border-radius:3px}
-.er{text-align:right;flex-shrink:0}
-.escore{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1}
-.ediff{font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;margin-top:2px}
+/* ── EVO ── */
+.evo-chart{height:80px;display:flex;align-items:flex-end;gap:4px;margin-bottom:12px}
+.evo-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.evo-bar-outer{flex:1;display:flex;align-items:flex-end;width:100%}
+.evo-bar-inner{width:100%;border-radius:3px 3px 0 0;min-height:3px}
+.evo-bar-lbl{font-family:JetBrains Mono,monospace;font-size:7px;color:var(--t3)}
+.evo-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--b)}
+.evo-item:last-child{border-bottom:none}
+.evo-left{flex:1;min-width:0}
+.evo-date{font-size:9px;color:var(--t3);font-family:JetBrains Mono,monospace}
+.evo-name{font-size:12px;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:2px 0 5px;font-weight:500}
+.evo-pills{display:flex;gap:4px;flex-wrap:wrap}
+.evo-pill{font-size:8px;font-family:JetBrains Mono,monospace;padding:2px 6px;border-radius:4px;background:var(--s3);color:var(--t3)}
+.evo-right{text-align:right;flex-shrink:0}
+.evo-score{font-family:DM Serif Display,serif;font-size:26px;line-height:1}
+.evo-diff{font-size:10px;font-weight:700;font-family:JetBrains Mono,monospace;margin-top:2px}
 
-/* VS */
-.vsh{display:flex;gap:8px;margin-bottom:14px}
-.vsc{flex:1;border-radius:16px;padding:14px;text-align:center;border:1.5px solid}
-.vsc.ak{background:var(--ak2);border-color:rgba(52,211,153,.3)}
-.vsc.mac{background:var(--mac2);border-color:rgba(244,114,182,.3)}
-.vsp{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:6px}
-.vshcp{font-family:'Syne',sans-serif;font-size:34px;font-weight:800;line-height:1}
-.vsrn{font-size:9px;color:var(--mu);margin-top:4px;font-family:'JetBrains Mono',monospace}
-.vssep{display:flex;align-items:center;color:var(--dim);font-weight:900;font-size:13px;flex-shrink:0}
-.h2ht{width:100%;background:var(--s1);border:1px solid var(--b);border-radius:14px;overflow:hidden}
-.h2hr{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04)}
-.h2hr:last-child{border-bottom:none}
-.h2hak{flex:1;text-align:right;font-family:'Syne',sans-serif;font-size:18px;font-weight:800}
-.h2hmac{flex:1;text-align:left;font-family:'Syne',sans-serif;font-size:18px;font-weight:800}
-.h2hlbl{font-size:9px;color:var(--mu);text-align:center;min-width:90px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px}
-.vsb-row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
-.vsb-date{font-size:9px;color:var(--mu);font-family:'JetBrains Mono',monospace;min-width:60px}
-.vsb-bars{flex:1;display:flex;flex-direction:column;gap:3px}
-.vsb{height:14px;border-radius:4px;display:flex;align-items:center;padding:0 6px;font-size:9px;font-weight:700;color:#000;min-width:20px;font-family:'JetBrains Mono',monospace}
-.vs-empty{text-align:center;padding:24px 14px;border:1px dashed rgba(244,114,182,.25);border-radius:14px;font-size:12px;color:var(--mu);line-height:2}
+/* ── VS ── */
+.vs-cards{display:flex;gap:8px;margin-bottom:14px}
+.vs-card{flex:1;border-radius:var(--r);padding:16px;text-align:center;border:1px solid}
+.vs-card.ak{background:var(--ak2);border-color:var(--ak3)}
+.vs-card.mac{background:var(--mac2);border-color:var(--mac3)}
+.vs-pname{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;font-family:JetBrains Mono,monospace;margin-bottom:8px}
+.vs-hcp{font-family:DM Serif Display,serif;font-size:38px;line-height:1}
+.vs-rn{font-size:9px;color:var(--t3);margin-top:5px;font-family:JetBrains Mono,monospace}
+.vs-sep{display:flex;align-items:center;color:var(--t4);font-weight:900;font-size:12px;flex-shrink:0}
+.h2h-wrap{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.h2h-row{display:flex;align-items:center;padding:11px 14px;border-bottom:1px solid var(--b)}
+.h2h-row:last-child{border-bottom:none}
+.h2h-ak{flex:1;text-align:right;font-family:DM Serif Display,serif;font-size:20px}
+.h2h-mac{flex:1;text-align:left;font-family:DM Serif Display,serif;font-size:20px}
+.h2h-lbl{font-size:8px;color:var(--t3);text-align:center;min-width:80px;font-family:JetBrains Mono,monospace;letter-spacing:.5px;text-transform:uppercase}
+.vs-empty{text-align:center;padding:24px;border:1px dashed var(--mac3);border-radius:var(--r);font-size:12px;color:var(--t3);line-height:2}
+.vs-bar-row{display:flex;gap:8px;margin-bottom:7px;align-items:center}
+.vs-bar-date{font-size:8px;color:var(--t3);font-family:JetBrains Mono,monospace;min-width:55px}
+.vs-bar-col{flex:1;display:flex;flex-direction:column;gap:3px}
+.vs-bar{height:13px;border-radius:3px;display:flex;align-items:center;padding:0 6px;font-size:8px;font-weight:700;color:#000;min-width:16px;font-family:JetBrains Mono,monospace}
 
-/* MODAL */
-.ov{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(4px)}
+/* ── EMPTY ── */
+.empty{text-align:center;padding:64px 20px;color:var(--t3);font-size:13px;line-height:2}
+.empty-ico{font-size:40px;margin-bottom:14px;display:block}
+
+/* ── MODAL ── */
+.ov{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.88);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(6px)}
 .ov.open{opacity:1;pointer-events:all}
-.sheet{width:100%;max-width:480px;margin:0 auto;background:#0f0f0f;border-radius:24px 24px 0 0;max-height:94vh;overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);border-top:1px solid var(--b2)}
+.sheet{width:100%;max-width:430px;margin:0 auto;background:#0c0c0c;border-radius:24px 24px 0 0;max-height:94vh;overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);border-top:1px solid var(--b2)}
 .ov.open .sheet{transform:translateY(0)}
-.drag{width:36px;height:4px;background:var(--s3);border-radius:2px;margin:14px auto 10px}
-.stitle{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;padding:0 18px 14px}
-.sbody{padding:0 18px calc(var(--sb) + 24px)}
+.drag{width:32px;height:3px;background:var(--s4);border-radius:2px;margin:14px auto 12px}
+.stitle{font-family:DM Serif Display,serif;font-size:22px;padding:0 18px 16px;color:var(--t)}
+.sbody{padding:0 18px calc(var(--sb) + 28px)}
 
-/* FORM */
-.fl{font-size:9px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;margin-top:14px;display:block;font-family:'JetBrains Mono',monospace}
+/* ── FORM ── */
+.fl{font-size:8px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;margin-top:16px;display:block;font-family:JetBrains Mono,monospace}
 .fl:first-child{margin-top:0}
-.fi{background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:10px 12px;color:var(--t);font-size:13px;font-family:'Inter',sans-serif;outline:none;width:100%;-webkit-appearance:none;transition:border-color .15s}
+.fi{background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:11px 13px;color:var(--t);font-size:14px;outline:none;width:100%;-webkit-appearance:none;transition:border-color .15s}
 .fi:focus{border-color:var(--ak)}.fi.mac:focus{border-color:var(--mac)}
 .frow{display:flex;gap:8px}.frow>div{flex:1}
 .trow{display:flex;gap:6px;margin-top:4px}
-.topt{flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--b);background:transparent;color:var(--mu);font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;text-align:center}
-.topt.sel-y{border-color:var(--yel);background:rgba(251,191,36,.1);color:var(--yel)}
-.topt.sel-r{border-color:var(--red);background:rgba(248,113,113,.1);color:var(--red)}
+.topt{flex:1;padding:11px;border-radius:10px;border:1.5px solid var(--b2);background:transparent;color:var(--t3);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+.topt.sel-y{border-color:var(--yel);background:rgba(255,209,102,.1);color:var(--yel)}
+.topt.sel-r{border-color:var(--red);background:rgba(255,107,107,.1);color:var(--red)}
 
-/* HOLE ENTRY */
-.phdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
-.phnum{font-family:'Syne',sans-serif;font-size:56px;font-weight:800;line-height:1}
-.phres{font-size:12px;font-weight:700;margin-top:4px;font-family:'JetBrains Mono',monospace}
+/* ── HOLE ENTRY ── */
+.phdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;padding-top:4px}
+.phnum{font-family:DM Serif Display,serif;font-size:64px;line-height:1}
+.phres{font-size:11px;font-weight:700;margin-top:6px;font-family:JetBrains Mono,monospace;letter-spacing:.5px}
 .phinfo{text-align:right}
-.phdist{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--blu)}
-.phpar{font-size:11px;color:var(--mu);font-family:'JetBrains Mono',monospace}
-.phhcp{font-size:9px;color:var(--dim);font-family:'JetBrains Mono',monospace}
-.hnav{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
-.hn{width:calc(100%/9 - 5px);aspect-ratio:1;border-radius:8px;border:1px solid var(--b);background:transparent;color:var(--mu);font-size:10px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;display:flex;align-items:center;justify-content:center;transition:all .12s}
-.hn.done{background:var(--ak2);border-color:rgba(52,211,153,.3);color:var(--ak)}
-.hn.cur{background:var(--ak);border-color:var(--ak);color:#000}
-.hn.mdone{background:var(--mac2);border-color:rgba(244,114,182,.3);color:var(--mac)}
-.hn.mcur{background:var(--mac);border-color:var(--mac);color:#000}
-.steppers{display:flex;gap:8px;margin-bottom:12px}
-.stepbox{flex:1;background:var(--s2);border-radius:12px;padding:10px;text-align:center}
-.steplbl{font-size:8px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.phdist{font-family:DM Serif Display,serif;font-size:26px;color:var(--blu)}
+.phpar{font-size:11px;color:var(--t3);font-family:JetBrains Mono,monospace;margin-top:2px}
+.phhcp{font-size:9px;color:var(--t4);font-family:JetBrains Mono,monospace}
+.hnav{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
+.hn{width:calc(100%/9 - 5px);aspect-ratio:1;border-radius:7px;border:1px solid var(--b2);background:transparent;color:var(--t3);font-size:10px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.hn.done{background:var(--ak2);border-color:var(--ak3);color:var(--ak)}
+.hn.cur{background:var(--ak);border-color:var(--ak);color:#000;font-weight:800}
+.hn.mdone{background:var(--mac2);border-color:var(--mac3);color:var(--mac)}
+.hn.mcur{background:var(--mac);border-color:var(--mac);color:#000;font-weight:800}
+.steppers{display:flex;gap:8px;margin-bottom:14px}
+.stepbox{flex:1;background:var(--s2);border-radius:var(--r2);padding:12px 10px;text-align:center}
+.steplbl{font-size:7px;color:var(--t3);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;font-family:JetBrains Mono,monospace}
 .steprow{display:flex;align-items:center;justify-content:space-between;gap:4px}
-.stepbtn{width:36px;height:36px;border-radius:50%;border:1px solid var(--b);background:var(--s1);color:var(--t);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:300;transition:all .1s;line-height:1}
+.stepbtn{width:38px;height:38px;border-radius:50%;border:1px solid var(--b2);background:var(--s1);color:var(--t);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:300;transition:all .12s;line-height:1}
 .stepbtn:active{background:var(--ak);color:#000;border-color:var(--ak)}
-.stepval{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;line-height:1;min-width:32px;text-align:center}
-.togrow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)}
-.toglbl{font-size:12px;color:#bbb}
-.tog{width:42px;height:24px;border-radius:12px;background:var(--s3);border:none;cursor:pointer;position:relative;transition:background .18s;flex-shrink:0}
+.stepval{font-family:DM Serif Display,serif;font-size:44px;line-height:1;min-width:36px;text-align:center}
+.togrow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--b)}
+.toglbl{font-size:12px;color:var(--t2);font-weight:500}
+.tog{width:44px;height:26px;border-radius:13px;background:var(--s3);border:none;cursor:pointer;position:relative;transition:background .18s;flex-shrink:0}
 .tog.on{background:var(--ak)}.tog.mon{background:var(--mac)}
-.tog::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .18s}
+.tog::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .18s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
 .tog.on::after,.tog.mon::after{left:21px}
-.ftw{margin-top:12px}
-.fttop{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
-.ftlbl{font-size:9px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
-.fthint{font-size:9px;color:var(--dim);cursor:pointer;text-decoration:underline;font-family:'JetBrains Mono',monospace}
-.fta{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:10px 12px;color:var(--t);font-size:12px;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:72px;line-height:1.6;transition:border-color .15s}
+.ftw{margin-top:14px}
+.fttop{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.ftlbl{font-size:8px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-family:JetBrains Mono,monospace}
+.fthint{font-size:9px;color:var(--t4);cursor:pointer;text-decoration:underline}
+.fta{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:11px 13px;color:var(--t);font-size:13px;outline:none;resize:none;min-height:80px;line-height:1.7;transition:border-color .15s}
 .fta:focus{border-color:var(--ak)}.fta.mac:focus{border-color:var(--mac)}
-.hbox{background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:11px;margin-top:6px;display:none}
+.hbox{background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:12px;margin-top:6px;display:none}
 .hbox.open{display:block}
-.hrow{font-size:10px;color:var(--mu);padding:2px 0;line-height:1.6}
-.hrow strong{color:#ccc;font-family:'JetBrains Mono',monospace}
-.pp{margin-top:8px;background:rgba(52,211,153,.04);border:1px solid rgba(52,211,153,.12);border-radius:9px;padding:9px;display:none}
+.hrow{font-size:10px;color:var(--t3);padding:3px 0;line-height:1.7}
+.hrow strong{color:var(--t2);font-family:JetBrains Mono,monospace}
+.pp{margin-top:8px;background:rgba(61,220,132,.04);border:1px solid rgba(61,220,132,.1);border-radius:9px;padding:10px;display:none}
 .pp.open{display:block}
-.ps{display:flex;align-items:center;gap:6px;padding:2px 0;font-size:10px;color:#999}
-.nota{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:9px;padding:9px 11px;color:var(--t);font-size:11px;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:48px;margin-top:4px;line-height:1.6}
-.btnp{width:100%;padding:14px;border:none;border-radius:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;margin-top:14px;letter-spacing:.5px;transition:transform .1s,opacity .1s}
+.ps{display:flex;align-items:center;gap:7px;padding:2px 0;font-size:10px;color:var(--t2)}
+.nota{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:10px 13px;color:var(--t);font-size:12px;outline:none;resize:none;min-height:52px;margin-top:4px;line-height:1.6}
+.btnp{width:100%;padding:15px;border:none;border-radius:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;letter-spacing:.3px;transition:transform .1s,opacity .1s}
 .btnp:active{transform:scale(.97);opacity:.9}
 .btnp.ak{background:var(--ak);color:#000}.btnp.mac{background:var(--mac);color:#000}
-.btns{width:100%;padding:11px;background:transparent;color:var(--mu);border:none;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;margin-top:6px}
-.empty{text-align:center;padding:60px 20px;color:var(--mu);font-size:13px;line-height:2}
-.empty-ico{font-size:36px;margin-bottom:12px}
-@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.scroll>*{animation:fu .2s ease}
+.btns{width:100%;padding:12px;background:transparent;color:var(--t3);border:none;font-size:12px;cursor:pointer;margin-top:6px}
+
+/* ── ANIMATIONS ── */
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.scroll>*{animation:fu .22s ease}
 </style>
 </head>
 <body>
 
-<div class="psw" id="psw">
-  <button class="psw-btn ak-on" id="pswAK" onclick="setPlayer('ak')">
-    <div class="psw-dot"></div>
-    <span class="psw-name">AK</span>
-    <span class="psw-hcp" id="hcpAK">HCP —</span>
+<!-- PLAYER BAR -->
+<div class="pbar" id="pbar">
+  <button class="pb ak-on" id="pbAK" onclick="setPlayer('ak')">
+    <div class="pb-dot"></div>
+    <div class="pb-name">AK</div>
+    <div class="pb-hcp" id="hcpAK">—</div>
   </button>
-  <button class="psw-btn" id="pswMAC" onclick="setPlayer('mac')">
-    <div class="psw-dot"></div>
-    <span class="psw-name">Macarena</span>
-    <span class="psw-hcp" id="hcpMAC">HCP —</span>
+  <button class="pb" id="pbMAC" onclick="setPlayer('mac')">
+    <div class="pb-dot"></div>
+    <div class="pb-name">Macarena</div>
+    <div class="pb-hcp" id="hcpMAC">—</div>
   </button>
-  <button class="psw-btn" id="pswVS" onclick="setPlayer('vs')">
-    <div class="psw-dot"></div>
-    <span class="psw-name">VS</span>
-    <span class="psw-hcp">comparativa</span>
+  <button class="pb" id="pbVS" onclick="setPlayer('vs')">
+    <div class="pb-dot"></div>
+    <div class="pb-name">VS</div>
+    <div class="pb-hcp">comparativa</div>
   </button>
 </div>
 
-<div class="hdr">
-  <div class="hdr-row">
-    <div>
+<!-- HEADER -->
+<div class="hdr" id="hdr">
+  <div class="hdr-main">
+    <div class="hdr-left">
       <div class="hdr-course" id="hdrC">—</div>
-      <div class="hdr-meta" id="hdrM">—</div>
+      <div class="hdr-meta" id="hdrM"></div>
     </div>
-    <div class="hdr-pill">
+    <div class="hdr-score">
       <div class="hdr-num" id="hdrN">—</div>
-      <div class="hdr-right">
-        <div class="hdr-diff" id="hdrD"></div>
-        <div class="hdr-holes" id="hdrH"></div>
-      </div>
+      <div class="hdr-diff" id="hdrD"></div>
+      <div class="hdr-holes" id="hdrH"></div>
     </div>
   </div>
-  <div class="rchips-wrap" id="rcw" style="display:none"><div class="rchips" id="rc"></div></div>
+  <div id="rcWrap" style="display:none"><div class="rchips" id="rc"></div></div>
   <div class="tabs" id="tabs">
     <button class="tabB on" onclick="tab('stats')">Stats</button>
     <button class="tabB" onclick="tab('card')">Tarjeta</button>
-    <button class="tabB" onclick="tab('clubs')">Palos</button>
+    <button class="tabB" onclick="tab('analisis')">Análisis</button>
     <button class="tabB" onclick="tab('evo')">Evolución</button>
   </div>
 </div>
 
 <div class="scroll" id="scroll"></div>
 <button class="fab ak" id="fab" onclick="openPlay()">+</button>
-<div class="bbar" id="bbar"></div>
+<div class="bbar" id="bbar">Golf · Kowalski</div>
 
+<!-- MODAL -->
 <div class="ov" id="playOv">
 <div class="sheet">
 <div class="drag"></div>
@@ -342,7 +423,7 @@ body{font-family:'Inter',sans-serif;color:var(--t);max-width:480px;margin:0 auto
 <div class="sbody" style="padding-top:0">
   <div class="phdr">
     <div><div class="phnum" id="phN">H1</div><div class="phres" id="phR"></div></div>
-    <div class="phinfo"><div class="phdist" id="phD">—</div><div class="phpar" id="phP">Par —</div><div class="phhcp" id="phH"></div></div>
+    <div class="phinfo"><div class="phdist" id="phD">—</div><div class="phpar" id="phP">Par —</div><div class="phhcp" id="phHcp"></div></div>
   </div>
   <div class="hnav" id="hnav"></div>
   <div class="steppers">
@@ -357,11 +438,12 @@ body{font-family:'Inter',sans-serif;color:var(--t);max-width:480px;margin:0 auto
       <button class="stepbtn" onclick="step('putts',1)">+</button>
     </div></div>
   </div>
-  <div style="margin-bottom:12px">
-    <div class="togrow" id="trFW"><span class="toglbl">Fairway hit</span><button class="tog" id="tFW" onclick="tog('tFW')"></button></div>
-    <div class="togrow"><span class="toglbl">Green en regulación (GIR)</span><button class="tog" id="tGIR" onclick="tog('tGIR')"></button></div>
+  <div style="margin-bottom:14px">
+    <div class="togrow" id="trFW"><span class="toglbl">Fairway hit ✓</span><button class="tog" id="tFW" onclick="tog('tFW')"></button></div>
+    <div class="togrow"><span class="toglbl">Green en regulación (GIR) ✓</span><button class="tog" id="tGIR" onclick="tog('tGIR')"></button></div>
     <div class="togrow"><span class="toglbl">Bunker</span><button class="tog" id="tBK" onclick="tog('tBK')"></button></div>
-    <div class="togrow"><span class="toglbl">Bunker save</span><button class="tog" id="tBS" onclick="tog('tBS')"></button></div>
+    <div class="togrow" id="trBS"><span class="toglbl">Bunker save ↑</span><button class="tog" id="tBS" onclick="tog('tBS')"></button></div>
+    <div class="togrow"><span class="toglbl">Penalización / OB</span><button class="tog" id="tPEN" onclick="tog('tPEN')"></button></div>
   </div>
   <div class="ftw">
     <div class="fttop">
@@ -372,15 +454,15 @@ body{font-family:'Inter',sans-serif;color:var(--t);max-width:480px;margin:0 auto
       <div class="hrow"><strong>Driver centro 220</strong> → palo, dirección, distancia</div>
       <div class="hrow"><strong>5M izq fade 180</strong> → dirección y tipo de curva</div>
       <div class="hrow"><strong>8H fat bunker</strong> → resultado del golpe</div>
-      <div class="hrow"><strong>SW 50m green ok</strong> → distancia + calidad</div>
+      <div class="hrow"><strong>SW 50m green ok</strong> → distancia y calidad</div>
       <div class="hrow"><strong>9I sin commit fringe der</strong> → observaciones libres</div>
-      <div class="hrow" style="margin-top:6px;color:var(--dim)">Separa golpes con coma o salto de línea.</div>
+      <div class="hrow" style="margin-top:6px;color:var(--t4)">Separa golpes con coma o salto de línea. Escribe en español o inglés — se entiende igual.</div>
     </div>
     <textarea class="fta" id="ftInp" placeholder="Ej: Driver centro 220, 7H sin commit fringe izq, SW perfecto green..." oninput="onFT()"></textarea>
     <div class="pp" id="pp"></div>
   </div>
-  <div style="margin-top:12px">
-    <span class="fl" style="margin-top:0">Notas adicionales</span>
+  <div style="margin-top:14px">
+    <span class="fl" style="margin-top:0">Notas del hoyo</span>
     <textarea class="nota" id="pNotes" placeholder="Sensaciones, condiciones, lo que quieras..."></textarea>
   </div>
   <button class="btnp ak" id="saveBtn" onclick="saveHole()">Guardar hoyo →</button>
@@ -391,446 +473,1223 @@ body{font-family:'Inter',sans-serif;color:var(--t);max-width:480px;margin:0 auto
 </div>
 
 <script>
+// ═══════════════════════════════════════════════════════
+// COURSE DATA
+// ═══════════════════════════════════════════════════════
 const FAISANERA={id:'faisanera',name:'La Faisanera Golf',city:'Segovia',tees:{
-  amarillas:{par:71,total:3027,holes:[
+  amarillas:{par:71,total:3027,cr:69.1,slope:121,holes:[
     {h:1,par:5,m:492,hcp:8},{h:2,par:3,m:126,hcp:18},{h:3,par:4,m:363,hcp:4},
     {h:4,par:3,m:149,hcp:14},{h:5,par:4,m:388,hcp:2},{h:6,par:5,m:470,hcp:10},
     {h:7,par:3,m:179,hcp:12},{h:8,par:4,m:363,hcp:6},{h:9,par:4,m:268,hcp:16},
     {h:10,par:3,m:160,hcp:13},{h:11,par:4,m:407,hcp:1},{h:12,par:3,m:126,hcp:17},
     {h:13,par:5,m:487,hcp:7},{h:14,par:4,m:401,hcp:3},{h:15,par:5,m:494,hcp:15},
     {h:16,par:4,m:365,hcp:9},{h:17,par:3,m:144,hcp:11},{h:18,par:5,m:443,hcp:5}]},
-  rojas:{par:71,total:2646,holes:[
+  rojas:{par:71,total:2646,cr:71.0,slope:126,holes:[
     {h:1,par:5,m:423,hcp:5},{h:2,par:3,m:97,hcp:17},{h:3,par:4,m:312,hcp:1},
     {h:4,par:3,m:131,hcp:13},{h:5,par:4,m:342,hcp:3},{h:6,par:5,m:425,hcp:7},
     {h:7,par:3,m:145,hcp:11},{h:8,par:4,m:316,hcp:9},{h:9,par:4,m:227,hcp:16},
     {h:10,par:3,m:115,hcp:10},{h:11,par:4,m:358,hcp:2},{h:12,par:3,m:110,hcp:18},
     {h:13,par:5,m:434,hcp:6},{h:14,par:4,m:357,hcp:4},{h:15,par:5,m:443,hcp:14},
     {h:16,par:4,m:321,hcp:8},{h:17,par:3,m:113,hcp:12},{h:18,par:5,m:395,hcp:16}]}}};
-const CR={faisanera:FAISANERA};
-function getCH(cid,tee,h){const c=CR[cid];if(!c)return{par:4,m:null,hcp:null};const t=c.tees[tee||'amarillas'];if(!t)return{par:4,m:null,hcp:null};return t.holes.find(x=>x.h===h)||{par:4,m:null,hcp:null}}
 
-const CM={'driver':'Driver','dr':'Driver','drv':'Driver','3m':'3M','3madera':'3M','5m':'5M','5madera':'5M','7m':'7M','2h':'2H','3h':'3H','4h':'4H','5h':'5H','6h':'6H','7h':'7H','8h':'8H','9h':'9H','2i':'2I','3i':'3I','4i':'4I','5i':'5I','6i':'6I','7i':'7I','8i':'8I','9i':'9I','hierro2':'2I','hierro3':'3I','hierro4':'4I','hierro5':'5I','hierro6':'6I','hierro7':'7I','hierro8':'8I','hierro9':'9I','pw':'PW','pitching':'PW','aw':'AW','gw':'GW','sw':'SW','sandwedge':'SW','sand':'SW','lw':'LW','putter':'Putter','putt':'Putter','p':'Putter'};
-const DW=['centro','izquierda','izq','left','derecha','der','right','draw','fade','pull','pulled','push'];
-const QG=['perfecto','perfect','bueno','bien','great','good','excelente','ok','decente','genial'];
-const QB=['malo','mal','bad','terrible','horrible','fatal','fat','thin'];
-const RW=['green','fringe','bunker','rough','agua','water','ob','fuera','fairway'];
-const NCW=['sin commit','no commit','sin confianza','sin compromiso','dudé'];
-function pc(w){return CM[w.toLowerCase().replace(/[^a-z0-9]/g,'')]||null}
+const CR={faisanera:FAISANERA};
+
+// ── DISTANCIAS DE REFERENCIA AK (golpe completo, simulator) ──────────────────
+const AK_REFS={
+  '5I':{carry:134,total:147,ballSpeed:112},
+  '6I':{carry:130,total:140,ballSpeed:110},
+  '7I':{carry:127,total:137,ballSpeed:107},
+  '8I':{carry:119,total:129,ballSpeed:102},
+  '9I':{carry:112,total:117,ballSpeed:97},
+  'PW':{carry:99, total:105,ballSpeed:89},
+  'AW':{carry:87, total:92, ballSpeed:81},
+  'SW':{carry:78, total:80, ballSpeed:76},
+};
+function getCH(cid,tee,h){
+  const c=CR[cid];if(!c)return{par:4,m:null,hcp:null};
+  const t=c.tees[tee||'amarillas'];if(!t)return{par:4,m:null,hcp:null};
+  return t.holes.find(x=>x.h===h)||{par:4,m:null,hcp:null};
+}
+
+// ═══════════════════════════════════════════════════════
+// STROKES GAINED BENCHMARKS (amateur +10/+11)
+// Expected strokes to hole out from different situations
+// Source: ShotLink/Broadie data adapted for high-level amateurs
+// ═══════════════════════════════════════════════════════
+const SG_BENCH = {
+  // Driving: expected strokes from tee on par 4/5
+  tee_par4: 4.0,  // benchmark +10 amateur
+  tee_par5: 5.0,
+  // Approach: expected strokes based on GIR hit or not
+  approach_gir: 3.0,    // hit GIR → expected to 2-putt = good
+  approach_no_gir: 3.6, // missed GIR → expected to chip + putt
+  // Short game: around green
+  sg_save: 2.5,   // bunker/fringe save expected
+  // Putting benchmarks (putts per round for +10 amateur ~32-34)
+  putt_benchmark: 32,
+};
+
+function calcSG(holes){
+  // Simplified Strokes Gained for amateur context
+  // Categories: Off Tee, Approach, Short Game, Putting
+  let sgTee=0, sgApp=0, sgShort=0, sgPutt=0;
+  holes.forEach(h=>{
+    const par=h.par, score=h.score, putts=h.putts||2;
+    const preGreen = score - putts;
+
+    // PUTTING SG: benchmark 2 putts per hole (from GIR), 1.8 from chip-ins
+    const puttBench = h.gir ? 2.0 : 1.9;
+    sgPutt += (puttBench - putts);
+
+    // APPROACH SG: did hitting GIR save strokes?
+    if(par===3){
+      // Par 3: tee shot IS approach
+      const appBench = h.gir ? 0 : 0.6; // GIR = saved 0.6 strokes vs missed
+      sgApp += h.gir ? 0.4 : -0.4;
+    } else {
+      sgApp += h.gir ? 0.4 : -0.5;
+    }
+
+    // DRIVING SG (par 4/5): based on FW hit
+    if(par>=4){
+      if(h.fw===true) sgTee += 0.3;
+      else if(h.fw===false) sgTee -= 0.35;
+    }
+
+    // SHORT GAME SG: bunker saves, scrambling
+    if(h.bk){
+      sgShort += h.bs ? 0.5 : -0.5;
+    }
+    // Non-GIR holes where we still made par or better = good short game
+    if(!h.gir && score<=par) sgShort += 0.4;
+    if(!h.gir && score===par+1) sgShort += 0.0;
+    if(!h.gir && score>=par+2) sgShort -= 0.5;
+  });
+  return{
+    tee:+sgTee.toFixed(1),
+    app:+sgApp.toFixed(1),
+    short:+sgShort.toFixed(1),
+    putt:+sgPutt.toFixed(1),
+    total:+(sgTee+sgApp+sgShort+sgPutt).toFixed(1)
+  };
+}
+
+// ═══════════════════════════════════════════════════════
+// CLUB PARSER
+// ═══════════════════════════════════════════════════════
+const CM={
+  'driver':'Driver','dr':'Driver','drv':'Driver',
+  '3m':'3M','3madera':'3M','madera3':'3M','wood3':'3M','3wood':'3M',
+  '5m':'5M','5madera':'5M','madera5':'5M','wood5':'5M','5wood':'5M',
+  '7m':'7M','7madera':'7M','madera7':'7M','wood7':'7M','7wood':'7M',
+  '2h':'2H','3h':'3H','4h':'4H','5h':'5H','6h':'6H','7h':'7H','8h':'8H','9h':'9H',
+  'hybrid2':'2H','hybrid3':'3H','hybrid4':'4H','hybrid5':'5H','hybrid6':'6H',
+  'hibrido2':'2H','hibrido3':'3H','hibrido4':'4H','hibrido5':'5H','hibrido6':'6H',
+  '2i':'2I','3i':'3I','4i':'4I','5i':'5I','6i':'6I','7i':'7I','8i':'8I','9i':'9I',
+  'iron2':'2I','iron3':'3I','iron4':'4I','iron5':'5I','iron6':'6I','iron7':'7I','iron8':'8I','iron9':'9I',
+  'hierro2':'2I','hierro3':'3I','hierro4':'4I','hierro5':'5I','hierro6':'6I','hierro7':'7I','hierro8':'8I','hierro9':'9I',
+  'pw':'PW','pitching':'PW','pitchingwedge':'PW',
+  'aw':'AW','approachwedge':'AW','approach':'AW',
+  'gw':'GW','gapwedge':'GW','gap':'GW',
+  'sw':'SW','sandwedge':'SW','sand':'SW',
+  'lw':'LW','lobwedge':'LW','lob':'LW',
+  'putter':'Putter','putt':'Putter','putting':'Putter'
+};
+const DW=['centro','center','izquierda','izq','left','derecha','der','right','draw','fade','pull','pulled','push'];
+const QG=['perfecto','perfect','bueno','bien','great','good','excelente','excellent','ok','decente','decent','genial','great'];
+const QB=['malo','mal','bad','terrible','horrible','fatal','fat','thin','tops','topped'];
+const RW=['green','fringe','bunker','rough','agua','water','ob','fuera','fairway','arbol','tree'];
+const NCW=['sin commit','no commit','sin confianza','sin compromiso','dudé','dudando','sin conviccion'];
+const SHOT_TYPES=['fat','thin','punch','chip','pitch','tops','topped','shanked','shank'];
+
+const DIR_MAP={'centro':'Centro','center':'Centro','izquierda':'Izq.','izq':'Izq.','left':'Izq.','derecha':'Der.','der':'Der.','right':'Der.','draw':'Draw','fade':'Fade','pull':'Pull','pulled':'Pull','push':'Push der.'};
+const DEST_MAP={'green':'Green','fringe':'Fringe','bunker':'Bunker','rough':'Rough','agua':'Agua','water':'Agua','ob':'Fuera límites','fuera':'Fuera límites','fairway':'Fairway','arbol':'Árbol','tree':'Árbol'};
+const SHOT_MAP={'fat':'Fat','thin':'Thin','punch':'Punch','chip':'Chip','pitch':'Pitch','tops':'Tops','topped':'Tops','shanked':'Shanked','shank':'Shanked'};
+
+function normalizeClub(c){
+  if(!c)return c;
+  // Unify H→I for irons (6H written as iron in Spanish = 6I)
+  const mH=c.match(/^(\d)H$/);
+  if(mH)return mH[1]+'I';
+  return c;
+}
+function pcl(w){return CM[w.toLowerCase().replace(/[^a-z0-9]/g,'')]||null}
+
 function parseShots(txt){
   if(!txt||!txt.trim())return[];
   return txt.split(/[,\n]+/).map(p=>p.trim()).filter(Boolean).map(part=>{
     const tk=part.toLowerCase().split(/\s+/),lp=part.toLowerCase();
-    let club=null,dist=null,dirs=[],quals=[],results=[],notes=[];
+    let club=null,dist=null,dirs=[],quals=[],results=[],notes=[],shots=[];
     const noC=NCW.some(c=>lp.includes(c));
     for(let i=0;i<tk.length;i++){
       const t=tk[i];
-      if(!club){const c=pc(t);if(c){club=c;continue;}}
-      if(!club&&i+1<tk.length){const c2=pc(t+tk[i+1]);if(c2){club=c2;i++;continue;}}
+      if(!club){const c=pcl(t);if(c){club=c;continue;}}
+      if(!club&&i+1<tk.length){const c2=pcl(t+tk[i+1]);if(c2){club=c2;i++;continue;}}
       const dm=t.match(/^(\d+)m?$/);
       if(dm&&+dm[1]>10&&+dm[1]<400){dist=+dm[1];continue;}
       if(DW.includes(t)){dirs.push(t);continue;}
       if(QG.includes(t)){quals.push('bueno');continue;}
       if(QB.includes(t)){quals.push('malo');continue;}
       if(RW.includes(t)){results.push(t);continue;}
-      if(t.length>1&&!['a','de','el','la','en','un','y','con','sin','no'].includes(t))notes.push(t);
+      if(SHOT_TYPES.includes(t)){shots.push(t);continue;}
+      if(t.length>1&&!['a','de','el','la','en','un','y','con','sin','no','al','lo','las'].includes(t))notes.push(t);
     }
-    const rp=[...dirs,...results,...(noC?['sin commit']:[]),...notes];
+    // Build clean description
+    const parts=[];
+    if(shots.length) parts.push(shots.map(s=>SHOT_MAP[s]||s).join(' '));
+    if(dirs.length) parts.push(dirs.map(d=>DIR_MAP[d]||d).join(' '));
+    if(results.length) parts.push(results.map(r=>DEST_MAP[r]||r).join(' '));
+    if(noC) parts.push('Sin commit');
+    const filtNotes=notes.filter(n=>!NCW.some(nc=>nc.includes(n)));
+    if(filtNotes.length&&parts.length<3) parts.push(filtNotes.join(' '));
+    const rDesc=parts.join(' · ')||part;
+
     let q='ok';
-    if(quals.includes('malo')||results.includes('agua')||results.includes('ob'))q='malo';
-    else if(quals.includes('bueno')&&!noC)q='bueno';
-    else if(results.includes('green')&&!noC)q='bueno';
-    return{c:club||'?',r:rp.join(' ')||part,d:dist,q,raw:part};
+    if(quals.includes('malo')||results.includes('agua')||results.includes('ob')||shots.includes('shanked')||shots.includes('shank'))q='malo';
+    else if(quals.includes('bueno')&&!noC&&!shots.some(s=>['fat','thin','tops','topped'].includes(s)))q='bueno';
+    else if(results.includes('green')&&!noC&&!shots.length)q='bueno';
+
+    return{c:normalizeClub(club)||'?',r:rDesc,d:dist,q,raw:part};
   });
 }
 
-const AK_FAIS={id:'ak_r1',player:'ak',date:'2026-06-07',course:'La Faisanera Golf',courseId:'faisanera',city:'Segovia',tee:'amarillas',tournament:true,holes:[
-  {h:1,par:5,score:6,putts:1,fw:true,gir:false,bk:false,bs:false,shots:parseShots('Driver decente fade 200, 5M terrible, 5M perfecto 180, PW fringe bueno a 2m'),notes:'5M horrible al primero, perfecto al segundo'},
-  {h:2,par:3,score:3,putts:2,fw:null,gir:true,bk:false,bs:false,shots:parseShots('6I perfecto'),notes:''},
-  {h:3,par:4,score:5,putts:3,fw:true,gir:true,bk:false,bs:false,shots:parseShots('Driver perfecto centro 230, 9I perfecto a 7m'),notes:'3 putts desde 7m'},
-  {h:4,par:3,score:4,putts:1,fw:null,gir:false,bk:false,bs:false,shots:parseShots('5I fat der, PW fringe terrible, PW fringe perfecto a 1m'),notes:'Bogey'},
-  {h:5,par:4,score:5,putts:2,fw:false,gir:true,bk:true,bs:true,shots:parseShots('Driver izq 190, 8H bunker ok, SW 50m 10 pasados centro green'),notes:'Primera salida torneo'},
-  {h:6,par:5,score:7,putts:3,fw:false,gir:false,bk:true,bs:false,shots:parseShots('Driver izq 210, 6H bueno, 8H izq bunker malo, SW bunker ok'),notes:'3 putts'},
-  {h:7,par:3,score:4,putts:2,fw:null,gir:false,bk:false,bs:false,shots:parseShots('5M fringe izq, SW bueno'),notes:'Par 3 de 179m'},
-  {h:8,par:4,score:5,putts:2,fw:true,gir:true,bk:false,bs:false,shots:parseShots('Driver centro 230, 8H sin commit fat, 6H punch centro green'),notes:'Fat por falta de commit'},
-  {h:9,par:4,score:5,putts:2,fw:true,gir:false,bk:false,bs:false,shots:parseShots('Driver centro perfecto 205, SW malo corto 40m, PW perfecto a 3m'),notes:'SW corto'},
-  {h:10,par:3,score:3,putts:1,fw:null,gir:false,bk:false,bs:false,shots:parseShots('8H malo corto, PW fat fringe terrible'),notes:'Gran putt 10m para salvar'},
-  {h:11,par:4,score:4,putts:2,fw:true,gir:true,bk:false,bs:false,shots:parseShots('Driver bueno 210, 5M green bueno'),notes:'Casi birdie'},
-  {h:12,par:3,score:3,putts:2,fw:null,gir:true,bk:false,bs:false,shots:parseShots('PW bueno green'),notes:''},
-  {h:13,par:5,score:6,putts:2,fw:true,gir:false,bk:false,bs:false,shots:parseShots('Driver draw 200, 5M sin commit 175, SW sin commit fringe corto, PW fringe corto'),notes:'Sin commit recurrente'},
-  {h:14,par:4,score:5,putts:2,fw:false,gir:false,bk:true,bs:false,shots:parseShots('Driver pulled 220, 5M excelente 180 bunker, SW bunker malo corto'),notes:'Driver pulled'},
-  {h:15,par:5,score:5,putts:2,fw:false,gir:true,bk:false,bs:false,shots:parseShots('Driver fade 230, 5M sin commit 170, 9H sin commit green'),notes:'Sin commit'},
-  {h:16,par:4,score:3,putts:1,fw:true,gir:true,bk:false,bs:false,shots:parseShots('Driver perfecto centro 220, 6H perfecto a 1m'),notes:'BIRDIE 🦅 — mejor hoyo'},
-  {h:17,par:3,score:3,putts:2,fw:null,gir:true,bk:false,bs:false,shots:parseShots('5I decente green sin commit'),notes:''},
-  {h:18,par:5,score:6,putts:2,fw:true,gir:false,bk:false,bs:false,shots:parseShots('Driver bueno fade, 6I muy malo, PW punch, SW bueno green'),notes:'6I muy malo'}
-]};
+// ═══════════════════════════════════════════════════════
+// INITIAL DATA — La Faisanera 07/06/2026
+// ═══════════════════════════════════════════════════════
+const AK_FAIS={
+  id:'ak_r1',player:'ak',date:'2026-06-07',
+  course:'La Faisanera Golf',courseId:'faisanera',city:'Segovia',
+  tee:'amarillas',tournament:true,
+  holes:[
+    {h:1,par:5,score:6,putts:1,fw:true,gir:false,bk:false,bs:false,shots:parseShots('Driver fade 200, 5M terrible, 5M perfecto 180, PW fringe bueno a 2m'),notes:'5M horrible al primero, perfecto al segundo'},
+    {h:2,par:3,score:3,putts:2,fw:null,gir:true,bk:false,bs:false,shots:parseShots('6I perfecto'),notes:''},
+    {h:3,par:4,score:5,putts:3,fw:true,gir:true,bk:false,bs:false,shots:parseShots('Driver perfecto centro 230, 9I perfecto a 7m'),notes:'3 putts desde 7m — llegada perfecta desperdiciada'},
+    {h:4,par:3,score:4,putts:1,fw:null,gir:false,bk:false,bs:false,shots:parseShots('5I fat der, PW fringe terrible, PW perfecto a 1m'),notes:'Fat en el hierro de entrada'},
+    {h:5,par:4,score:5,putts:2,fw:false,gir:true,bk:true,bs:true,shots:parseShots('Driver izq 190, 8H bunker, SW 50m green'),notes:'Primera salida del torneo — bunker save'},
+    {h:6,par:5,score:7,putts:3,fw:false,gir:false,bk:true,bs:false,shots:parseShots('Driver izq 210, 6H bueno, 8H izq bunker malo, SW bunker'),notes:'3 putts, bunker sin save — el peor hoyo'},
+    {h:7,par:3,score:4,putts:2,fw:null,gir:false,bk:false,bs:false,shots:parseShots('5M fringe izq, SW bueno'),notes:'Par 3 de 179m — no llegó al green'},
+    {h:8,par:4,score:5,putts:2,fw:true,gir:true,bk:false,bs:false,shots:parseShots('Driver centro 230, 8H sin commit fat, 6H punch green'),notes:'Fat por falta de commit — llegada en dos intentos'},
+    {h:9,par:4,score:5,putts:2,fw:true,gir:false,bk:false,bs:false,shots:parseShots('Driver centro perfecto 205, SW malo corto 40m, PW perfecto a 3m'),notes:'SW corto — no rompió el putt de 3m'},
+    {h:10,par:3,score:3,putts:1,fw:null,gir:false,bk:false,bs:false,shots:parseShots('8H malo corto, PW fat fringe'),notes:'Gran putt de 10m para salvar par'},
+    {h:11,par:4,score:4,putts:2,fw:true,gir:true,bk:false,bs:false,shots:parseShots('Driver bueno 210, 5M green bueno'),notes:'Casi birdie en par 4 de 407m'},
+    {h:12,par:3,score:3,putts:2,fw:null,gir:true,bk:false,bs:false,shots:parseShots('PW bueno green'),notes:''},
+    {h:13,par:5,score:6,putts:2,fw:true,gir:false,bk:false,bs:false,shots:parseShots('Driver draw 200, 5M sin commit 175, SW sin commit fringe corto, PW fringe'),notes:'Sin commit en 5M y SW — patrón recurrente'},
+    {h:14,par:4,score:5,putts:2,fw:false,gir:false,bk:true,bs:false,shots:parseShots('Driver pulled 220, 5M excelente 180 bunker, SW bunker malo corto'),notes:'Driver pulled — bunker sin save'},
+    {h:15,par:5,score:5,putts:2,fw:false,gir:true,bk:false,bs:false,shots:parseShots('Driver fade 230, 5M sin commit 170, 9H sin commit green'),notes:'Sin commit pero llegó — par en 5'},
+    {h:16,par:4,score:3,putts:1,fw:true,gir:true,bk:false,bs:false,shots:parseShots('Driver perfecto centro 220, 6H perfecto a 1m'),notes:'BIRDIE 🦅 — el mejor hoyo de la ronda'},
+    {h:17,par:3,score:3,putts:2,fw:null,gir:true,bk:false,bs:false,shots:parseShots('5I decente green sin commit'),notes:''},
+    {h:18,par:5,score:6,putts:2,fw:true,gir:false,bk:false,bs:false,shots:parseShots('Driver bueno fade, 6I muy malo, PW punch, SW bueno green'),notes:'6I muy malo — bogey en el último'}
+  ]
+};
 
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
 let data={ak:{rounds:[]},mac:{rounds:[]}};
 let AP='ak',AR=0,AT='stats',EX=new Set();
-let pPl='ak',pRI=-1,pH=1,pSc=4,pPu=2,pTog={tFW:false,tGIR:false,tBK:false,tBS:false},sTv='amarillas';
+let pPl='ak',pRI=-1,pH=1,pSc=4,pPu=2;
+let pTog={tFW:false,tGIR:false,tBK:false,tBS:false,tPEN:false};
+let sTv='amarillas';
 
-function load(){const s=localStorage.getItem('gtkow3');if(s){try{data=JSON.parse(s);}catch(e){}}else{data={ak:{rounds:[AK_FAIS]},mac:{rounds:[]}};save();}}
-function save(){localStorage.setItem('gtkow3',JSON.stringify(data));}
+function load(){
+  const s=localStorage.getItem('gtkow4');
+  if(s){try{data=JSON.parse(s);}catch(e){}}
+  else{data={ak:{rounds:[AK_FAIS]},mac:{rounds:[]}};save();}
+}
+function save(){localStorage.setItem('gtkow4',JSON.stringify(data));}
 
+// ═══════════════════════════════════════════════════════
+// STATS CALCULATIONS
+// ═══════════════════════════════════════════════════════
 function cS(holes){
   if(!holes||!holes.length)return null;
-  const ts=holes.reduce((a,h)=>a+h.score,0),tp=holes.reduce((a,h)=>a+h.par,0);
-  const pH2=holes.filter(h=>h.putts!=null),tpu=pH2.reduce((a,h)=>a+h.putts,0);
+  const ts=holes.reduce((a,h)=>a+h.score,0);
+  const tp=holes.reduce((a,h)=>a+h.par,0);
+  const pH2=holes.filter(h=>h.putts!=null);
+  const tpu=pH2.reduce((a,h)=>a+h.putts,0);
   const fwH=holes.filter(h=>h.fw!=null),fwOk=fwH.filter(h=>h.fw).length;
   const gH=holes.filter(h=>h.gir!=null),gOk=gH.filter(h=>h.gir).length;
   const bkH=holes.filter(h=>h.bk),bkS=bkH.filter(h=>h.bs).length;
   const tp3=pH2.filter(h=>h.putts>=3).length;
-  const bir=holes.filter(h=>h.score<h.par).length,par=holes.filter(h=>h.score===h.par).length;
-  const bog=holes.filter(h=>h.score===h.par+1).length,dbl=holes.filter(h=>h.score>=h.par+2).length;
+  const bir=holes.filter(h=>h.score<h.par).length;
+  const par=holes.filter(h=>h.score===h.par).length;
+  const bog=holes.filter(h=>h.score===h.par+1).length;
+  const dbl=holes.filter(h=>h.score>=h.par+2).length;
+  const tri=holes.filter(h=>h.score>=h.par+3).length;
+  const penalties=holes.filter(h=>h.pen===true).length;
+
+  // SCRAMBLING: par or better when missing GIR (key short game stat)
+  const missGIR=holes.filter(h=>h.gir===false);
+  const scrambleSaves=missGIR.filter(h=>h.score<=h.par).length;
+  const scramblePct=missGIR.length?Math.round(scrambleSaves/missGIR.length*100):null;
+
+  // UP & DOWN: par or better from around green (misses GIR excl bunker context)
+  const upDownOpp=missGIR.length;
+  const upDownMade=scrambleSaves;
+
+  // PENALTIES / BIG NUMBERS: double bogey or worse count and which holes
+  const bigNumbers=holes.filter(h=>h.score>=h.par+2);
+  const strokesLostBig=bigNumbers.reduce((a,h)=>a+(h.score-h.par-1),0); // strokes above bogey
+
+  // BIRDIE CONVERSIONS: GIR holes where we made birdie or better
+  const girHoles=holes.filter(h=>h.gir===true);
+  const birConv=girHoles.length?Math.round(girHoles.filter(h=>h.score<h.par).length/girHoles.length*100):null;
+
+  // PAR 3 / PAR 4 / PAR 5 performance
+  const byPar={};
+  [3,4,5].forEach(p=>{
+    const ph=holes.filter(h=>h.par===p);
+    if(!ph.length){byPar[p]=null;return;}
+    byPar[p]={
+      avg:(ph.reduce((a,h)=>a+h.score,0)/ph.length).toFixed(2),
+      diff:+(ph.reduce((a,h)=>a+(h.score-h.par),0)/ph.length).toFixed(2),
+      n:ph.length
+    };
+  });
+
+  // FIRST 9 vs SECOND 9
+  const front=holes.filter(h=>h.h<=9),back=holes.filter(h=>h.h>9);
+  const frontScore=front.reduce((a,h)=>a+h.score,0);
+  const backScore=back.reduce((a,h)=>a+h.score,0);
+  const frontPar=front.reduce((a,h)=>a+h.par,0);
+  const backPar=back.reduce((a,h)=>a+h.par,0);
+
   const cm={};
-  holes.forEach(h=>(h.shots||[]).forEach(s=>{if(!s.c||s.c==='?')return;if(!cm[s.c])cm[s.c]={bueno:0,ok:0,malo:0,t:0};cm[s.c][s.q]++;cm[s.c].t++;}));
+  holes.forEach(h=>(h.shots||[]).forEach(s=>{
+    if(!s.c||s.c==='?')return;
+    if(!cm[s.c])cm[s.c]={bueno:0,ok:0,malo:0,t:0,dists:[]};
+    cm[s.c][s.q]++;cm[s.c].t++;
+    if(s.d)cm[s.c].dists.push(s.d);
+  }));
   const all=holes.flatMap(h=>h.shots||[]);
-  return{ts,tp,diff:ts-tp,tpu,avgP:pH2.length?(tpu/pH2.length).toFixed(1):null,
+  const sg=calcSG(holes);
+
+  return{
+    ts,tp,diff:ts-tp,tpu,
+    avgP:pH2.length?(tpu/pH2.length).toFixed(1):null,
     fwPct:fwH.length?Math.round(fwOk/fwH.length*100):null,
     girPct:gH.length?Math.round(gOk/gH.length*100):null,
-    bkCt:bkH.length,bkPct:bkH.length?Math.round(bkS/bkH.length*100):0,
-    tp3,bir,par,bog,dbl,cm,total:holes.length,
-    noC:all.filter(s=>/commit|confianza/i.test(s.r||'')).length,
-    fat:all.filter(s=>/\bfat\b/i.test((s.r||'')+(s.raw||''))).length,
-    left:all.filter(s=>/izq|left|pull/i.test(s.r||'')).length};
+    bkCt:bkH.length,bkPct:bkH.length?Math.round(bkS/bkH.length*100):0,bkSaves:bkS,
+    tp3,bir,par,bog,dbl,tri,
+    scramblePct,scrambleSaves,missGIR:missGIR.length,
+    upDownOpp,upDownMade,
+    bigNumbers:bigNumbers.length,strokesLostBig,
+    birConv,girHoles:girHoles.length,
+    byPar,
+    frontScore,backScore,frontPar,backPar,
+    front9:(front.length>0?frontScore:null),
+    back9:(back.length>0?backScore:null),
+    cm,total:holes.length,sg,
+    noC:all.filter(s=>/sin commit/i.test(s.r||'')).length,
+    fat:all.filter(s=>/\bfat\b/i.test(s.r||'')).length,
+    left:all.filter(s=>/Izq\.|Pull/i.test(s.r||'')).length,
+    eagles:holes.filter(h=>h.score<=h.par-2).length,
+    penalties
+  };
 }
 
 function eH(rounds){
-  const v=rounds.filter(r=>r.holes&&r.holes.length>=9);if(!v.length)return null;
-  const d=v.map(r=>{const ts=r.holes.reduce((a,h)=>a+h.score,0),tp=r.holes.reduce((a,h)=>a+h.par,0);return ts-tp;});
-  d.sort((a,b)=>a-b);const best=d.slice(0,Math.max(1,Math.floor(d.length*.4)));
+  const v=rounds.filter(r=>r.holes&&r.holes.length>=9);
+  if(!v.length)return null;
+  const d=v.map(r=>{
+    const ts=r.holes.reduce((a,h)=>a+h.score,0);
+    const tp=r.holes.reduce((a,h)=>a+h.par,0);
+    return ts-tp;
+  });
+  d.sort((a,b)=>a-b);
+  const best=d.slice(0,Math.max(1,Math.floor(d.length*.4)));
   return(best.reduce((a,x)=>a+x,0)/best.length*.96).toFixed(1);
 }
 
+function clubDisplay(cl){
+  const map={'3M':'Madera 3','5M':'Madera 5','7M':'Madera 7',
+    '2H':'Híbrido 2','3H':'Híbrido 3','4H':'Híbrido 4','5H':'Híbrido 5',
+    '6H':'Híbrido 6','7H':'Híbrido 7','8H':'Híbrido 8','9H':'Híbrido 9',
+    '2I':'Hierro 2','3I':'Hierro 3','4I':'Hierro 4','5I':'Hierro 5',
+    '6I':'Hierro 6','7I':'Hierro 7','8I':'Hierro 8','9I':'Hierro 9',
+    'PW':'PW','AW':'AW','GW':'GW','SW':'SW','LW':'LW',
+    'Driver':'Driver','Putter':'Putter'};
+  return map[cl]||cl;
+}
+function avgDist(dists){
+  if(!dists||!dists.length)return null;
+  return Math.round(dists.reduce((a,d)=>a+d,0)/dists.length);
+}
+
+// ═══════════════════════════════════════════════════════
+// COLOR HELPERS
+// ═══════════════════════════════════════════════════════
 function qC(q){return q==='bueno'?'var(--ak)':q==='ok'?'var(--yel)':'var(--red)'}
-function qI(q){return q==='bueno'?'✓':q==='ok'?'~':'✗'}
+function qI(q){return q==='bueno'?'✓':q==='ok'?'·':'✗'}
 function hC(h){return h.score<h.par?'var(--ak)':h.score===h.par?'var(--blu)':h.score===h.par+1?'var(--yel)':'var(--red)'}
 function hL(h){return h.score<h.par?'BIRDIE':h.score===h.par?'PAR':h.score===h.par+1?'BOGEY':`+${h.score-h.par}`}
 function hLF(h){return h.score<=h.par-2?'EAGLE':h.score===h.par-1?'BIRDIE':h.score===h.par?'PAR':h.score===h.par+1?'BOGEY':h.score===h.par+2?'DOBLE':'TRIPLE+'}
 function dC(d){return d<0?'var(--ak)':d===0?'var(--blu)':d===1?'var(--yel)':'var(--red)'}
 function sCl(s,p){const d=s-p;return d<0?'s-bir':d===0?'s-par':d===1?'s-bog':d===2?'s-dbl':'s-tri'}
+function sCl2(s,p){const d=s-p;if(d<=-2)return's-eag';return sCl(s,p);}
 function pac(p){return p==='mac'?'var(--mac)':'var(--ak)'}
 function pac2(p){return p==='mac'?'mac':'ak'}
+function sgC(v){return v>0?'var(--ak)':v<0?'var(--red)':'var(--t3)'}
+function sgCl(v){return v>0?'pos':v<0?'neg':'neu'}
 
+// ═══════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════
 function render(){
-  const isVS=AP==='vs',pd=isVS?null:data[AP];
-  const rounds=pd?pd.rounds:[],round=rounds[AR],stats=round?cS(round.holes):null;
+  const isVS=AP==='vs';
+  const pd=isVS?null:data[AP];
+  const rounds=pd?pd.rounds:[];
+  const round=rounds[AR];
+  const stats=round?cS(round.holes):null;
   const hAK=eH(data.ak.rounds),hMAC=eH(data.mac.rounds);
-  document.getElementById('hcpAK').textContent=hAK!=null?`HCP +${hAK}`:'HCP —';
-  document.getElementById('hcpMAC').textContent=hMAC!=null?`HCP +${hMAC}`:'HCP —';
+
+  // Player bar
+  document.getElementById('hcpAK').textContent=hAK!=null?`+${hAK}`:'—';
+  document.getElementById('hcpMAC').textContent=hMAC!=null?`+${hMAC}`:'—';
   ['ak','mac','vs'].forEach(p=>{
-    const ids={ak:'pswAK',mac:'pswMAC',vs:'pswVS'};
-    document.getElementById(ids[p]).className='psw-btn'+(AP===p?' '+(p==='vs'?'vs-on':p+'-on'):'');
+    const ids={ak:'pbAK',mac:'pbMAC',vs:'pbVS'};
+    document.getElementById(ids[p]).className='pb'+(AP===p?' '+(p==='vs'?'vs-on':p+'-on'):'');
   });
+
   const fab=document.getElementById('fab');
   fab.style.display=isVS?'none':'flex';
   fab.className='fab '+(AP==='mac'?'mac':'ak');
   document.getElementById('tabs').style.display=isVS?'none':'flex';
 
+  // VS mode
   if(isVS){
     document.getElementById('hdrC').textContent='AK vs Macarena';
-    document.getElementById('hdrM').textContent='Comparativa de rendimiento';
+    document.getElementById('hdrM').innerHTML='';
     document.getElementById('hdrN').textContent='VS';
     document.getElementById('hdrN').style.color='var(--blu)';
-    document.getElementById('hdrD').textContent='';document.getElementById('hdrH').textContent='';
-    document.getElementById('rcw').style.display='none';
-    document.getElementById('bbar').textContent='Golf Tracker · Kowalski';
+    document.getElementById('hdrD').textContent='';
+    document.getElementById('hdrH').textContent='';
+    document.getElementById('rcWrap').style.display='none';
+    document.getElementById('bbar').textContent='Comparativa · Golf Kowalski';
     renderVS();return;
   }
 
-  const rcw=document.getElementById('rcw'),rc=document.getElementById('rc');
+  // Round chips
+  const rcw=document.getElementById('rcWrap'),rc=document.getElementById('rc');
   if(rounds.length>1){
     rcw.style.display='';
-    rc.innerHTML=rounds.map((r,i)=>{const s=cS(r.holes);return`<button class="rchip${i===AR?' on '+pac2(AP):''}" onclick="selR(${i})">${r.date} · ${r.course.split(' ').slice(0,2).join(' ')}${s?` · ${s.ts}`:''}</button>`;}).join('');
+    rc.innerHTML=rounds.map((r,i)=>{
+      const s=cS(r.holes);
+      return`<button class="rchip${i===AR?' on '+pac2(AP):''}" onclick="selR(${i})">${r.date} · ${r.course.split(' ').slice(0,2).join(' ')}${s?` · ${s.ts}`:''}</button>`;
+    }).join('');
   }else rcw.style.display='none';
-  document.querySelectorAll('.tabB').forEach((t,i)=>t.classList.toggle('on',['stats','card','clubs','evo'][i]===AT));
+
+  document.querySelectorAll('.tabB').forEach((t,i)=>t.classList.toggle('on',['stats','card','analisis','evo'][i]===AT));
 
   if(!round){
     document.getElementById('hdrC').textContent='Sin rondas';
-    document.getElementById('hdrM').textContent=AP==='ak'?'AK':'Macarena';
-    document.getElementById('hdrN').textContent='—';document.getElementById('hdrN').style.color='var(--mu)';
+    document.getElementById('hdrM').innerHTML='';
+    document.getElementById('hdrN').textContent='—';
+    document.getElementById('hdrN').style.color='var(--t3)';
     document.getElementById('hdrD').textContent='';document.getElementById('hdrH').textContent='';
-    document.getElementById('bbar').textContent='Golf Tracker · Kowalski';
-    document.getElementById('scroll').innerHTML=`<div class="empty"><div class="empty-ico">⛳</div>Sin rondas todavía.<br>Pulsa <strong style="color:${pac(AP)}">+</strong> para añadir la primera.</div>`;
+    document.getElementById('bbar').textContent='Golf · Kowalski';
+    document.getElementById('scroll').innerHTML=`<div class="empty"><span class="empty-ico">⛳</span>Sin rondas todavía.<br>Pulsa <strong style="color:${pac(AP)}">+</strong> para añadir la primera.</div>`;
     return;
   }
 
   const tL=round.tee==='rojas'?'🔴 Rojas':'🟡 Amarillas';
   document.getElementById('hdrC').textContent=round.course;
-  document.getElementById('hdrM').textContent=`${round.date}${round.city?' · '+round.city:''} · ${tL}`;
+  document.getElementById('hdrM').innerHTML=`<span>${round.date}</span><span class="hdr-meta-dot"></span><span>${round.city||''}</span><span class="hdr-meta-dot"></span><span>${tL}</span>${round.tournament?'<span class="hdr-meta-dot"></span><span>Torneo</span>':''}`;
   const hcp=AP==='ak'?hAK:hMAC;
+
   if(stats){
-    document.getElementById('hdrN').textContent=stats.ts;document.getElementById('hdrN').style.color=pac(AP);
+    document.getElementById('hdrN').textContent=stats.ts;
+    document.getElementById('hdrN').style.color=pac(AP);
     const d=stats.diff;
-    document.getElementById('hdrD').textContent=d>=0?`+${d}`:String(d);document.getElementById('hdrD').style.color=dC(d);
-    document.getElementById('hdrH').textContent=`${stats.total}h · Par ${stats.tp}`;
-    document.getElementById('bbar').textContent=`Par ${stats.tp} · ${stats.total} hoyos · HCP est. ${hcp?'+'+hcp:'—'}`;
+    document.getElementById('hdrD').textContent=d>=0?`+${d}`:String(d);
+    document.getElementById('hdrD').style.color=dC(d);
+    document.getElementById('hdrH').textContent=`${stats.total} hoyos · Par ${stats.tp}`;
+    document.getElementById('bbar').textContent=`Par ${stats.tp} · HCP est. ${hcp?'+'+hcp:'—'} · ${stats.total} hoyos`;
   }
 
   let html='';
 
+  // ─────────────────────────────────────────────────────
+  // STATS TAB
+  // ─────────────────────────────────────────────────────
   if(AT==='stats'&&stats){
-    if(hcp!=null)html+=`<div class="hcp-box ${pac2(AP)}"><div class="hcp-val" style="color:${pac(AP)}">+${hcp}</div><div class="hcp-sub">Handicap estimado<br>${rounds.length} ronda${rounds.length>1?'s':''} · simplificado</div></div>`;
-    html+=`<div class="sgrid">
-      <div class="scell"><div class="sval" style="color:${pac(AP)}">${stats.ts}</div><div class="slb">Score</div><div class="ssb">Par ${stats.tp}</div></div>
-      <div class="scell"><div class="sval" style="color:var(--blu)">${stats.tpu??'—'}</div><div class="slb">Putts</div>${stats.avgP?`<div class="ssb">${stats.avgP}/h</div>`:''}</div>
-      <div class="scell"><div class="sval" style="color:var(--pur)">${stats.fwPct!=null?stats.fwPct+'%':'—'}</div><div class="slb">FW</div></div>
-      <div class="scell"><div class="sval" style="color:var(--yel)">${stats.girPct!=null?stats.girPct+'%':'—'}</div><div class="slb">GIR</div></div>
-    </div>
-    <div class="sgrid" style="margin-bottom:12px">
-      <div class="scell"><div class="sval" style="color:var(--ak)">${stats.bir}</div><div class="slb">Birdies</div></div>
-      <div class="scell"><div class="sval" style="color:var(--blu)">${stats.par}</div><div class="slb">Pares</div></div>
-      <div class="scell"><div class="sval" style="color:var(--yel)">${stats.bog}</div><div class="slb">Bogeys</div></div>
-      <div class="scell"><div class="sval" style="color:var(--red)">${stats.dbl}</div><div class="slb">+2 o más</div></div>
-    </div>`;
-
-    // Distribución
-    const items=[{l:'Eagle+',v:round.holes.filter(h=>h.score<=h.par-2).length,c:'var(--yel)'},{l:'Birdie',v:stats.bir,c:'var(--ak)'},{l:'Par',v:stats.par,c:'var(--blu)'},{l:'Bogey',v:stats.bog,c:'var(--yel)'},{l:'+2',v:stats.dbl,c:'var(--red)'}];
-    const mxV=Math.max(...items.map(i=>i.v),1);
-    html+=`<div class="cc"><div class="ct">Distribución de resultados</div><div class="mbars">
-      ${items.map(i=>`<div class="mbw"><div class="mb" style="background:${i.c};height:${Math.max(2,Math.round(i.v/mxV*44))}px"></div><div class="mbl" style="color:${i.c}">${i.v}</div><div class="mbl">${i.l}</div></div>`).join('')}
-    </div></div>`;
-
-    // Putting
-    if(stats.avgP){
-      const av=parseFloat(stats.avgP),g=av<=2.0;
-      html+=`<div class="cc"><div class="ct">Putting</div><div class="putt-row">
-        <div class="putt-circ" style="border-color:${g?'var(--blu)':'var(--yel)'}">
-          <div class="putt-num" style="color:${g?'var(--blu)':'var(--yel)'}">${stats.avgP}</div>
-          <div class="putt-unit">p/hoyo</div>
-        </div>
-        <div style="flex:1">
-          <div style="font-size:11px;color:#aaa;margin-bottom:8px"><span style="color:${g?'var(--ak)':'var(--yel)'};font-weight:700">${stats.tpu} putts</span> en ${stats.total} hoyos${stats.tp3>0?` · <span style="color:var(--red);font-weight:700">${stats.tp3}×</span> 3-putts`:''}</div>
-          <div class="pbar-bg"><div class="pbar-fill" style="width:${Math.min(100,av/3*100)}%;background:${g?'var(--blu)':'var(--yel)'}"></div></div>
-          <div class="pbar-lbl"><span>0</span><span style="color:var(--ak)">≤2.0 obj.</span><span>3+</span></div>
-        </div>
-      </div></div>`;
+    // HCP
+    if(hcp!=null){
+      const trend=rounds.length>=2?calcTrend(rounds):'';
+      html += '<div class="hcp-box ' + pac2(AP) + '">';
+      html += '<div class="hcp-row">';
+      html += '<div class="hcp-val" style="color:' + pac(AP) + '">+' + hcp + '</div>';
+      if(trend){
+        const tClr = trend.dir>0 ? 'var(--red)' : 'var(--ak)';
+        const tBg = trend.dir>0 ? 'rgba(255,107,107,.1)' : 'rgba(61,220,132,.1)';
+        const tArrow = trend.dir>0 ? '↑' : '↓';
+        html += '<div class="hcp-trend" style="color:' + tClr + ';background:' + tBg + '">' + tArrow + ' ' + Math.abs(trend.val) + '</div>';
+      }
+      html += '</div>';
+      html += '<div class="hcp-sub">Handicap estimado · ' + rounds.length + ' ronda' + (rounds.length!==1?'s':'') + ' · cálculo simplificado</div>';
+      html += '</div>';
     }
 
-    if(stats.bkCt>0)html+=`<div class="cc" style="border-left:3px solid var(--ora)"><div class="ct" style="color:var(--ora)">Bunkers</div><div style="display:flex;align-items:center;gap:16px"><div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--ora)">${stats.bkPct}%</div><div style="font-size:11px;color:var(--mu)">${stats.bkCt} bunkers · ${round.holes.filter(h=>h.bk&&h.bs).length} saves</div></div></div>`;
+    // Main stats
+    html+=`<div class="sgrid">
+      <div class="scell"><div class="sv" style="color:${pac(AP)}">${stats.ts}</div><div class="sl">Score</div><div class="ss">Par ${stats.tp}</div></div>
+      <div class="scell"><div class="sv" style="color:var(--blu)">${stats.avgP??'—'}</div><div class="sl">Putts/H</div><div class="ss">${stats.tpu} total</div></div>
+      <div class="scell"><div class="sv" style="color:var(--pur)">${stats.fwPct!=null?stats.fwPct+'%':'—'}</div><div class="sl">FW</div></div>
+      <div class="scell"><div class="sv" style="color:var(--yel)">${stats.girPct!=null?stats.girPct+'%':'—'}</div><div class="sl">GIR</div></div>
+    </div>
+    <div class="sgrid" style="margin-bottom:6px">
+      <div class="scell"><div class="sv" style="color:var(--ak)">${stats.bir}</div><div class="sl">Birdies</div></div>
+      <div class="scell"><div class="sv" style="color:var(--blu)">${stats.par}</div><div class="sl">Pares</div></div>
+      <div class="scell"><div class="sv" style="color:var(--yel)">${stats.bog}</div><div class="sl">Bogeys</div></div>
+      <div class="scell"><div class="sv" style="color:var(--red)">${stats.dbl}</div><div class="sl">+2 o más</div></div>
+    </div>`;
 
+    // SCRAMBLING + UP&DOWN — la stat más importante del juego corto
+    if(stats.scramblePct!==null){
+      const scrColor=stats.scramblePct>=50?'var(--ak)':stats.scramblePct>=33?'var(--yel)':'var(--red)';
+      const scrBench=stats.scramblePct>=50?'✓ Nivel Tour':'↑ Zona de mejora';
+      html+=`<div class="cc" style="margin-bottom:6px">
+        <div class="ct">Juego corto / Scrambling<span style="color:var(--t4)">Objetivo ≥ 50%</span></div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <div style="text-align:center;flex-shrink:0">
+            <div style="font-family:DM Serif Display,serif;font-size:44px;line-height:1;color:${scrColor}">${stats.scramblePct}%</div>
+            <div style="font-size:9px;color:${scrColor};margin-top:2px;font-family:JetBrains Mono,monospace">${scrBench}</div>
+          </div>
+          <div style="flex:1">
+            <div style="background:var(--s3);border-radius:4px;height:8px;overflow:hidden;margin-bottom:6px">
+              <div style="width:${Math.min(100,stats.scramblePct)}%;height:100%;background:${scrColor};border-radius:4px"></div>
+            </div>
+            <div style="font-size:10px;color:var(--t2);line-height:1.8">
+              <span style="color:${scrColor};font-weight:600">${stats.scrambleSaves}</span> pares o mejor de <span style="font-weight:600">${stats.missGIR}</span> greens fallados<br>
+              <span style="font-size:9px;color:var(--t3)">Subir del 33% al 50% = −3 golpes por ronda</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    // GRANDES NÚMEROS — dobles bogeys y peor
+    if(stats.bigNumbers>0){
+      html+=`<div class="cc" style="border-left:2px solid var(--red);margin-bottom:6px">
+        <div class="ct" style="color:var(--red)">Grandes números<span style="color:var(--t4)">+2 o peor</span></div>
+        <div style="display:flex;gap:16px;align-items:center">
+          <div style="text-align:center">
+            <div style="font-family:DM Serif Display,serif;font-size:36px;color:var(--red)">${stats.bigNumbers}</div>
+            <div style="font-size:8px;color:var(--t3);font-family:JetBrains Mono,monospace">hoyos</div>
+          </div>
+          <div style="font-size:10px;color:var(--t2);flex:1;line-height:1.8">
+            ${stats.strokesLostBig} golpe${stats.strokesLostBig!==1?'s':''} de doble bogey o peor<br>
+            <span style="font-size:9px;color:var(--t3)">Con HCP +10, un hoyo de +3 o más destruye la tarjeta — gestiona el riesgo antes de atacar</span>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    // PAR 3 / PAR 4 / PAR 5 breakdown
+    const p3=stats.byPar[3],p4=stats.byPar[4],p5=stats.byPar[5];
+    if(p3||p4||p5){
+      html+=`<div class="sgrid two" style="margin-bottom:6px">
+        ${p3?`<div class="scell"><div class="sv" style="color:${dC(p3.diff)}">${p3.diff>0?'+':''}${p3.diff}</div><div class="sl">Par 3</div><div class="ss">${p3.avg} media · ${p3.n}h</div></div>`:''}
+        ${p4?`<div class="scell"><div class="sv" style="color:${dC(p4.diff)}">${p4.diff>0?'+':''}${p4.diff}</div><div class="sl">Par 4</div><div class="ss">${p4.avg} media · ${p4.n}h</div></div>`:''}
+        ${p5?`<div class="scell"><div class="sv" style="color:${dC(p5.diff)}">${p5.diff>0?'+':''}${p5.diff}</div><div class="sl">Par 5</div><div class="ss">${p5.avg} media · ${p5.n}h</div></div>`:''}
+        ${stats.girHoles>0&&stats.birConv!=null?`<div class="scell"><div class="sv" style="color:var(--ak)">${stats.birConv}%</div><div class="sl">Conv. birdie</div><div class="ss">${stats.girHoles} GIR</div></div>`:''}
+      </div>`;
+    }
+
+    // FRONT 9 / BACK 9
+    if(stats.front9!=null&&stats.back9!=null&&stats.total>=18){
+      const f9d=stats.frontScore-stats.frontPar,b9d=stats.backScore-stats.backPar;
+      html+=`<div class="cc" style="margin-bottom:12px">
+        <div class="ct">Salida vs Vuelta</div>
+        <div style="display:flex;gap:8px">
+          <div style="flex:1;text-align:center;background:var(--s2);border-radius:10px;padding:10px">
+            <div style="font-size:9px;color:var(--t3);font-family:JetBrains Mono,monospace;margin-bottom:4px">SALIDA (1-9)</div>
+            <div style="font-family:DM Serif Display,serif;font-size:28px;color:${dC(f9d)}">${stats.frontScore}</div>
+            <div style="font-size:10px;color:${dC(f9d)};font-family:JetBrains Mono,monospace;font-weight:700">${f9d>0?'+':''}${f9d}</div>
+          </div>
+          <div style="flex:1;text-align:center;background:var(--s2);border-radius:10px;padding:10px">
+            <div style="font-size:9px;color:var(--t3);font-family:JetBrains Mono,monospace;margin-bottom:4px">VUELTA (10-18)</div>
+            <div style="font-family:DM Serif Display,serif;font-size:28px;color:${dC(b9d)}">${stats.backScore}</div>
+            <div style="font-size:10px;color:${dC(b9d)};font-family:JetBrains Mono,monospace;font-weight:700">${b9d>0?'+':''}${b9d}</div>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    // Score distribution
+    const dItems=[
+      {l:'Eagle',v:stats.eagles,c:'var(--yel)'},
+      {l:'Birdie',v:stats.bir,c:'var(--ak)'},
+      {l:'Par',v:stats.par,c:'var(--blu)'},
+      {l:'Bogey',v:stats.bog,c:'var(--yel)'},
+      {l:'+2',v:stats.dbl,c:'var(--red)'}
+    ].filter(i=>i.v>0||i.l==='Par'||i.l==='Bogey');
+    const mxV=Math.max(...dItems.map(i=>i.v),1);
+    html+=`<div class="cc"><div class="ct">Distribución<span style="color:var(--t4)">${stats.total} hoyos</span></div>
+      <div class="dist-bars">
+        ${dItems.map(i=>`<div class="dist-col">
+          <div class="dist-num" style="color:${i.c}">${i.v}</div>
+          <div class="dist-bar" style="background:${i.c};height:${Math.max(3,Math.round(i.v/mxV*44))}px"></div>
+          <div class="dist-lbl">${i.l}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+
+    // Putting with ring
+    if(stats.avgP){
+      const av=parseFloat(stats.avgP),g=av<=2.0;
+      const pct=Math.min(100,av/3*100);
+      const r=32,circ=2*Math.PI*r;
+      const stroke=circ*(1-pct/100);
+      html+=`<div class="cc"><div class="ct">Putting</div>
+        <div class="putt-layout">
+          <div class="putt-ring">
+            <svg viewBox="0 0 76 76" width="76" height="76">
+              <circle cx="38" cy="38" r="${r}" fill="none" stroke="var(--s3)" stroke-width="5"/>
+              <circle cx="38" cy="38" r="${r}" fill="none" stroke="${g?'var(--blu)':'var(--yel)'}" stroke-width="5" stroke-dasharray="${circ}" stroke-dashoffset="${stroke}" stroke-linecap="round"/>
+            </svg>
+            <div class="putt-center">
+              <div class="putt-big" style="color:${g?'var(--blu)':'var(--yel)'}">${stats.avgP}</div>
+              <div class="putt-unit">p/hoyo</div>
+            </div>
+          </div>
+          <div class="putt-stats">
+            <div class="putt-stat-row"><span class="putt-stat-lbl">Total putts</span><span class="putt-stat-val" style="color:var(--blu)">${stats.tpu}</span></div>
+            <div class="putt-stat-row"><span class="putt-stat-lbl">3-putts</span><span class="putt-stat-val" style="color:${stats.tp3>1?'var(--red)':'var(--t2)'}">${stats.tp3}</span></div>
+            <div class="putt-stat-row"><span class="putt-stat-lbl">Objetivo</span><span class="putt-stat-val" style="color:var(--t3)">≤ 2.0</span></div>
+            <div class="putt-stat-row"><span class="putt-stat-lbl">Estado</span><span class="putt-stat-val" style="color:${g?'var(--ak)':'var(--yel)'}">${g?'✓ Bien':'↑ Mejorar'}</span></div>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    // Bunkers
+    if(stats.bkCt>0){
+      html+=`<div class="cc" style="border-left:2px solid var(--ora)"><div class="ct" style="color:var(--ora)">Bunkers</div>
+        <div style="display:flex;align-items:center;gap:20px">
+          <div style="font-family:DM Serif Display,serif;font-size:44px;color:var(--ora)">${stats.bkPct}%</div>
+          <div style="font-size:11px;color:var(--t2);line-height:2">${stats.bkCt} bunkers · ${stats.bkSaves} saves<br>
+            <span style="color:${stats.bkPct>=50?'var(--ak)':'var(--red)'}">Objetivo ≥ 50%</span>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    // Holes
     html+=`<div class="slbl">Hoyos</div>`;
     [...round.holes].sort((a,b)=>a.h-b.h).forEach(h=>{
       const col=hC(h),lbl=hL(h),ch=getCH(round.courseId,round.tee,h.h),open=EX.has(h.h);
       const diff=h.score-h.par,dS=diff===0?'E':diff>0?`+${diff}`:String(diff);
       html+=`<div class="hc" style="border-left-color:${col}" onclick="togExp(${h.h})">
-        <div class="hch"><div class="hnum" style="color:${col}">H${h.h}</div>
-          <div class="hbadges">${ch.m?`<span class="badge b-d">${ch.m}m`+`</span>`:''}${h.bk?'<span class="badge b-bk">Bk</span>':''}${h.putts>=3?'<span class="badge b-3p">3P</span>':''}</div>
+        <div class="hch">
+          <div class="hnum">Hoyo ${h.h}</div>
+          <div class="hbadges">
+            ${ch.m?`<span class="badge b-dist">${ch.m}m</span>`:''}
+            ${h.bk?`<span class="badge b-bk">Bunker</span>`:''}${h.pen?`<span class="badge" style="color:var(--red);background:rgba(255,107,107,.1)">OB/Pen</span>`:''}
+            ${h.putts>=3?`<span class="badge b-3p">3 putts</span>`:''}
+          </div>
           <div class="hright">
             <div class="hpar"><div class="hpar-l">Par</div><div class="hpar-n">${h.par}</div></div>
-            <div class="hscbox"><div class="hres" style="color:${col}">${lbl}</div><div class="hscn" style="color:${col}">${h.score}</div><div class="hdiff" style="color:${col}">${dS}</div></div>
+            <div class="hscbox">
+              <div class="hres" style="color:${col}">${lbl}</div>
+              <div class="hscn" style="color:${col}">${h.score}</div>
+              <div class="hdiff" style="color:${col}">${dS}</div>
+            </div>
           </div>
         </div>
         <div class="hbody${open?' open':''}">
-          <div class="hmeta">${(h.shots||[]).length?`<span>🏌️ ${h.shots.length} golpes</span>`:''}${h.putts!=null?`<span>🎯 ${h.putts} putts</span>`:''}${h.fw!=null?`<span style="color:${h.fw?'var(--ak)':'var(--red)'}">${h.fw?'✓':'✗'} FW</span>`:''}${h.gir!=null?`<span style="color:${h.gir?'var(--ak)':'var(--red)'}">${h.gir?'✓':'✗'} GIR</span>`:''}
+          <div class="hmeta">
+            ${(h.shots||[]).length?`<span>🏌️ ${h.shots.length} golpes</span>`:''}
+            ${h.putts!=null?`<span>🎯 ${h.putts} putts</span>`:''}
+            ${h.fw!=null?`<span style="color:${h.fw?'var(--ak)':'var(--red)'}">${h.fw?'✓':'✗'} FW</span>`:''}
+            ${h.gir!=null?`<span style="color:${h.gir?'var(--ak)':'var(--red)'}">${h.gir?'✓':'✗'} GIR</span>`:''}${h.pen?`<span style="color:var(--red)">⚠️ Penalización</span>`:''}
           </div>
-          ${(h.shots||[]).map(s=>`<div class="srow"><div class="sdot" style="background:${qC(s.q)}">${qI(s.q)}</div><span class="sclub">${s.c}</span><span class="sres">${s.r}${s.d?` <span style="color:var(--dim)">${s.d}m</span>`:''}</span></div>`).join('')}
+          ${(h.shots||[]).map(s=>`<div class="srow">
+            <div class="sdot" style="background:${qC(s.q)}">${qI(s.q)}</div>
+            <span class="sclub">${s.c}</span>
+            <span class="sres">${s.r}${s.d?` <span style="color:var(--t4);font-family:JetBrains Mono,monospace;font-size:9px">${s.d}m</span>`:''}</span>
+          </div>`).join('')}
           ${h.notes?`<div class="hnote">📝 ${h.notes}</div>`:''}
         </div>
       </div>`;
     });
 
+    // Error patterns
     const pats=[
-      {i:'🧠',l:'Sin commit / confianza',v:stats.noC,c:'var(--pur)',t:'Decide el palo antes de acercarte. Ejecuta sin dudar.'},
-      {i:'⬅️',l:'Tiros izquierda / pulled',v:stats.left,c:'var(--red)',t:'Tendencia consistente. Revisa alineación de hombros.'},
-      {i:'💥',l:'Fat shots',v:stats.fat,c:'var(--ora)',t:'Falta de convicción. Transfiere el peso al golpe.'},
-      {i:'🎯',l:'3-putts',v:stats.tp3,c:'var(--blu)',t:'Trabaja la velocidad en putts de 5-8 metros.'}
+      {i:'🧠',l:'Sin commit',v:stats.noC,c:'var(--pur)',
+       desc:'Falta de convicción en la ejecución.',
+       tip:'Rutina pre-shot obligatoria. Decide el palo, visualiza el vuelo, ejecuta sin dudar. Si tienes dudas, toma un paso atrás y empieza de nuevo.'},
+      {i:'⬅️',l:'Tiros izquierda / Pull',v:stats.left,c:'var(--red)',
+       desc:'Tendencia consistente de salida a la izquierda.',
+       tip:'Revisa la alineación de hombros — probablemente cerrados. En el driver, siente que el hombro derecho va hacia abajo en la bajada, no hacia afuera.'},
+      {i:'💥',l:'Fat shots',v:stats.fat,c:'var(--ora)',
+       desc:'Contacto con el suelo antes de la bola.',
+       tip:'Transfiere el peso hacia el lado izquierdo antes de impacto. El fat está relacionado con tu falta de commit — más confianza, más peso adelante.'},
+      {i:'🎯',l:'3-putts',v:stats.tp3,c:'var(--blu)',
+       desc:'Gestión de distancia en putts largos.',
+       tip:'En putts de más de 6 metros, el objetivo es la zona, no el hoyo. Practica "lag putting": termina a menos de 1 metro del hoyo desde 8-10 metros.'}
     ].filter(p=>p.v>0);
     if(pats.length){
       html+=`<div class="slbl">Patrones de error</div>`;
-      pats.forEach(p=>html+=`<div class="pat" style="border-left-color:${p.c}"><div class="pat-ico">${p.i}</div><div style="flex:1"><div class="pat-lbl"><span>${p.l}</span><span class="pat-cnt" style="color:${p.c}">${p.v}×</span></div><div class="pat-desc">${p.t}</div></div></div>`);
+      pats.forEach(p=>html+=`<div class="pat" style="border-left-color:${p.c}">
+        <div class="pat-ico">${p.i}</div>
+        <div style="flex:1">
+          <div class="pat-lbl"><span>${p.l}</span><span class="pat-cnt" style="color:${p.c}">${p.v}×</span></div>
+          <div class="pat-desc">${p.desc}</div>
+          <div class="pat-tip">${p.tip}</div>
+        </div>
+      </div>`);
     }
   }
 
+  // ─────────────────────────────────────────────────────
+  // SCORECARD TAB
+  // ─────────────────────────────────────────────────────
   else if(AT==='card'){
     const oh={};round.holes.forEach(h=>oh[h.h]=h);
     const ci=CR[round.courseId],td=ci?ci.tees[round.tee||'amarillas']:null;
     const ch=td?td.holes:Array.from({length:18},(_,i)=>({h:i+1,par:oh[i+1]?.par||4,m:null,hcp:null}));
-    let ts=0,tp=0,tpu=0;
-    html+=`<div style="background:var(--s1);border:1px solid var(--b);border-radius:16px;overflow:hidden"><table class="sct"><thead><tr><th>H</th><th>Par</th><th>m</th><th>HCP</th><th>Score</th><th>+/−</th><th>Putts</th></tr></thead><tbody>`;
-    ch.forEach(c=>{
+    let ts=0,tp=0,tpu=0,ts1=0,tp1=0,ts2=0,tp2=0;
+
+    html+=`<div class="sct-wrap"><table class="sct"><thead><tr>
+      <th>Hoyo</th><th>Par</th><th>m</th><th>HCP</th><th>Score</th><th>+/−</th><th>Putts</th>
+    </tr></thead><tbody>`;
+
+    ch.forEach((c,idx)=>{
       const h=oh[c.h];
+      // Separator between front/back 9
+      if(idx===9){
+        html+=`<tr class="sc-out"><td colspan="2" style="text-align:left;padding-left:8px;color:var(--t3)">OUT</td><td style="color:var(--blu)">${td?Math.round(td.total/2):'—'}</td><td></td><td style="color:${pac(AP)}">${ts1}</td><td style="color:${dC(ts1-tp1)}">${ts1-tp1>=0?'+':''}${ts1-tp1}</td><td style="color:var(--t2)">${tpu}</td></tr>`;
+      }
       if(h){
-        ts+=h.score;tp+=h.par;if(h.putts!=null)tpu+=h.putts;
+        ts+=h.score;tp+=h.par;
+        if(h.putts!=null)tpu+=h.putts;
+        if(idx<9){ts1+=h.score;tp1+=h.par;}
+        else{ts2+=h.score;tp2+=h.par;}
         const d=h.score-h.par,ds=d<0?String(d):d===0?'E':`+${d}`;
-        let sc;if(d<=-2)sc=`<span class="s-eag">${h.score}</span>`;else if(d===-1)sc=`<span class="s-bir">${h.score}</span>`;else sc=`<span class="${sCl(h.score,h.par)}">${h.score}</span>`;
-        html+=`<tr><td style="color:#ccc;font-weight:700">${c.h}</td><td style="color:var(--mu)">${c.par}</td><td style="color:var(--blu)">${c.m||'—'}</td><td style="color:var(--dim)">${c.hcp||'—'}</td><td>${sc}</td><td style="color:${dC(d)};font-weight:700">${ds}</td><td style="color:#888">${h.putts!=null?h.putts:'—'}</td></tr>`;
-      }else html+=`<tr style="opacity:.2"><td>${c.h}</td><td>${c.par}</td><td style="color:var(--blu)">${c.m||'—'}</td><td>${c.hcp||'—'}</td><td colspan="3">—</td></tr>`;
+        let sc;
+        if(d<=-2)sc=`<span class="s-eag">${h.score}</span>`;
+        else if(d===-1)sc=`<span class="s-bir">${h.score}</span>`;
+        else sc=`<span class="${sCl(h.score,h.par)}">${h.score}</span>`;
+        html+=`<tr>
+          <td style="color:var(--t2);font-weight:600">${c.h}</td>
+          <td style="color:var(--t3)">${c.par}</td>
+          <td style="color:var(--blu)">${c.m||'—'}</td>
+          <td style="color:var(--t4)">${c.hcp||'—'}</td>
+          <td>${sc}</td>
+          <td style="color:${dC(d)};font-weight:700">${ds}</td>
+          <td style="color:var(--t2)">${h.putts!=null?h.putts:'—'}</td>
+        </tr>`;
+      }else{
+        html+=`<tr style="opacity:.2"><td>${c.h}</td><td>${c.par}</td><td style="color:var(--blu)">${c.m||'—'}</td><td>${c.hcp||'—'}</td><td colspan="3">—</td></tr>`;
+      }
     });
     const tot=ts-tp;
-    html+=`</tbody><tfoot><tr><td colspan="2" style="text-align:left;padding-left:8px;color:var(--mu)">TOTAL</td><td style="color:var(--blu)">${td?td.total:'—'}</td><td></td><td style="color:${pac(AP)};font-size:14px">${ts}</td><td style="color:${dC(tot)}">${tot>=0?'+':''}${tot}</td><td style="color:#888">${tpu||'—'}</td></tr></tfoot></table></div>`;
+    html+=`</tbody><tfoot>
+      <tr class="sc-out"><td colspan="2" style="text-align:left;padding-left:8px;color:var(--t3)">IN</td><td></td><td></td><td style="color:${pac(AP)}">${ts2}</td><td style="color:${dC(ts2-tp2)}">${ts2-tp2>=0?'+':''}${ts2-tp2}</td><td></td></tr>
+      <tr><td colspan="2" style="text-align:left;padding-left:8px">TOTAL</td><td style="color:var(--blu)">${td?td.total:'—'}</td><td></td><td style="color:${pac(AP)};font-size:15px">${ts}</td><td style="color:${dC(tot)}">${tot>=0?'+':''}${tot}</td><td style="color:var(--t2)">${tpu||'—'}</td></tr>
+    </tfoot></table></div>`;
   }
 
-  else if(AT==='clubs'&&stats){
+  // ─────────────────────────────────────────────────────
+  // ANÁLISIS TAB
+  // ─────────────────────────────────────────────────────
+  else if(AT==='analisis'&&stats){
+    const sg=stats.sg;
+    const allStats=data[AP].rounds.map(r=>cS(r.holes)).filter(Boolean);
+
+    // Strokes Gained overview
+    html+=`<div class="slbl">Strokes Gained · Análisis por categoría</div>`;
+    html+=`<div class="sg-summary">
+      <div class="sg-total-row">
+        <div class="sg-total-val" style="color:${sgC(sg.total)}">${sg.total>0?'+':''}${sg.total}</div>
+        <div class="sg-total-lbl">strokes gained total esta ronda</div>
+      </div>
+      <div class="sg-cats">`;
+    const sgCats=[
+      {k:'tee',l:'Salida (Tee)',desc:'Driver y maderas en par 4/5'},
+      {k:'app',l:'Approach',desc:'Hierros al green'},
+      {k:'short',l:'Juego corto',desc:'Chip, pitch, bunker'},
+      {k:'putt',l:'Putting',desc:'Eficiencia en el green'}
+    ];
+    sgCats.forEach(cat=>{
+      const v=sg[cat.k];
+      const pct=Math.min(100,Math.abs(v)/2*100);
+      html+=`<div class="sg-cat-row">
+        <div class="sg-cat-name">${cat.l}</div>
+        <div class="sg-cat-bar-bg">
+          <div class="sg-cat-zero" style="left:50%"></div>
+          <div class="sg-cat-bar" style="width:${pct/2}%;${v>=0?'left:50%':'right:50%'};background:${sgC(v)}"></div>
+        </div>
+        <div class="sg-cat-val" style="color:${sgC(v)}">${v>0?'+':''}${v}</div>
+      </div>`;
+    });
+    html+=`</div></div>`;
+
+    // SG cards
+    html+=`<div class="sg-grid">`;
+    sgCats.forEach(cat=>{
+      const v=sg[cat.k];
+      html+=`<div class="sg-card ${sgCl(v)}">
+        <div class="sg-label">${cat.l}</div>
+        <div class="sg-val" style="color:${sgC(v)}">${v>0?'+':''}${v}</div>
+        <div class="sg-desc">${cat.desc}</div>
+        <div class="sg-bar-bg"><div class="sg-bar-fill" style="width:${Math.min(100,Math.abs(v)/2*100)}%;background:${sgC(v)}"></div></div>
+      </div>`;
+    });
+    html+=`</div>`;
+
+    // Insight personalizado — como un entrenador profesional
+    const weakest=sgCats.reduce((a,c)=>sg[c.k]<sg[a.k]?c:a,sgCats[0]);
+    const strongest=sgCats.reduce((a,c)=>sg[c.k]>sg[a.k]?c:a,sgCats[0]);
+
+    // Insights con contexto real de esta ronda
+    function getTeeInsight(){
+      const fw=stats.fwPct;
+      if(fw===null)return{neg:'Registra si llegas al fairway en cada hoyo para obtener análisis del driver.',pos:'Sólido desde el tee. La posición en el fairway está creando oportunidades de approach.'};
+      if(fw<40)return{neg:`${fw}% de fairways — debajo de tu nivel. Revisa la alineación de hombros en el tee y el tempo en la bajada. Con tu velocidad de swing, el exceso de rotación de cadera antes de impacto genera el pull. ¿Estás atacando desde dentro?`,pos:`${fw}% FW — buen control.`};
+      if(fw<60)return{neg:`${fw}% de fairways — margen de mejora. A tu nivel, el driver desde el tee no es solo distancia: es posición de ataque. Considera si en hoyos con OB o rough penalizador merece la pena dosificar.`,pos:`${fw}% FW — sólido.`};
+      return{neg:`${fw}% FW — bien desde el tee.`,pos:`${fw}% de fairways — excelente. El driver te da plataforma de ataque.`};
+    }
+    function getAppInsight(){
+      const gir=stats.girPct;
+      if(gir===null)return{neg:'Registra GIR en cada hoyo para análisis de approach.',pos:'Approach funcionando.'};
+      if(gir<30)return{neg:`${gir}% GIR — por debajo de lo esperado a tu nivel. El approach es el área más rentable: cada 10 puntos de GIR son 1.5 golpes menos por ronda. Revisa si el problema está en la selección de palo o en el contacto — los dos tienen soluciones distintas.`,pos:`${gir}% GIR.`};
+      if(gir<50)return{neg:`${gir}% GIR — zona de trabajo. A +10, con buen contacto deberías estar por encima del 50%. ¿El error es de distancia, dirección o contacto? Identificarlo es la mitad del trabajo.`,pos:`${gir}% GIR — razonable.`};
+      return{neg:`${gir}% GIR — bien.`,pos:`${gir}% GIR — excelente approach. Llegas con opciones reales de birdie.`};
+    }
+    function getShortInsight(){
+      const sc=stats.scramblePct;
+      if(sc===null)return{neg:'Registra GIR para calcular scrambling.',pos:'Juego corto activo.'};
+      if(sc<33)return{neg:`${sc}% scrambling — por debajo de tu potencial. A +10 deberías convertir al menos 1 de cada 2 hoyos sin GIR. El juego corto a este nivel es creatividad y sensación: chip con variedad de palos, no solo SW. ¿Estás atacando la bandera o jugando a zona?`,pos:`${sc}% — margen importante.`};
+      if(sc<50)return{neg:`${sc}% scrambling — rozando el nivel de referencia. La diferencia entre 40% y 55% en scrambling son 2-3 golpes por ronda. Trabaja la velocidad en el primer putt tras chip — ese es el punto crítico.`,pos:`${sc}% scrambling — bien.`};
+      return{neg:`${sc}% scrambling — bueno.`,pos:`${sc}% scrambling — excelente juego corto. Estás salvando rondas que otros perderían.`};
+    }
+    function getPuttInsight(){
+      const avg=parseFloat(stats.avgP)||2;
+      const t3=stats.tp3;
+      if(avg>2.2)return{neg:`${avg} putts/hoyo — costoso. A tu nivel, el putting debería ser un punto fuerte. Los ${t3} three-putts te costaron ${t3} golpes directos. Trabaja la lectura y la velocidad en putts de 6-12 metros: el objetivo no es meterlos, es que el segundo putt sea un trámite.`,pos:`${avg} p/h.`};
+      if(avg>2.0)return{neg:`${avg} putts/hoyo — ligeramente por encima del objetivo de 2.0. `+(t3>0?`Los ${t3} three-putts te costaron ${t3} golpes extra.`:'Sin 3-putts — bien.'),pos:`${avg} p/h — bien.`};
+      return{neg:`${avg} p/h — buen putting.`,pos:`${avg} putts/hoyo — excelente. Tu putting está ahorrando golpes que el juego largo no da.`};
+    }
+
+    const ins={tee:getTeeInsight(),app:getAppInsight(),short:getShortInsight(),putt:getPuttInsight()};
+
+    html+=`<div class="cc" style="margin-top:4px">
+      <div class="ct">Diagnóstico del entrenador</div>
+      <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--b)">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0"></div>
+          <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;font-family:JetBrains Mono,monospace">Zona a trabajar: ${weakest.l}</div>
+        </div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.7">${ins[weakest.k].neg}</div>
+      </div>
+      <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--b)">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--ak);flex-shrink:0"></div>
+          <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;font-family:JetBrains Mono,monospace">Punto fuerte: ${strongest.l}</div>
+        </div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.7">${ins[strongest.k].pos}</div>
+      </div>
+      ${stats.bigNumbers>0?`<div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--ora);flex-shrink:0"></div>
+          <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;font-family:JetBrains Mono,monospace">Gestión de grandes números</div>
+        </div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.7">Tuviste ${stats.bigNumbers} hoyos con doble bogey o peor — ${stats.strokesLostBig} golpe${stats.strokesLostBig!==1?'s':''} sobre bogey. Con tu nivel, estos hoyos no son de mala técnica sino de decisiones: cuando estás fuera de posición, la gestión del riesgo es la habilidad. Lee el campo, acepta el bogey, protege la tarjeta.</div>
+      </div>`:''}
+    </div>`;
+
+    // Plan de práctica personalizado
+    html+=`<div class="slbl">Plan de práctica</div>`;
+    html+=`<div class="cc"><div class="ct">Basado en esta ronda</div>`;
+    const practice=[];
+    if(stats.scramblePct!==null&&stats.scramblePct<50){
+      practice.push({priority:1,area:'Juego corto',time:'20 min',drill:`Scrambling actual: ${stats.scramblePct}%. Trabaja chips con diferentes palos (7I, PW, SW) desde rough y fringe. A tu nivel la variedad es clave — no siempre el SW es la mejor opción. Objetivo: 50%+ de saves.`});
+    }
+    if(stats.tp3>1){
+      practice.push({priority:2,area:'Putting — lag',time:'15 min',drill:`${stats.tp3} three-putts en esta ronda. Practica "lag putting" desde 8-15 metros: el objetivo es la zona de 60cm alrededor del hoyo, no el hoyo. La velocidad es la variable — la línea viene después.`});
+    }
+    if(stats.girPct!==null&&stats.girPct<40){
+      practice.push({priority:3,area:'Approach',time:'20 min',drill:`GIR: ${stats.girPct}%. Trabaja con tu hierro de referencia desde distancias reales de campo — no las del simulador. El GIR no mejora con más potencia, mejora con más precisión y mejor lectura del viento y del lie.`});
+    }
+    if(stats.fwPct!==null&&stats.fwPct<50){
+      practice.push({priority:4,area:'Driver — dirección',time:'15 min',drill:`FW: ${stats.fwPct}%. Identifica si el miss es siempre al mismo lado — si es así es un patrón técnico, no un error puntual. Graba un swing de driver y revisa la posición del cuerpo en la bajada.`});
+    }
+    if(stats.noC>2){
+      practice.push({priority:5,area:'Rutina pre-shot',time:'Sin coste',drill:`${stats.noC} golpes sin commit en esta ronda. Con 15 años de experiencia y nivel +10, la duda en el shot no es técnica — es decisión. Comprométete con el palo y el objetivo ANTES de entrar a la bola. Una vez que empiezas la rutina, no hay marcha atrás.`});
+    }
+    if(!practice.length){
+      practice.push({priority:1,area:'Mantenimiento',time:'30 min',drill:'Ronda sólida. Trabaja la técnica que más trabajas normalmente — el objetivo es mantener lo que funciona.'});
+    }
+    practice.slice(0,3).forEach((p,i)=>{
+      html+=`<div style="${i>0?'margin-top:10px;padding-top:10px;border-top:1px solid var(--b)':''}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+          <div style="font-size:10px;font-weight:700;color:var(--t)">${i+1}. ${p.area}</div>
+          <div style="font-size:8px;color:var(--t3);font-family:JetBrains Mono,monospace;background:var(--s3);padding:2px 7px;border-radius:4px">${p.time}/día</div>
+        </div>
+        <div style="font-size:11px;color:var(--t2);line-height:1.7">${p.drill}</div>
+      </div>`;
+    });
+    html+=`</div>`;
+
+    // Club distances
     const clubs=Object.entries(stats.cm).sort((a,b)=>b[1].t-a[1].t);
+    const clubsWithDist=clubs.filter(([,d])=>d.dists&&d.dists.length>0);
+    if(clubsWithDist.length){
+      const maxDist=Math.max(...clubsWithDist.map(([,d])=>avgDist(d.dists)||0));
+      html+=`<div class="slbl">Distancias medias por palo</div>`;
+      // Distancias: referencias + campo real
+      const refs = AP==='ak' ? AK_REFS : {};
+      const refClubs = Object.keys(refs);
+      const allDistClubs = [...new Set([...clubsWithDist.map(([cl])=>cl), ...refClubs])];
+      const maxDistAll = Math.max(
+        ...clubsWithDist.map(([,d])=>avgDist(d.dists)||0),
+        ...Object.values(refs).map(r=>r.carry||0),
+        1
+      );
+      allDistClubs.sort((a,b)=>(refs[b]?.carry||0)-(refs[a]?.carry||0));
+
+      html += '<div class="cc">';
+      html += '<div class="ct">Distancias <span style="color:var(--t4)">campo vs referencia · ' + clubs.reduce((a,[,d])=>a+d.t,0) + ' golpes</span></div>';
+      html += '<div style="font-size:8px;color:var(--t3);font-family:&#39;JetBrains Mono&#39;,monospace;margin-bottom:12px">Ref = carry máximo · 25°C · llano · sin viento. SW/PW/9I tienen distancia variable según el backswing.</div>';
+      html += '<div class="dist-table">';
+
+      allDistClubs.forEach(function(cl){
+        const d = stats.cm[cl];
+        const avg = d ? avgDist(d.dists) : null;
+        const ref = refs[cl];
+        if(!avg && !ref) return;
+
+        let clr = 'var(--blu)';
+        if(cl==='Driver'||cl.includes('M')) clr = 'var(--pur)';
+        else if(cl.endsWith('H')) clr = 'var(--ak)';
+        else if(['PW','AW','GW','SW','LW'].includes(cl)) clr = 'var(--yel)';
+        else if(cl==='Putter') clr = 'var(--red)';
+
+        const avgW = avg ? Math.round(avg/maxDistAll*100) : 0;
+        const refW = ref ? Math.round(ref.carry/maxDistAll*100) : 0;
+        const diff = (avg && ref) ? avg - ref.carry : null;
+        const diffStr = diff!==null ? (diff>0?'+':'')+diff+'m' : '';
+        const diffClr = diff===null ? '' : diff >= -10 ? 'var(--ak)' : 'var(--red)';
+
+        html += '<div style="margin-bottom:12px">';
+        html += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">';
+        html += '<span style="font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;color:var(--t)">' + clubDisplay(cl) + '</span>';
+        html += '<span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--t3)">';
+        if(avg) html += '<span style="color:'+clr+';font-weight:700">'+avg+'m</span> campo';
+        else html += '<span style="color:var(--t4)">sin datos campo</span>';
+        if(ref) html += ' · <span style="color:var(--t3)">'+ref.carry+'m carry / '+ref.total+'m total</span>';
+        if(diffStr) html += ' · <span style="color:'+diffClr+'">'+diffStr+'</span>';
+        html += '</span></div>';
+
+        // Barra doble: gris=referencia carry, color=campo
+        html += '<div style="position:relative;background:var(--s3);border-radius:3px;height:6px;overflow:hidden">';
+        if(ref) html += '<div style="position:absolute;top:0;left:0;width:'+refW+'%;height:100%;background:var(--t4);border-radius:3px"></div>';
+        if(avg) html += '<div style="position:absolute;top:0;left:0;width:'+avgW+'%;height:100%;background:'+clr+';border-radius:3px;opacity:0.9"></div>';
+        html += '</div>';
+
+        // Leyenda
+        html += '<div style="display:flex;gap:12px;margin-top:3px">';
+        if(avg) html += '<span style="font-size:7px;font-family:JetBrains Mono,monospace;color:'+clr+'">━ Campo '+avg+'m</span>';
+        if(ref) html += '<span style="font-size:7px;font-family:JetBrains Mono,monospace;color:var(--t4)">━ Carry ref '+ref.carry+'m (total '+ref.total+'m)</span>';
+        html += '</div>';
+        html += '</div>';
+      });
+
+      html += '</div></div>';
+    }
+
+    // Club usage
     if(clubs.length){
       const totalShots=clubs.reduce((a,[,d])=>a+d.t,0);
-      const maxShots=clubs[0][1].t;
-      // DISTRIBUCION DE USO
-      html+=`<div class="slbl">Distribución de uso</div>`;
-      html+=`<div class="cc"><div class="ct">Golpes por palo · ${totalShots} total</div>`;
+      const maxSh=clubs[0][1].t;
+      html+=`<div class="slbl">Uso de palos</div>`;
+      html+=`<div class="cc"><div class="ct">Distribución · ${totalShots} golpes</div>`;
       clubs.forEach(([cl,d])=>{
         const pct=Math.round(d.t/totalShots*100);
-        const barW=Math.round(d.t/maxShots*100);
+        const w=Math.round(d.t/maxSh*100);
         let clr='var(--blu)';
-        if(cl==='Driver'||cl==='3M'||cl==='5M'||cl==='7M') clr='var(--pur)';
+        if(cl==='Driver'||cl.includes('M')) clr='var(--pur)';
         else if(cl.endsWith('H')) clr='var(--ak)';
-        else if(cl==='PW'||cl==='AW'||cl==='GW'||cl==='SW'||cl==='LW') clr='var(--yel)';
+        else if(['PW','AW','GW','SW','LW'].includes(cl)) clr='var(--yel)';
         else if(cl==='Putter') clr='var(--red)';
-        html+=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:#ccc;min-width:48px">${cl}</div>
-          <div style="flex:1;background:var(--s3);border-radius:4px;height:10px;overflow:hidden">
-            <div style="width:${barW}%;height:100%;background:${clr};border-radius:4px"></div>
+        const qPct=v=>d.t?Math.round(v/d.t*100):0;
+        html+=`<div style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-family:JetBrains Mono,monospace;font-size:10px;font-weight:700;color:var(--t)">${cl}</span>
+            <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--t3)">${d.t} golpes · ${pct}%</span>
           </div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mu);min-width:42px;text-align:right">${d.t}g · ${pct}%</div>
+          <div style="background:var(--s3);border-radius:4px;height:8px;overflow:hidden;margin-bottom:4px">
+            <div style="width:${w}%;height:100%;background:${clr};border-radius:4px"></div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <span style="font-size:8px;color:var(--ak);font-family:JetBrains Mono,monospace">✓ ${d.bueno} (${qPct(d.bueno)}%)</span>
+            <span style="font-size:8px;color:var(--yel);font-family:JetBrains Mono,monospace">· ${d.ok} (${qPct(d.ok)}%)</span>
+            <span style="font-size:8px;color:var(--red);font-family:JetBrains Mono,monospace">✗ ${d.malo} (${qPct(d.malo)}%)</span>
+          </div>
         </div>`;
       });
-      const cats={};
-      clubs.forEach(([cl,d])=>{
-        let cat='Hierros';
-        if(cl==='Driver'||cl==='3M'||cl==='5M'||cl==='7M') cat='Madera/Driver';
-        else if(cl.endsWith('H')) cat='Híbridos';
-        else if(cl==='PW'||cl==='AW'||cl==='GW'||cl==='SW'||cl==='LW') cat='Wedges';
-        else if(cl==='Putter') cat='Putter';
-        if(!cats[cat]) cats[cat]=0;
-        cats[cat]+=d.t;
-      });
-      html+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--b)">`;
-      const catColors={'Madera/Driver':'var(--pur)','Híbridos':'var(--ak)','Hierros':'var(--blu)','Wedges':'var(--yel)','Putter':'var(--red)'};
-      Object.entries(cats).forEach(([cat,n])=>{
-        const pct=Math.round(n/totalShots*100);
-        html+=`<div style="background:var(--s2);border-radius:8px;padding:5px 10px;display:flex;align-items:center;gap:5px"><div style="width:7px;height:7px;border-radius:50%;background:${catColors[cat]||'var(--mu)'}"></div><span style="font-size:9px;color:#aaa;font-family:'JetBrains Mono',monospace">${cat}</span><span style="font-size:9px;color:var(--mu);font-family:'JetBrains Mono',monospace"> ${pct}%</span></div>`;
-      });
-      html+=`</div></div>`;
-      // RENDIMIENTO POR PALO
-      html+=`<div class="slbl">Rendimiento por palo</div>`;
-      clubs.forEach(([cl,d])=>{
-        const p=v=>d.t?Math.round(v/d.t*100):0;
-        html+=`<div class="crow"><div class="ctop"><span class="cname">${cl}</span><span class="ccnt">${d.t} golpes</span></div>
-          <div class="cbar">${d.bueno?`<div class="cg" style="width:${p(d.bueno)}%"></div>`:''}${d.ok?`<div class="co" style="width:${p(d.ok)}%"></div>`:''}${d.malo?`<div class="cb" style="width:${p(d.malo)}%"></div>`:''}</div>
-          <div class="cleg"><span style="color:var(--ak)">\u2713 ${d.bueno} bien</span><span style="color:var(--yel)">~ ${d.ok} ok</span><span style="color:var(--red)">\u2717 ${d.malo} mal</span></div>
-        </div>`;
-      });
-    }else html+=`<div class="empty"><div class="empty-ico">\ud83c\udfcc\ufe0f</div>Sin datos de golpes.<br>A\u00f1ade texto libre al registrar hoyos.</div>`;
+      html+=`</div>`;
+    }
   }
 
+  // ─────────────────────────────────────────────────────
+  // EVOLUCIÓN TAB
+  // ─────────────────────────────────────────────────────
   else if(AT==='evo'){
-    if(rounds.length<2)html+=`<div class="empty"><div class="empty-ico">📈</div>La evolución aparece con 2+ rondas.<br>Pulsa <strong style="color:${pac(AP)}">+</strong> para añadir más.</div>`;
-    else{
-      const aS=rounds.map(r=>({r,s:cS(r.holes)})).filter(x=>x.s);
-      const mxS=Math.max(...aS.map(x=>x.s.ts)),mnS=Math.min(...aS.map(x=>x.s.ts));
-      html+=`<div class="cc"><div class="ct">Evolución de score</div><div class="mbars" style="height:60px">
-        ${aS.map(x=>{const hh=Math.max(4,Math.round((x.s.ts-mnS+1)/(mxS-mnS+1)*56));return`<div class="mbw"><div class="mb" style="background:${pac(AP)};height:${hh}px"></div><div class="mbl" style="color:${pac(AP)}">${x.s.ts}</div><div class="mbl">${x.r.date.slice(5)}</div></div>`;}).join('')}
-      </div></div><div class="slbl">Rondas</div>`;
-      aS.forEach(({r,s})=>html+=`<div class="ei"><div class="el"><div class="edate">${r.date}${r.tee==='rojas'?' 🔴':' 🟡'}</div><div class="ename">${r.course}${r.city?' · '+r.city:''}</div><div class="ebw"><div class="ebar" style="width:${Math.round(s.ts/mxS*100)}%;background:${pac(AP)}"></div></div></div><div class="er"><div class="escore" style="color:${pac(AP)}">${s.ts}</div><div class="ediff" style="color:${dC(s.diff)}">${s.diff>=0?'+':''}${s.diff}</div></div></div>`);
+    const allStats=rounds.map(r=>({r,s:cS(r.holes)})).filter(x=>x.s);
+    if(allStats.length<2){
+      html+=`<div class="empty"><span class="empty-ico">📈</span>La evolución aparece con 2+ rondas.<br>Pulsa <strong style="color:${pac(AP)}">+</strong> para añadir más.</div>`;
+    }else{
+      const mxS=Math.max(...allStats.map(x=>x.s.ts));
+      const mnS=Math.min(...allStats.map(x=>x.s.ts));
+
+      // Chart
+      html+=`<div class="cc"><div class="ct">Score por ronda</div>
+        <div class="evo-chart">
+          ${allStats.map(x=>{
+            const h=Math.max(4,Math.round((x.s.ts-mnS+2)/(mxS-mnS+2)*72));
+            return`<div class="evo-bar-col">
+              <div class="evo-bar-outer"><div class="evo-bar-inner" style="height:${h}px;background:${pac(AP)};opacity:${allStats.indexOf(x)===allStats.length-1?1:0.5}"></div></div>
+              <div class="evo-bar-lbl">${x.s.ts}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--t4);font-family:JetBrains Mono,monospace;margin-top:4px">
+          <span>${allStats[0].r.date}</span>
+          <span>${allStats[allStats.length-1].r.date}</span>
+        </div>
+      </div>`;
+
+      // Trend summary
+      if(allStats.length>=2){
+        const first=allStats[0].s.ts,last=allStats[allStats.length-1].s.ts;
+        const diff=first-last;
+        html+=`<div class="cc"><div class="ct">Tendencia</div>
+          <div style="display:flex;gap:20px;align-items:center">
+            <div style="font-family:DM Serif Display,serif;font-size:36px;color:${diff>0?'var(--ak)':diff<0?'var(--red)':'var(--t3)'}">
+              ${diff>0?'↓':'↑'} ${Math.abs(diff)}
+            </div>
+            <div style="font-size:11px;color:var(--t2);line-height:1.8">
+              ${diff>0?`Mejoraste ${diff} golpes en ${allStats.length} rondas`:`Subiste ${Math.abs(diff)} golpes en ${allStats.length} rondas`}<br>
+              <span style="color:var(--t3)">Score más bajo: <strong style="color:${pac(AP)}">${mnS}</strong></span>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      html+=`<div class="slbl">Todas las rondas</div>`;
+      allStats.forEach(({r,s})=>{
+        html+=`<div class="evo-item">
+          <div class="evo-left">
+            <div class="evo-date">${r.date}${r.tee==='rojas'?' · 🔴':' · 🟡'}${r.tournament?' · Torneo':''}</div>
+            <div class="evo-name">${r.course}${r.city?' · '+r.city:''}</div>
+            <div class="evo-pills">
+              ${s.bir>0?`<span class="evo-pill" style="color:var(--ak)">${s.bir} birdie${s.bir>1?'s':''}</span>`:''}
+              ${s.avgP?`<span class="evo-pill">${s.avgP} putts/h</span>`:''}
+              ${s.girPct!=null?`<span class="evo-pill">${s.girPct}% GIR</span>`:''}
+              ${s.fwPct!=null?`<span class="evo-pill">${s.fwPct}% FW</span>`:''}
+            </div>
+          </div>
+          <div class="evo-right">
+            <div class="evo-score" style="color:${pac(AP)}">${s.ts}</div>
+            <div class="evo-diff" style="color:${dC(s.diff)}">${s.diff>=0?'+':''}${s.diff}</div>
+          </div>
+        </div>`;
+      });
     }
   }
 
   document.getElementById('scroll').innerHTML=html;
 }
 
+// ─────────────────────────────────────────────────────
+// VS
+// ─────────────────────────────────────────────────────
 function renderVS(){
   const hAK=eH(data.ak.rounds),hMAC=eH(data.mac.rounds);
   const akA=data.ak.rounds.flatMap(r=>r.holes),macA=data.mac.rounds.flatMap(r=>r.holes);
   const akS=cS(akA),macS=cS(macA);
-  let html=`<div class="vsh">
-    <div class="vsc ak"><div class="vsp" style="color:var(--ak)">AK</div><div class="vshcp" style="color:var(--ak)">${hAK!=null?'+'+hAK:'—'}</div><div class="vsrn">${data.ak.rounds.length} ronda${data.ak.rounds.length!==1?'s':''}</div></div>
-    <div class="vssep">VS</div>
-    <div class="vsc mac"><div class="vsp" style="color:var(--mac)">Macarena</div><div class="vshcp" style="color:var(--mac)">${hMAC!=null?'+'+hMAC:'—'}</div><div class="vsrn">${data.mac.rounds.length} ronda${data.mac.rounds.length!==1?'s':''}</div></div>
+  let html=`<div class="vs-cards">
+    <div class="vs-card ak">
+      <div class="vs-pname" style="color:var(--ak)">AK</div>
+      <div class="vs-hcp" style="color:var(--ak)">${hAK!=null?'+'+hAK:'—'}</div>
+      <div class="vs-rn">${data.ak.rounds.length} ronda${data.ak.rounds.length!==1?'s':''}</div>
+    </div>
+    <div class="vs-sep">VS</div>
+    <div class="vs-card mac">
+      <div class="vs-pname" style="color:var(--mac)">Macarena</div>
+      <div class="vs-hcp" style="color:var(--mac)">${hMAC!=null?'+'+hMAC:'—'}</div>
+      <div class="vs-rn">${data.mac.rounds.length} ronda${data.mac.rounds.length!==1?'s':''}</div>
+    </div>
   </div>`;
+
   if(akS&&macS){
     const ms=[
       {l:'Score medio',ak:(akS.ts/Math.max(data.ak.rounds.length,1)).toFixed(1),mac:(macS.ts/Math.max(data.mac.rounds.length,1)).toFixed(1),lb:true},
+      {l:'Putts/hoyo',ak:akS.avgP||'—',mac:macS.avgP||'—',lb:true},
       {l:'Birdies totales',ak:akS.bir,mac:macS.bir,lb:false},
       {l:'Bogeys',ak:akS.bog,mac:macS.bog,lb:true},
       {l:'+2 o más',ak:akS.dbl,mac:macS.dbl,lb:true},
+      {l:'GIR %',ak:akS.girPct!=null?akS.girPct+'%':'—',mac:macS.girPct!=null?macS.girPct+'%':'—',lb:false},
+      {l:'FW %',ak:akS.fwPct!=null?akS.fwPct+'%':'—',mac:macS.fwPct!=null?macS.fwPct+'%':'—',lb:false},
     ];
-    if(akS.avgP&&macS.avgP)ms.splice(1,0,{l:'Putts/hoyo',ak:akS.avgP,mac:macS.avgP,lb:true});
-    if(akS.girPct!=null&&macS.girPct!=null)ms.push({l:'GIR %',ak:akS.girPct+'%',mac:macS.girPct+'%',lb:false});
-    html+=`<div class="h2ht">`;
+    html+=`<div class="h2h-wrap">`;
     ms.forEach(m=>{
       const an=parseFloat(m.ak),mn=parseFloat(m.mac);
-      const aw=!isNaN(an)&&!isNaN(mn)&&(m.lb?an<mn:an>mn),mw=!isNaN(an)&&!isNaN(mn)&&(m.lb?mn<an:mn>an);
-      html+=`<div class="h2hr"><div class="h2hak" style="color:${aw?'var(--ak)':'var(--mu)'}">${m.ak}</div><div class="h2hlbl">${m.l}</div><div class="h2hmac" style="color:${mw?'var(--mac)':'var(--mu)'}">${m.mac}</div></div>`;
+      const aw=!isNaN(an)&&!isNaN(mn)&&(m.lb?an<mn:an>mn);
+      const mw=!isNaN(an)&&!isNaN(mn)&&(m.lb?mn<an:mn>an);
+      html+=`<div class="h2h-row">
+        <div class="h2h-ak" style="color:${aw?'var(--ak)':'var(--t3)'}">${m.ak}</div>
+        <div class="h2h-lbl">${m.l}</div>
+        <div class="h2h-mac" style="color:${mw?'var(--mac)':'var(--t3)'}">${m.mac}</div>
+      </div>`;
     });
     html+=`</div>`;
-  }else if(!macS)html+=`<div class="vs-empty">Macarena aún no tiene rondas.<br>Selecciónala arriba y pulsa <strong style="color:var(--mac)">+</strong> para empezar.</div>`;
+
+    // SG comparison
+    if(akS.sg&&macS.sg){
+      html+=`<div class="slbl">Strokes Gained comparado</div>`;
+      html+=`<div class="h2h-wrap">`;
+      [{k:'tee',l:'Salida'},{k:'app',l:'Approach'},{k:'short',l:'Juego corto'},{k:'putt',l:'Putting'}].forEach(cat=>{
+        const av=akS.sg[cat.k],mv=macS.sg[cat.k];
+        const aw=av>mv,mw=mv>av;
+        html+=`<div class="h2h-row">
+          <div class="h2h-ak" style="color:${aw?'var(--ak)':'var(--t3)'}">${av>0?'+':''}${av}</div>
+          <div class="h2h-lbl">${cat.l}</div>
+          <div class="h2h-mac" style="color:${mw?'var(--mac)':'var(--t3)'}">${mv>0?'+':''}${mv}</div>
+        </div>`;
+      });
+      html+=`</div>`;
+    }
+  }else if(!macS){
+    html+=`<div class="vs-empty">Macarena aún no tiene rondas.<br>Selecciónala arriba y pulsa <strong style="color:var(--mac)">+</strong> para empezar.</div>`;
+  }
+
+  // Head to head by date
   if(data.ak.rounds.length>0&&data.mac.rounds.length>0){
-    html+=`<div class="slbl" style="margin-top:14px">Rondas head to head</div>`;
+    html+=`<div class="slbl">Head to Head por ronda</div>`;
     const allD=[...new Set([...data.ak.rounds,...data.mac.rounds].map(r=>r.date))].sort();
     const mxSc=Math.max(...data.ak.rounds.map(r=>cS(r.holes)?.ts||0),...data.mac.rounds.map(r=>cS(r.holes)?.ts||0));
     allD.forEach(date=>{
-      const akR=data.ak.rounds.filter(r=>r.date===date),macR=data.mac.rounds.filter(r=>r.date===date);
-      const akSc=akR.map(r=>cS(r.holes)?.ts).filter(Boolean),macSc=macR.map(r=>cS(r.holes)?.ts).filter(Boolean);
+      const akR=data.ak.rounds.filter(r=>r.date===date);
+      const macR=data.mac.rounds.filter(r=>r.date===date);
+      const akSc=akR.map(r=>cS(r.holes)?.ts).filter(Boolean);
+      const macSc=macR.map(r=>cS(r.holes)?.ts).filter(Boolean);
       if(!akSc.length&&!macSc.length)return;
-      html+=`<div class="vsb-row"><div class="vsb-date">${date.slice(5)}</div><div class="vsb-bars">
-        ${akSc.map(s=>`<div class="vsb" style="width:${Math.round(s/mxSc*100)}%;background:var(--ak)">${s}</div>`).join('')}
-        ${macSc.map(s=>`<div class="vsb" style="width:${Math.round(s/mxSc*100)}%;background:var(--mac)">${s}</div>`).join('')}
-      </div></div>`;
+      html+=`<div class="vs-bar-row">
+        <div class="vs-bar-date">${date.slice(5)}</div>
+        <div class="vs-bar-col">
+          ${akSc.map(s=>`<div class="vs-bar" style="width:${Math.round(s/mxSc*100)}%;background:var(--ak)">${s}</div>`).join('')}
+          ${macSc.map(s=>`<div class="vs-bar" style="width:${Math.round(s/mxSc*100)}%;background:var(--mac)">${s}</div>`).join('')}
+        </div>
+      </div>`;
     });
   }
+
   document.getElementById('scroll').innerHTML=html;
 }
 
+// ─────────────────────────────────────────────────────
+// TREND CALC
+// ─────────────────────────────────────────────────────
+function calcTrend(rounds){
+  if(rounds.length<2)return null;
+  const recent=rounds.slice(-2);
+  const s0=cS(recent[0].holes)?.diff;
+  const s1=cS(recent[1].holes)?.diff;
+  if(s0==null||s1==null)return null;
+  return{dir:s1>s0?1:-1,val:Math.abs(s1-s0)};
+}
+
+// ─────────────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────────────
 function tab(t){AT=t;EX.clear();render();}
 function selR(i){AR=i;EX.clear();render();}
 function togExp(h){EX.has(h)?EX.delete(h):EX.add(h);render();}
 function setPlayer(p){AP=p;AR=0;EX.clear();if(p!=='vs')AT='stats';render();}
 
+// ─────────────────────────────────────────────────────
+// PLAY MODAL
+// ─────────────────────────────────────────────────────
 function openPlay(){
   pPl=AP==='mac'?'mac':'ak';sTv='amarillas';pSc=4;pPu=2;
   Object.keys(pTog).forEach(k=>{pTog[k]=false;document.getElementById(k).className='tog';});
-  document.getElementById('ftInp').value='';document.getElementById('pp').className='pp';
+  document.getElementById('ftInp').value='';
+  document.getElementById('pp').className='pp';
   document.getElementById('pNotes').value='';
   document.getElementById('pDate').value=new Date().toISOString().split('T')[0];
-  document.getElementById('pCourse').value='';document.getElementById('pCity').value='';
+  document.getElementById('pCourse').value='';
+  document.getElementById('pCity').value='';
   document.getElementById('hBox').className='hbox';
   const isMac=pPl==='mac';
-  document.getElementById('s0t').textContent=isMac?'Nueva ronda — Macarena':'Nueva entrada — AK';
+  document.getElementById('s0t').textContent=isMac?'Nueva ronda — Macarena':'Nueva ronda — AK';
   document.getElementById('teeW').style.display=isMac?'':'none';
   document.getElementById('s0btn').className='btnp '+(isMac?'mac':'ak');
   document.getElementById('saveBtn').className='btnp '+(isMac?'mac':'ak');
   document.getElementById('ftInp').className='fta'+(isMac?' mac':'');
-  const rounds=data[pPl].rounds,sel=document.getElementById('pRS');
+  const rounds=data[pPl].rounds;
+  const sel=document.getElementById('pRS');
   sel.innerHTML=`<option value="new">+ Nueva ronda</option>`;
   rounds.forEach((r,i)=>sel.innerHTML+=`<option value="${i}">${r.date} — ${r.course} (${r.tee==='rojas'?'🔴 Rojas':'🟡 Amarillas'})</option>`);
   onRS();
-  document.getElementById('step0').style.display='';document.getElementById('step1').style.display='none';
+  document.getElementById('step0').style.display='';
+  document.getElementById('step1').style.display='none';
   document.getElementById('playOv').classList.add('open');
 }
 function onRS(){document.getElementById('nrf').style.display=document.getElementById('pRS').value==='new'?'':'none';}
-function selTee(t){sTv=t;document.getElementById('teeY').className='topt'+(t==='amarillas'?' sel-y':'');document.getElementById('teeR').className='topt'+(t==='rojas'?' sel-r':'');}
+function selTee(t){
+  sTv=t;
+  document.getElementById('teeY').className='topt'+(t==='amarillas'?' sel-y':'');
+  document.getElementById('teeR').className='topt'+(t==='rojas'?' sel-r':'');
+}
 function goPlay(){
   const sel=document.getElementById('pRS').value;
   if(sel==='new'){
     const course=document.getElementById('pCourse').value.trim()||'Campo';
-    const date=document.getElementById('pDate').value,city=document.getElementById('pCity').value.trim();
+    const date=document.getElementById('pDate').value;
+    const city=document.getElementById('pCity').value.trim();
     const tee=pPl==='mac'?sTv:'amarillas';
-    let cid='custom_'+Date.now();if(course.toLowerCase().includes('faisanera'))cid='faisanera';
+    let cid='custom_'+Date.now();
+    if(course.toLowerCase().includes('faisanera'))cid='faisanera';
     data[pPl].rounds.push({id:'r'+Date.now(),player:pPl,date,course,courseId:cid,city,tee,holes:[]});
     pRI=data[pPl].rounds.length-1;save();
   }else pRI=parseInt(sel);
   AR=pRI;pH=1;
-  document.getElementById('step0').style.display='none';document.getElementById('step1').style.display='';
+  document.getElementById('step0').style.display='none';
+  document.getElementById('step1').style.display='';
   loadHole();
 }
 function loadHole(){
-  const round=data[pPl].rounds[pRI],tee=round.tee||'amarillas',ch=getCH(round.courseId,tee,pH);
-  const isMac=pPl==='mac',ac=isMac?'var(--mac)':'var(--ak)';
-  document.getElementById('phN').textContent=`H${pH}`;document.getElementById('phN').style.color=ac;
+  const round=data[pPl].rounds[pRI];
+  const tee=round.tee||'amarillas';
+  const ch=getCH(round.courseId,tee,pH);
+  const isMac=pPl==='mac';
+  const ac=isMac?'var(--mac)':'var(--ak)';
+  document.getElementById('phN').textContent=`Hoyo ${pH}`;
+  document.getElementById('phN').style.color=ac;
   document.getElementById('phD').textContent=ch.m?`${ch.m}m`:'—';
   document.getElementById('phP').textContent=`Par ${ch.par}`;
-  document.getElementById('phH').textContent=ch.hcp?`HCP ${ch.hcp} · ${tee==='rojas'?'🔴':'🟡'}`:'';
-  pSc=ch.par;pPu=2;document.getElementById('scV').textContent=pSc;document.getElementById('puV').textContent=pPu;
+  document.getElementById('phHcp').textContent=ch.hcp?`HCP ${ch.hcp} · ${tee==='rojas'?'🔴':'🟡'}`:'';
+  pSc=ch.par;pPu=2;
+  document.getElementById('scV').textContent=pSc;
+  document.getElementById('puV').textContent=pPu;
   document.getElementById('trFW').style.display=ch.par===3?'none':'flex';
   const eH2=new Set(round.holes.map(h=>h.h));
   document.getElementById('hnav').innerHTML=Array.from({length:18},(_,i)=>{
     const n=i+1,done=eH2.has(n),cur=n===pH;
-    let cl='hn';if(cur)cl+=isMac?' mcur':' cur';else if(done)cl+=isMac?' mdone':' done';
+    let cl='hn';
+    if(cur)cl+=isMac?' mcur':' cur';
+    else if(done)cl+=isMac?' mdone':' done';
     return`<button class="${cl}" onclick="jH(${n})">${n}</button>`;
   }).join('');
   Object.keys(pTog).forEach(k=>{pTog[k]=false;document.getElementById(k).className='tog';});
-  document.getElementById('ftInp').value='';document.getElementById('pp').className='pp';
-  document.getElementById('pNotes').value='';updateSU();
+  document.getElementById('ftInp').value='';
+  document.getElementById('pp').className='pp';
+  document.getElementById('pNotes').value='';
+  updateSU();
 }
 function jH(n){pH=n;loadHole();}
 function step(f,d){
@@ -840,37 +1699,62 @@ function step(f,d){
 }
 function updateSU(){
   const round=data[pPl].rounds[pRI];if(!round)return;
-  const ch=getCH(round.courseId,round.tee,pH),d=pSc-ch.par;
+  const ch=getCH(round.courseId,round.tee,pH);
+  const d=pSc-ch.par;
   document.getElementById('scV').style.color=dC(d);
   document.getElementById('phR').textContent=hLF({score:pSc,par:ch.par});
   document.getElementById('phR').style.color=dC(d);
 }
 function tog(id){
-  const isMac=pPl==='mac';pTog[id]=!pTog[id];
+  const isMac=pPl==='mac';
+  pTog[id]=!pTog[id];
   document.getElementById(id).className='tog'+(pTog[id]?(isMac?' mon':' on'):'');
 }
-function toggleHint(){const b=document.getElementById('hBox');b.className=b.className.includes('open')?'hbox':'hbox open';}
+function toggleHint(){
+  const b=document.getElementById('hBox');
+  b.className=b.className.includes('open')?'hbox':'hbox open';
+}
 function onFT(){
-  const val=document.getElementById('ftInp').value,shots=parseShots(val),prev=document.getElementById('pp');
+  const val=document.getElementById('ftInp').value;
+  const shots=parseShots(val);
+  const prev=document.getElementById('pp');
   if(!shots.length){prev.className='pp';return;}
   prev.className='pp open';
-  prev.innerHTML=`<div style="font-size:8px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;font-family:'JetBrains Mono',monospace">Vista previa</div>`+
-    shots.map(s=>`<div class="ps"><div class="sdot" style="background:${qC(s.q)};width:13px;height:13px;font-size:7px">${qI(s.q)}</div><span class="sclub">${s.c}</span><span class="sres">${s.r}${s.d?` · ${s.d}m`:''}</span></div>`).join('');
+  prev.innerHTML=`<div style="font-size:7px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;font-family:JetBrains Mono,monospace">Vista previa interpretada</div>`+
+    shots.map(s=>`<div class="ps">
+      <div class="sdot" style="background:${qC(s.q)};width:13px;height:13px;font-size:7px">${qI(s.q)}</div>
+      <span class="sclub">${s.c}</span>
+      <span style="color:var(--t2);font-size:10px;flex:1">${s.r}${s.d?` · <span style="color:var(--t4)">${s.d}m</span>`:''}</span>
+    </div>`).join('');
 }
 function saveHole(){
-  const round=data[pPl].rounds[pRI],ch=getCH(round.courseId,round.tee,pH);
-  const rawText=document.getElementById('ftInp').value,shots=parseShots(rawText);
-  const hole={h:pH,par:ch.par,score:pSc,putts:pPu,fw:ch.par===3?null:pTog.tFW,gir:pTog.tGIR,bk:pTog.tBK,bs:pTog.tBS,notes:document.getElementById('pNotes').value,shots,rawText};
-  round.holes=round.holes.filter(h=>h.h!==pH);round.holes.push(hole);
+  const round=data[pPl].rounds[pRI];
+  const ch=getCH(round.courseId,round.tee,pH);
+  const rawText=document.getElementById('ftInp').value;
+  const shots=parseShots(rawText);
+  const hole={
+    h:pH,par:ch.par,score:pSc,putts:pPu,
+    fw:ch.par===3?null:pTog.tFW,
+    gir:pTog.tGIR,bk:pTog.tBK,bs:pTog.tBS,pen:pTog.tPEN,
+    notes:document.getElementById('pNotes').value,
+    shots,rawText
+  };
+  round.holes=round.holes.filter(h=>h.h!==pH);
+  round.holes.push(hole);
   save();AR=pRI;render();
   const next=pH<18?pH+1:1;pH=next;loadHole();
   const btn=document.getElementById('saveBtn'),orig=btn.textContent;
-  btn.textContent='✓ Guardado';btn.style.opacity='.7';
-  setTimeout(()=>{btn.textContent=orig;btn.style.opacity='';},900);
+  btn.textContent='✓ Guardado';btn.style.opacity='.75';
+  setTimeout(()=>{btn.textContent=orig;btn.style.opacity='';},800);
 }
 function closePlay(){document.getElementById('playOv').classList.remove('open');}
-document.getElementById('playOv').addEventListener('click',e=>{if(e.target===document.getElementById('playOv'))closePlay();});
+document.getElementById('playOv').addEventListener('click',e=>{
+  if(e.target===document.getElementById('playOv'))closePlay();
+});
 
+// ─────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────
 load();render();
 </script>
 </body>
