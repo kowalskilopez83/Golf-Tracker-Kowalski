@@ -976,6 +976,11 @@ function saveRangeSession(){
 }
 
 function renderRange(){
+  // Marcar tab Range como activo
+  document.querySelectorAll('.tabB').forEach((t,i)=>{
+    if(!t.classList.contains('tab-new'))
+      t.classList.toggle('on',['stats','card','analisis','evo','range'][i]==='range');
+  });
   const pd = data[AP];
   if(!pd || AP==='vs'){ document.getElementById('scroll').innerHTML='<div class="range-empty">Selecciona AK o Macarena para ver el range.</div>'; return; }
   const sessions = pd.range||[];
@@ -1832,7 +1837,11 @@ function calcTrend(rounds){
 // ─────────────────────────────────────────────────────
 // NAVIGATION
 // ─────────────────────────────────────────────────────
-function tab(t){AT=t;EX.clear();render();}
+function tab(t){
+  AT=t;EX.clear();
+  if(t==='range'){renderRange();return;}
+  render();
+}
 function selR(i){AR=i;EX.clear();render();}
 function togExp(h){EX.has(h)?EX.delete(h):EX.add(h);render();}
 function setPlayer(p){AP=p;AR=0;EX.clear();if(p!=='vs')AT='stats';render();}
