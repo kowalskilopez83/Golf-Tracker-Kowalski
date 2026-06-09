@@ -374,6 +374,28 @@ input,select,textarea,button{font-family:inherit}
 .btns{width:100%;padding:14px;background:transparent;color:var(--t3);border:none;font-size:16px;cursor:pointer;margin-top:8px}
 
 @keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── RANGE ── */
+.range-session{background:var(--white);border-bottom:2px solid var(--sep);margin-bottom:0}
+.range-session-hdr{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;cursor:pointer}
+.range-session-date{font-size:16px;font-weight:700;color:var(--t1)}
+.range-session-meta{font-size:13px;color:var(--t3);margin-top:2px}
+.range-session-body{display:none;border-top:1px solid var(--sep)}
+.range-session-body.open{display:block}
+.range-table{width:100%;border-collapse:collapse;font-size:14px}
+.range-table th{background:var(--bg);color:var(--t3);font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:8px 10px;text-align:center;border-bottom:1px solid var(--sep)}
+.range-table td{padding:11px 10px;text-align:center;border-bottom:1px solid var(--sep);color:var(--t1)}
+.range-table tr:last-child td{border-bottom:none}
+.range-club{font-weight:700;text-align:left!important;color:var(--t1)}
+.range-carry{color:var(--blu);font-weight:700}
+.range-total{color:var(--pur);font-weight:700}
+.range-left{color:var(--yel)}
+.range-right{color:var(--yel)}
+.range-diff-pos{color:var(--ak);font-size:12px}
+.range-diff-neg{color:var(--red);font-size:12px}
+.range-swing-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;background:var(--bg);color:var(--t3)}
+.range-new-btn{width:100%;padding:14px;background:var(--ak);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:700;cursor:pointer;margin-bottom:16px}
+.range-empty{padding:48px 24px;text-align:center;color:var(--t3)}
 .scroll>*{animation:fu .18s ease}
 </style>
 </head>
@@ -403,6 +425,7 @@ input,select,textarea,button{font-family:inherit}
     <button class="tabB" onclick="tab('card')">Tarjeta</button>
     <button class="tabB" onclick="tab('analisis')">Análisis</button>
     <button class="tabB" onclick="tab('evo')">Evolución</button>
+    <button class="tabB" onclick="tab('range')" id="tabRange">Range</button>
     <button class="tabB tab-new" id="tabNew" onclick="openPlay()">＋</button>
   </div>
 </div>
@@ -443,6 +466,10 @@ input,select,textarea,button{font-family:inherit}
     <div class="phinfo"><div class="phdist" id="phD">—</div><div class="phpar" id="phP">Par —</div><div class="phhcp" id="phHcp"></div></div>
   </div>
   <div class="hnav" id="hnav"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <span style="font-size:14px;font-weight:600;color:var(--t3)">Modo campo</span>
+    <button class="tog" id="tFieldMode" onclick="togFieldMode()" title="Solo score y putts"></button>
+  </div>
   <div class="steppers">
     <div class="stepbox"><div class="steplbl">Score</div><div class="steprow"><button class="stepbtn" onclick="step('score',-1)">−</button><div class="stepval" id="scV">4</div><button class="stepbtn" onclick="step('score',1)">+</button></div></div>
     <div class="stepbox"><div class="steplbl">Putts</div><div class="steprow"><button class="stepbtn" onclick="step('putts',-1)">−</button><div class="stepval" id="puV" style="color:var(--blu)">2</div><button class="stepbtn" onclick="step('putts',1)">+</button></div></div>
@@ -454,6 +481,27 @@ input,select,textarea,button{font-family:inherit}
     <div class="togrow"><span class="toglbl">Bunker save</span><button class="tog" id="tBS" onclick="tog('tBS')"></button></div>
     <div class="togrow"><span class="toglbl">Penalización / OB</span><button class="tog" id="tPEN" onclick="tog('tPEN')"></button></div>
   </div>
+  <div style="margin-bottom:16px">
+    <div class="frow">
+      <div>
+        <span class="fl" style="margin-top:0">Dist. al pin (approach)</span>
+        <input type="number" class="fi" id="pPinDist" placeholder="Ej: 120m" min="0" max="600" style="font-size:22px;font-weight:700;text-align:center">
+      </div>
+      <div>
+        <span class="fl" style="margin-top:0">Lie</span>
+        <select class="fi" id="pLie">
+          <option value="">—</option>
+          <option value="fairway">Fairway</option>
+          <option value="rough_bajo">Rough bajo</option>
+          <option value="rough_alto">Rough alto</option>
+          <option value="bunker">Bunker</option>
+          <option value="green">Green</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="fringe">Fringe</option>
+        </select>
+      </div>
+    </div>
+  </div>
   <div class="ftw">
     <div class="fttop"><span class="ftlbl">Golpes</span><span class="fthint" onclick="toggleHint()">Ejemplos</span></div>
     <div class="hbox" id="hBox">
@@ -464,13 +512,76 @@ input,select,textarea,button{font-family:inherit}
       <div class="hrow"><strong>Hierro 9 sin commit fringe</strong> — mental</div>
       <div class="hrow" style="margin-top:8px;color:var(--t4)">Separa con coma o enter.</div>
     </div>
-    <textarea class="fta" id="ftInp" placeholder="Driver centro 220, Hierro 7 fringe izq, Sand Wedge perfecto green..." oninput="onFT()"></textarea>
+    <div style="position:relative">
+      <textarea class="fta" id="ftInp" placeholder="Driver centro 220, Hierro 7 fringe izq, Sand Wedge perfecto green..." oninput="onFT()" style="padding-right:52px"></textarea>
+      <button onclick="startVoice('ftInp')" id="micBtn" style="position:absolute;right:10px;top:10px;width:36px;height:36px;border-radius:50%;border:none;background:var(--ak);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s" title="Dictar golpes">🎙️</button>
+    </div>
     <div class="pp" id="pp"></div>
   </div>
-  <div style="margin-top:18px"><span class="fl" style="margin-top:0">Notas del hoyo</span><textarea class="nota" id="pNotes" placeholder="Sensaciones, condiciones..."></textarea></div>
+  <div style="margin-top:18px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <span class="fl" style="margin-top:0">Notas del hoyo</span>
+      <button onclick="startVoice('pNotes')" id="micBtn2" style="width:32px;height:32px;border-radius:50%;border:none;background:var(--bg);color:var(--t3);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center" title="Dictar nota">🎙️</button>
+    </div>
+    <textarea class="nota" id="pNotes" placeholder="Sensaciones, condiciones..."></textarea>
+  </div>
   <button class="btnp ak" id="saveBtn" onclick="saveHole()">Guardar hoyo →</button>
   <button class="btns" onclick="closePlay()">Cerrar sin guardar</button>
 </div>
+</div>
+</div>
+</div>
+
+
+<!-- MODAL RANGE -->
+<div class="ov" id="rangeOv">
+<div class="sheet">
+<div class="drag2"></div>
+<div class="stitle">Sesión de range</div>
+<div class="sbody" id="rangeBody">
+  <div class="frow">
+    <div><span class="fl">Fecha</span><input type="date" class="fi" id="rDate"></div>
+    <div>
+      <span class="fl">Temperatura</span>
+      <select class="fi" id="rTemp">
+        <option value="">—</option>
+        <option value="<10°C">&lt;10°C</option>
+        <option value="10-15°C">10-15°C</option>
+        <option value="15-20°C">15-20°C</option>
+        <option value="20-25°C">20-25°C</option>
+        <option value=">25°C">&gt;25°C</option>
+      </select>
+    </div>
+  </div>
+  <div class="frow" style="margin-top:0">
+    <div>
+      <span class="fl">Viento</span>
+      <select class="fi" id="rWind">
+        <option value="sin viento">Sin viento</option>
+        <option value="viento suave">Suave</option>
+        <option value="viento moderado">Moderado</option>
+        <option value="viento fuerte">Fuerte</option>
+      </select>
+    </div>
+    <div>
+      <span class="fl">Superficie</span>
+      <select class="fi" id="rSurface">
+        <option value="range">Range normal</option>
+        <option value="range cesped">Césped real</option>
+        <option value="simulador">Simulador</option>
+      </select>
+    </div>
+  </div>
+  <span class="fl">Notas de sesión</span>
+  <input type="text" class="fi" id="rNotes" placeholder="Ej: trabajando el draw, fatiga...">
+
+  <div style="margin-top:20px;margin-bottom:10px;font-size:15px;font-weight:700;color:var(--t2)">Golpes por palo</div>
+  <div id="rangeEntries"></div>
+
+  <button onclick="addRangeEntry()" style="width:100%;padding:12px;background:var(--bg);border:1.5px dashed var(--sep2);border-radius:12px;color:var(--blu);font-size:15px;font-weight:600;cursor:pointer;margin-bottom:4px">+ Añadir palo</button>
+
+  <button class="btnp ak" onclick="saveRangeSession()">Guardar sesión →</button>
+  <button class="btns" onclick="closeRange()">Cancelar</button>
 </div>
 </div>
 </div>
@@ -696,6 +807,295 @@ let pPl='ak',pRI=-1,pH=1,pSc=4,pPu=2;
 let pTog={tFW:false,tGIR:false,tBK:false,tBS:false,tPEN:false};
 let sTv='amarillas';
 
+// ─────────────────────────────────────────
+// VOICE INPUT
+let voiceRec=null, voiceTarget=null, voiceActive=false;
+
+function startVoice(targetId){
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
+    alert('Tu navegador no soporta dictado por voz. Usa Chrome o Safari.');
+    return;
+  }
+  const btn=targetId==='ftInp'?document.getElementById('micBtn'):document.getElementById('micBtn2');
+  if(voiceActive&&voiceTarget===targetId){
+    voiceRec&&voiceRec.stop();
+    return;
+  }
+  if(voiceActive) voiceRec&&voiceRec.stop();
+
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  voiceRec=new SR();
+  voiceRec.lang='es-ES';
+  voiceRec.continuous=false;
+  voiceRec.interimResults=true;
+  voiceTarget=targetId;
+  voiceActive=true;
+
+  btn.style.background='var(--red)';
+  btn.textContent='⏹️';
+
+  const ta=document.getElementById(targetId);
+  const startText=ta.value;
+
+  voiceRec.onresult=e=>{
+    let interim='', final='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) final+=e.results[i][0].transcript;
+      else interim+=e.results[i][0].transcript;
+    }
+    ta.value=startText+(startText&&(final||interim)?', ':'')+(final||interim);
+    if(final&&targetId==='ftInp') onFT();
+  };
+
+  voiceRec.onerror=e=>{
+    console.log('Voice error:',e.error);
+    voiceActive=false;
+    btn.style.background=targetId==='ftInp'?'var(--ak)':'var(--bg)';
+    btn.textContent='🎙️';
+  };
+
+  voiceRec.onend=()=>{
+    voiceActive=false;
+    btn.style.background=targetId==='ftInp'?'var(--ak)':'var(--bg)';
+    btn.textContent='🎙️';
+    if(targetId==='ftInp') onFT();
+  };
+
+  voiceRec.start();
+}
+
+
+// ═══════════════════════════════════════════════════════
+// RANGE — SESIONES DE PRÁCTICA
+// ═══════════════════════════════════════════════════════
+
+let rangeEntryCount = 0;
+const CLUBS_LIST = ['Driver','3M','5M','5I','6I','7I','8I','9I','PW','AW','SW','Putter'];
+const SWING_SIZES = ['Completo','3/4','1/2','1/4','Punch'];
+
+function openRange(){
+  const d = new Date();
+  document.getElementById('rDate').value = d.toISOString().split('T')[0];
+  rangeEntryCount = 0;
+  document.getElementById('rangeEntries').innerHTML = '';
+  addRangeEntry();
+  addRangeEntry();
+  addRangeEntry();
+  document.getElementById('rangeOv').classList.add('open');
+}
+
+function closeRange(){
+  document.getElementById('rangeOv').classList.remove('open');
+}
+
+function addRangeEntry(){
+  rangeEntryCount++;
+  const id = rangeEntryCount;
+  const clubOpts = CLUBS_LIST.map(c=>`<option value="${c}">${clubDisplay(c)}</option>`).join('');
+  const swingOpts = SWING_SIZES.map(s=>`<option value="${s}">${s}</option>`).join('');
+  const div = document.createElement('div');
+  div.id = `re${id}`;
+  div.style.cssText = 'background:var(--bg);border-radius:14px;padding:14px;margin-bottom:10px;position:relative';
+  div.innerHTML = `
+    <button onclick="document.getElementById('re${id}').remove()" style="position:absolute;top:8px;right:8px;background:none;border:none;font-size:18px;color:var(--t4);cursor:pointer">✕</button>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <div style="flex:1">
+        <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px">Palo</div>
+        <select class="fi" id="re${id}_club" style="font-size:15px;font-weight:700">${clubOpts}</select>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px">Swing</div>
+        <select class="fi" id="re${id}_swing">${swingOpts}</select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--yel);text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px">⬅ Izqda</div>
+        <input type="number" class="fi" id="re${id}_left" placeholder="m" min="0" max="50" style="text-align:center;padding:10px 6px;font-size:16px;font-weight:700">
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--blu);text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px">Carry</div>
+        <input type="number" class="fi" id="re${id}_carry" placeholder="m" min="0" max="400" style="text-align:center;padding:10px 6px;font-size:16px;font-weight:700;color:var(--blu)">
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--pur);text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px">Total</div>
+        <input type="number" class="fi" id="re${id}_total" placeholder="m" min="0" max="450" style="text-align:center;padding:10px 6px;font-size:16px;font-weight:700;color:var(--pur)">
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--yel);text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px">Dcha ➡</div>
+        <input type="number" class="fi" id="re${id}_right" placeholder="m" min="0" max="50" style="text-align:center;padding:10px 6px;font-size:16px;font-weight:700">
+      </div>
+    </div>
+    <div style="margin-top:8px">
+      <input type="text" class="fi" id="re${id}_notes" placeholder="Notas (ej: draw limpio, fat ocasional...)" style="font-size:14px;padding:10px 14px">
+    </div>
+  `;
+  document.getElementById('rangeEntries').appendChild(div);
+  // Default club selection spread
+  const clubs = CLUBS_LIST;
+  const sel = document.getElementById(`re${id}_club`);
+  if(rangeEntryCount <= clubs.length) sel.value = clubs[rangeEntryCount-1] || clubs[0];
+}
+
+function saveRangeSession(){
+  const entries = [];
+  document.querySelectorAll('[id^="re"][id$="_club"]').forEach(el=>{
+    const id = el.id.replace('_club','').replace('re','');
+    const carry = parseInt(document.getElementById(`re${id}_carry`).value)||null;
+    const total = parseInt(document.getElementById(`re${id}_total`).value)||null;
+    if(!carry && !total) return; // skip empty rows
+    entries.push({
+      club: el.value,
+      swing: document.getElementById(`re${id}_swing`).value,
+      left:  parseInt(document.getElementById(`re${id}_left`).value)||null,
+      carry,
+      total,
+      right: parseInt(document.getElementById(`re${id}_right`).value)||null,
+      notes: document.getElementById(`re${id}_notes`).value||null,
+    });
+  });
+
+  if(!entries.length){ alert('Añade al menos un golpe con carry o total.'); return; }
+
+  const session = {
+    id: Date.now(),
+    date: document.getElementById('rDate').value,
+    temp: document.getElementById('rTemp').value||null,
+    wind: document.getElementById('rWind').value||null,
+    surface: document.getElementById('rSurface').value||null,
+    notes: document.getElementById('rNotes').value||null,
+    entries,
+  };
+
+  const pd = data[AP];
+  if(!pd.range) pd.range = [];
+  pd.range.unshift(session);
+  save();
+  closeRange();
+  tab('range');
+}
+
+function renderRange(){
+  const pd = data[AP];
+  if(!pd || AP==='vs'){ document.getElementById('scroll').innerHTML='<div class="range-empty">Selecciona AK o Macarena para ver el range.</div>'; return; }
+  const sessions = pd.range||[];
+  const refs = AP==='ak' ? AK_REFS : {};
+  let H = '';
+
+  // Botón nueva sesión
+  H += `<div style="padding:16px"><button class="range-new-btn" onclick="openRange()">＋ Nueva sesión de range</button></div>`;
+
+  if(!sessions.length){
+    H += `<div class="range-empty">
+      <div style="font-size:36px;margin-bottom:12px">🏌️</div>
+      <div style="font-size:17px;font-weight:600;color:var(--t2);margin-bottom:8px">Sin sesiones todavía</div>
+      <div style="font-size:14px;color:var(--t3);line-height:1.8">Registra tus sesiones de range para calibrar<br>distancias y dispersión por palo.</div>
+    </div>`;
+    document.getElementById('scroll').innerHTML = H;
+    return;
+  }
+
+  // Resumen de distancias (promedio de todas las sesiones)
+  const allEntries = sessions.flatMap(s=>s.entries);
+  const byClub = {};
+  allEntries.forEach(e=>{
+    if(!byClub[e.club]) byClub[e.club] = {carries:[],totals:[],lefts:[],rights:[]};
+    if(e.carry) byClub[e.club].carries.push(e.carry);
+    if(e.total) byClub[e.club].totals.push(e.total);
+    if(e.left!=null) byClub[e.club].lefts.push(e.left);
+    if(e.right!=null) byClub[e.club].rights.push(e.right);
+  });
+
+  const avg = arr => arr.length ? Math.round(arr.reduce((a,b)=>a+b,0)/arr.length) : null;
+
+  // Tabla resumen
+  H += `<div class="group-header">Resumen de distancias</div>
+  <div style="background:var(--white);border-bottom:1px solid var(--sep);padding:8px 0">
+    <table class="range-table">
+      <thead><tr>
+        <th style="text-align:left;padding-left:16px">Palo</th>
+        <th>Carry</th><th>Total</th><th>⬅Izq</th><th>Dcha➡</th><th>Ref</th>
+      </tr></thead>
+      <tbody>`;
+
+  const clubOrder = ['Driver','3M','5M','5I','6I','7I','8I','9I','PW','AW','SW'];
+  clubOrder.forEach(cl=>{
+    const d = byClub[cl];
+    if(!d) return;
+    const avgCarry = avg(d.carries);
+    const avgTotal = avg(d.totals);
+    const avgLeft  = avg(d.lefts);
+    const avgRight = avg(d.rights);
+    const ref = refs[cl];
+    const diff = avgCarry && ref ? avgCarry - ref.carry : null;
+    H += `<tr>
+      <td class="range-club" style="padding-left:16px">${clubDisplay(cl)}</td>
+      <td class="range-carry">${avgCarry?avgCarry+'m':'—'}</td>
+      <td class="range-total">${avgTotal?avgTotal+'m':'—'}</td>
+      <td class="range-left">${avgLeft!=null?avgLeft+'m':'—'}</td>
+      <td class="range-right">${avgRight!=null?avgRight+'m':'—'}</td>
+      <td>${ref?`<span style="font-size:12px;color:var(--t3)">${ref.carry}m ${diff!=null?`<br><span class="${diff>=-5?'range-diff-pos':'range-diff-neg'}">${diff>0?'+':''}${diff}m</span>`:''}` :'—'}</span></td>
+    </tr>`;
+  });
+
+  H += `</tbody></table></div>`;
+
+  // Sesiones individuales
+  H += `<div class="group-header">Sesiones (${sessions.length})</div>`;
+  sessions.forEach((s,si)=>{
+    const total = s.entries.length;
+    const conds = [s.temp, s.wind, s.surface].filter(Boolean).join(' · ');
+    H += `<div class="range-session">
+      <div class="range-session-hdr" onclick="togRangeSession(${si})">
+        <div>
+          <div class="range-session-date">${s.date}</div>
+          <div class="range-session-meta">${total} palos${conds?' · '+conds:''}${s.notes?' · '+s.notes:''}</div>
+        </div>
+        <div style="font-size:20px;color:var(--t4)" id="rsArrow${si}">›</div>
+      </div>
+      <div class="range-session-body" id="rsBody${si}">
+        <table class="range-table">
+          <thead><tr>
+            <th style="text-align:left;padding-left:16px">Palo</th>
+            <th>Swing</th><th>⬅Izq</th><th>Carry</th><th>Total</th><th>Dcha➡</th>
+          </tr></thead>
+          <tbody>
+            ${s.entries.map(e=>`<tr>
+              <td class="range-club" style="padding-left:16px">${clubDisplay(e.club)}</td>
+              <td><span class="range-swing-badge">${e.swing}</span></td>
+              <td class="range-left">${e.left!=null?e.left+'m':'—'}</td>
+              <td class="range-carry">${e.carry?e.carry+'m':'—'}</td>
+              <td class="range-total">${e.total?e.total+'m':'—'}</td>
+              <td class="range-right">${e.right!=null?e.right+'m':'—'}</td>
+            </tr>${e.notes?`<tr><td colspan="6" style="font-size:13px;color:var(--t3);font-style:italic;text-align:left;padding-left:16px;padding-top:2px;padding-bottom:8px">${e.notes}</td></tr>`:''}`).join('')}
+          </tbody>
+        </table>
+        <div style="padding:10px 16px;display:flex;justify-content:flex-end">
+          <button onclick="deleteRangeSession(${s.id})" style="background:none;border:none;color:var(--red);font-size:13px;cursor:pointer;font-weight:600">Eliminar sesión</button>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('scroll').innerHTML = H;
+}
+
+function togRangeSession(i){
+  const body = document.getElementById(`rsBody${i}`);
+  const arr  = document.getElementById(`rsArrow${i}`);
+  const open = body.classList.toggle('open');
+  arr.style.transform = open ? 'rotate(90deg)' : '';
+}
+
+function deleteRangeSession(id){
+  if(!confirm('¿Eliminar esta sesión?')) return;
+  const pd = data[AP];
+  pd.range = (pd.range||[]).filter(s=>s.id!==id);
+  save();
+  tab('range');
+}
+
+
 function load(){
   const s=localStorage.getItem('gtkow6');
   if(s){try{data=JSON.parse(s);}catch(e){}}
@@ -884,7 +1284,7 @@ function render(){
     }).join('');
   } else rcw.style.display='none';
 
-  document.querySelectorAll('.tabB').forEach((t,i)=>{if(!t.classList.contains('tab-new'))t.classList.toggle('on',['stats','card','analisis','evo'][i]===AT)});
+  document.querySelectorAll('.tabB').forEach((t,i)=>{if(!t.classList.contains('tab-new'))t.classList.toggle('on',['stats','card','analisis','evo','range'][i]===AT)});
 
   if(!round){
     document.getElementById('hdrC').textContent='Sin rondas';
@@ -1112,6 +1512,8 @@ function render(){
           <div style="display:flex;gap:12px;margin-bottom:10px;font-size:13px;color:var(--t3);flex-wrap:wrap">
             ${(h.shots||[]).length?`<span>🏌️ ${h.shots.length} golpes</span>`:''}
             ${h.putts!=null?`<span>🎯 ${h.putts} putts</span>`:''}
+            ${h.pinDist?`<span>📍 ${h.pinDist}m al pin</span>`:''}
+            ${h.lie?`<span>⛳ ${h.lie}</span>`:''}
             ${h.fw!=null?`<span style="color:${h.fw?'var(--ak)':'var(--red)'}">${h.fw?'✓':'✗'} FW</span>`:''}
             ${h.gir!=null?`<span style="color:${h.gir?'var(--ak)':'var(--red)'}">${h.gir?'✓':'✗'} GIR</span>`:''}
           </div>
@@ -1450,7 +1852,7 @@ function openPlay(){
   document.getElementById('hBox').className='hbox';
   const isMac=pPl==='mac';
   document.getElementById('s0t').textContent=isMac?'Nueva ronda — Macarena':'Nueva ronda — AK';
-  document.getElementById('teeW').style.display=isMac?'':'none';
+  document.getElementById('teeW').style.display='';
   document.getElementById('s0btn').className='btn-main '+(isMac?'mac':'ak');
   document.getElementById('saveBtn').className='btn-main '+(isMac?'mac':'ak');
   document.getElementById('ftInp').className='ft-area'+(isMac?' mac':'');
