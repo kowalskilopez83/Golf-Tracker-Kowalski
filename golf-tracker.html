@@ -1101,6 +1101,14 @@ function deleteRangeSession(id){
 }
 
 
+function deleteRound(idx){
+  if(!confirm('¿Eliminar esta ronda? No se puede deshacer.')) return;
+  data[AP].rounds.splice(idx,1);
+  if(AR>=data[AP].rounds.length) AR=Math.max(0,data[AP].rounds.length-1);
+  save();
+  render();
+}
+
 function load(){
   const s=localStorage.getItem('gtkow6');
   if(s){try{data=JSON.parse(s);}catch(e){}}
@@ -1285,7 +1293,11 @@ function render(){
     rcw.style.display='';
     rc.innerHTML=rounds.map((r,i)=>{
       const s=cS(r.holes);
-      return `<button class="rchip${i===AR?' on '+pac2(AP):''}" onclick="selR(${i})">${r.date} · ${r.course.split(' ').slice(0,2).join(' ')}${s?` · ${s.ts}`:''}</button>`;
+      const active=i===AR;
+      return `<span style="display:inline-flex;align-items:center;gap:0;flex-shrink:0">
+        <button class="rchip${active?' on '+pac2(AP):''}" style="border-radius:20px 0 0 20px;border-right:none" onclick="selR(${i})">${r.date} · ${r.course.split(' ').slice(0,2).join(' ')}${s?` · ${s.ts}`:''}</button>
+        <button onclick="deleteRound(${i})" style="flex-shrink:0;padding:6px 9px;border-radius:0 20px 20px 0;border:1px solid var(--sep2);border-left:none;background:${active?'var(--red)':'var(--bg)'};color:${active?'#fff':'var(--t4)'};font-size:13px;cursor:pointer;line-height:1">✕</button>
+      </span>`;
     }).join('');
   } else rcw.style.display='none';
 
@@ -1305,6 +1317,11 @@ function render(){
 
   const tL=round.tee==='rojas'?'🔴 Rojas':'🟡 Amarillas';
   document.getElementById('hdrC').textContent=round.course;
+  // Añadir botón borrar al título si solo hay 1 ronda
+  if(rounds.length<=1){
+    document.getElementById('hdrC').innerHTML=round.course+
+      ` <button onclick="deleteRound(${AR})" style="font-size:12px;font-weight:600;color:var(--red);background:rgba(255,59,48,.1);border:none;border-radius:6px;padding:3px 8px;cursor:pointer;vertical-align:middle">Borrar</button>`;
+  }
   document.getElementById('hdrM').innerHTML=`
     <span class="hdr-meta-item">${round.date}</span>
     <span class="hdr-meta-dot"></span>
