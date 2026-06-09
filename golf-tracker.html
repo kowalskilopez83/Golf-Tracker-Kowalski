@@ -5,377 +5,396 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Golf">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#ffffff">
 <title>Golf · Kowalski</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#000;--s1:#0a0a0a;--s2:#111;--s3:#1a1a1a;--s4:#222;
-  --b:rgba(255,255,255,.05);--b2:rgba(255,255,255,.09);--b3:rgba(255,255,255,.15);
-  --t:#f5f5f5;--t2:#aaa;--t3:#555;--t4:#333;
-  --ak:#3ddc84;--ak2:rgba(61,220,132,.1);--ak3:rgba(61,220,132,.2);
-  --mac:#ff6eb4;--mac2:rgba(255,110,180,.1);--mac3:rgba(255,110,180,.2);
-  --blu:#4da6ff;--yel:#ffd166;--red:#ff6b6b;--ora:#ff9f43;--pur:#c084fc;
-  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
-  --r:16px;--r2:12px;--r3:8px;
+:root {
+  --white: #ffffff;
+  --bg: #f2f2f7;
+  --sep: #e5e5ea;
+  --sep2: #d1d1d6;
+  --t1: #000000;
+  --t2: #3c3c43;
+  --t3: #8e8e93;
+  --t4: #c7c7cc;
+  --ak:  #34c759;
+  --mac: #ff2d55;
+  --blu: #007aff;
+  --yel: #ff9500;
+  --red: #ff3b30;
+  --pur: #af52de;
+  --ak-light:  rgba(52,199,89,.12);
+  --mac-light: rgba(255,45,85,.12);
+  --blu-light: rgba(0,122,255,.1);
+  --st: env(safe-area-inset-top,0px);
+  --sb: env(safe-area-inset-bottom,0px);
+  -f: -apple-system, 'Inter', sans-serif;
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:#000}
-body::before{content:'';position:fixed;top:0;left:0;right:0;height:var(--st);background:#000;z-index:999}
-body{font-family:'Outfit',sans-serif;color:var(--t);max-width:430px;margin:0 auto;display:flex;flex-direction:column}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--white)}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:var(--st);background:var(--white);z-index:9999}
+body{font-family:-apple-system,'Inter',sans-serif;color:var(--t1);max-width:430px;margin:0 auto;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
 ::-webkit-scrollbar{display:none}
-input,select,textarea,button{font-family:'Outfit',sans-serif}
+input,select,textarea,button{font-family:inherit}
 
 /* ── PLAYER BAR ── */
 .pbar{
   flex-shrink:0;
-  padding:calc(var(--st) + 18px) 16px 12px;
   display:flex;gap:8px;
-  background:#000;
+  padding:calc(var(--st)+14px) 16px 10px;
+  background:var(--white);
+  border-bottom:1px solid var(--sep);
 }
 .pb{
-  flex:1;display:flex;flex-direction:column;align-items:center;
-  padding:10px 8px;border-radius:14px;
-  border:1px solid var(--b2);
-  background:var(--s1);
-  cursor:pointer;position:relative;overflow:hidden;
-  transition:all .2s;
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:10px 8px;border-radius:12px;
+  background:var(--bg);border:1.5px solid transparent;
+  cursor:pointer;transition:all .15s;position:relative;
 }
-.pb.ak-on{border-color:var(--ak);background:var(--ak2)}
-.pb.mac-on{border-color:var(--mac);background:var(--mac2)}
-.pb.vs-on{border-color:var(--blu);background:rgba(77,166,255,.08)}
-.pb-dot{position:absolute;top:8px;right:8px;width:5px;height:5px;border-radius:50%;opacity:0;transition:opacity .2s}
-.pb.ak-on .pb-dot{background:var(--ak);opacity:1}
-.pb.mac-on .pb-dot{background:var(--mac);opacity:1}
-.pb.vs-on .pb-dot{background:var(--blu);opacity:1}
-.pb-name{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.5px;transition:color .2s}
-.pb.ak-on .pb-name{color:var(--ak)}
+.pb.ak-on {background:var(--ak-light);border-color:var(--ak)}
+.pb.mac-on{background:var(--mac-light);border-color:var(--mac)}
+.pb.vs-on {background:var(--blu-light);border-color:var(--blu)}
+.pb-name{font-size:14px;font-weight:700;color:var(--t3);letter-spacing:-.2px;transition:color .15s}
+.pb.ak-on  .pb-name{color:var(--ak)}
 .pb.mac-on .pb-name{color:var(--mac)}
-.pb.vs-on .pb-name{color:var(--blu)}
-.pb-hcp{font-family:JetBrains Mono,monospace;font-size:8px;color:var(--t4);margin-top:2px;transition:color .2s}
-.pb.ak-on .pb-hcp{color:rgba(61,220,132,.5)}
-.pb.mac-on .pb-hcp{color:rgba(255,110,180,.5)}
+.pb.vs-on  .pb-name{color:var(--blu)}
+.pb-hcp{font-size:11px;color:var(--t4);transition:color .15s;font-weight:500}
+.pb.ak-on  .pb-hcp{color:rgba(52,199,89,.7)}
+.pb.mac-on .pb-hcp{color:rgba(255,45,85,.7)}
+.pb-dot{position:absolute;top:7px;right:7px;width:6px;height:6px;border-radius:50%;opacity:0}
+.pb.ak-on  .pb-dot{background:var(--ak);opacity:1}
+.pb.mac-on .pb-dot{background:var(--mac);opacity:1}
+.pb.vs-on  .pb-dot{background:var(--blu);opacity:1}
 
 /* ── HEADER ── */
-.hdr{flex-shrink:0;padding:0 16px;background:#000}
-.hdr-main{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--b)}
+.hdr{flex-shrink:0;background:var(--white);padding:14px 16px 0}
+.hdr-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--sep)}
 .hdr-left{flex:1;min-width:0}
-.hdr-course{font-family:DM Serif Display,serif;font-size:20px;line-height:1.15;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hdr-meta{font-family:JetBrains Mono,monospace;font-size:9px;color:var(--t3);margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.hdr-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--t4)}
-.hdr-score{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0}
-.hdr-num{font-family:DM Serif Display,serif;font-size:44px;line-height:1;letter-spacing:-1px}
-.hdr-diff{font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;margin-top:2px}
-.hdr-holes{font-size:9px;color:var(--t3);font-family:JetBrains Mono,monospace}
+.hdr-course{font-size:22px;font-weight:800;letter-spacing:-.5px;line-height:1.2;color:var(--t1)}
+.hdr-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:4px}
+.hdr-meta-item{font-size:13px;font-weight:400;color:var(--t3)}
+.hdr-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--t4);flex-shrink:0}
+.hdr-right{text-align:right;flex-shrink:0}
+.hdr-score{font-size:60px;font-weight:800;letter-spacing:-2px;line-height:1;color:var(--t1)}
+.hdr-diff{font-size:17px;font-weight:700;text-align:right;margin-top:1px;letter-spacing:-.3px}
+.hdr-sub{font-size:13px;color:var(--t3);text-align:right;margin-top:1px}
 
-/* ── ROUND CHIPS ── */
-.rchips{display:flex;gap:5px;overflow-x:auto;padding:10px 0 0;scrollbar-width:none}
-.rchip{flex-shrink:0;padding:5px 12px;border-radius:20px;border:1px solid var(--b2);background:transparent;color:var(--t3);font-size:9px;font-family:JetBrains Mono,monospace;cursor:pointer;white-space:nowrap;transition:all .15s}
-.rchip.on{font-weight:700;border-color:transparent}
-.rchip.on.ak{background:var(--ak);color:#000}
-.rchip.on.mac{background:var(--mac);color:#000}
+/* Round chips */
+.rchips{display:flex;gap:6px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.rchip{flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--sep2);background:var(--white);color:var(--t3);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+.rchip.on.ak {background:var(--ak); color:#fff;border-color:transparent}
+.rchip.on.mac{background:var(--mac);color:#fff;border-color:transparent}
 
-/* ── TABS ── */
-.tabs{display:flex;gap:2px;padding:10px 0;background:#000}
-.tabB{flex:1;padding:7px 2px;border:none;border-radius:var(--r3);background:transparent;color:var(--t3);font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:.2px}
-.tabB.on{color:var(--t);background:var(--s3)}
+/* Tabs */
+.tabs{display:flex;padding:8px 0 0;background:var(--white)}
+.tabB{flex:1;padding:8px 2px 10px;border:none;background:transparent;color:var(--t3);font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.tabB.on{color:var(--blu);font-weight:700;border-bottom-color:var(--blu)}
+.tab-new{color:var(--ak);font-weight:700;font-size:18px;border-bottom-color:transparent!important;min-width:44px}
 
 /* ── SCROLL ── */
-.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(var(--sb) + 88px)}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);padding:0 0 calc(var(--sb)+90px)}
 
 /* ── FAB ── */
-.fab{
-  position:fixed;bottom:calc(var(--sb) + 20px);right:20px;
-  z-index:100;width:56px;height:56px;
-  border-radius:18px;border:none;
-  font-size:26px;font-weight:300;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:transform .12s;
-}
-.fab:active{transform:scale(.9)}
-.fab.ak{background:var(--ak);color:#000;box-shadow:0 8px 24px rgba(61,220,132,.3)}
-.fab.mac{background:var(--mac);color:#000;box-shadow:0 8px 24px rgba(255,110,180,.3)}
+.fab{position:fixed;bottom:calc(var(--sb)+28px);right:calc(max(20px,(100vw - 430px)/2 + 20px));z-index:500;width:56px;height:56px;border-radius:50%;border:none;font-size:28px;font-weight:300;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+.fab:active{transform:scale(.92)}
+.fab.ak {background:var(--ak); color:#fff}
+.fab.mac{background:var(--mac);color:#fff}
 
 /* ── BBAR ── */
-.bbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(0,0,0,.95);border-top:1px solid var(--b);padding:6px 16px calc(var(--sb) + 4px);font-size:9px;color:var(--t4);font-family:JetBrains Mono,monospace;text-align:center;z-index:40;backdrop-filter:blur(10px)}
+.bbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(255,255,255,.94);border-top:1px solid var(--sep);padding:6px 16px calc(var(--sb)+4px);font-size:11px;color:var(--t4);text-align:center;z-index:40;backdrop-filter:blur(20px)}
 
-/* ── SECTION LABEL ── */
-.slbl{font-family:JetBrains Mono,monospace;font-size:8px;color:var(--t3);letter-spacing:2.5px;text-transform:uppercase;margin:20px 0 10px}
-.slbl:first-child{margin-top:0}
+/* ── GROUPED LIST (Golfshot style) ── */
+.group{background:var(--white);margin:20px 0 0;border-top:1px solid var(--sep);border-bottom:1px solid var(--sep)}
+.group:first-child{margin-top:16px}
+.group-header{padding:7px 16px 4px;font-size:13px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.3px;background:var(--bg)}
 
-/* ── HCP BOX ── */
-.hcp-box{border-radius:var(--r);padding:18px;margin-bottom:12px;border:1px solid}
-.hcp-box.ak{background:var(--ak2);border-color:var(--ak3)}
-.hcp-box.mac{background:var(--mac2);border-color:var(--mac3)}
-.hcp-row{display:flex;align-items:flex-end;gap:10px;margin-bottom:4px}
-.hcp-val{font-family:DM Serif Display,serif;font-size:52px;line-height:1}
-.hcp-trend{font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;margin-bottom:8px;font-family:JetBrains Mono,monospace}
-.hcp-sub{font-size:10px;color:var(--t2);line-height:1.7}
+/* Stat rows — score left, info right */
+.stat-row{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--sep);background:var(--white)}
+.stat-row:last-child{border-bottom:none}
+.stat-row-left{display:flex;flex-direction:column;align-items:flex-start;flex:1;min-width:0}
+.stat-row-big{font-size:36px;font-weight:800;letter-spacing:-1px;line-height:1}
+.stat-row-lbl{font-size:14px;font-weight:500;color:var(--t3);margin-top:3px}
+.stat-row-right{text-align:right;flex-shrink:0}
+.stat-row-val{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1}
+.stat-row-sub{font-size:13px;color:var(--t3);margin-top:3px}
 
-/* ── STAT GRID ── */
-.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:5px}
-.sgrid.two{grid-template-columns:repeat(2,1fr)}
-.scell{background:var(--s1);border:1px solid var(--b);border-radius:var(--r2);padding:12px 8px;text-align:center;position:relative;overflow:hidden}
-.sv{font-family:DM Serif Display,serif;font-size:24px;line-height:1}
-.sl{font-size:7px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px;font-family:JetBrains Mono,monospace}
-.ss{font-size:8px;color:var(--t4);margin-top:2px;font-family:JetBrains Mono,monospace}
+/* HCP row */
+.hcp-row-wrap{display:flex;align-items:center;padding:18px 16px;background:var(--white);border-bottom:1px solid var(--sep)}
+.hcp-big{font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1}
+.hcp-info{flex:1;margin-left:16px}
+.hcp-label{font-size:15px;font-weight:600;color:var(--t2)}
+.hcp-sub{font-size:13px;color:var(--t3);margin-top:3px;line-height:1.5}
 
-/* ── CHART CARD ── */
-.cc{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:16px;margin-bottom:8px}
-.ct{font-size:9px;font-weight:600;color:var(--t3);margin-bottom:14px;text-transform:uppercase;letter-spacing:1.5px;font-family:JetBrains Mono,monospace;display:flex;justify-content:space-between;align-items:center}
+/* Dist bars — full width, no boxes */
+.dist-section{padding:16px 16px 8px;background:var(--white);border-bottom:1px solid var(--sep)}
+.dist-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.dist-title{font-size:17px;font-weight:700;color:var(--t1)}
+.dist-sub{font-size:13px;color:var(--t3)}
+.dist-bars-horiz{display:flex;flex-direction:column;gap:10px}
+.dist-bar-row{display:flex;align-items:center;gap:10px}
+.dist-bar-lbl{font-size:15px;font-weight:600;color:var(--t1);min-width:60px}
+.dist-bar-track{flex:1;background:var(--bg);border-radius:5px;height:28px;overflow:hidden;position:relative}
+.dist-bar-fill{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:10px}
+.dist-bar-fill span{font-size:13px;font-weight:700;color:#fff}
+.dist-bar-num{font-size:14px;font-weight:600;color:var(--t2);min-width:44px;text-align:right}
 
-/* ── SCORE DISTRIBUTION ── */
-.dist-bars{display:flex;align-items:flex-end;gap:6px;height:56px}
-.dist-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
-.dist-bar{width:100%;border-radius:4px 4px 0 0;min-height:3px;transition:height .4s ease}
-.dist-num{font-family:JetBrains Mono,monospace;font-size:10px;font-weight:700}
-.dist-lbl{font-family:JetBrains Mono,monospace;font-size:7px;color:var(--t3)}
+/* Putting */
+.putt-row{display:flex;align-items:center;padding:16px;background:var(--white);border-bottom:1px solid var(--sep)}
+.putt-circle{width:72px;height:72px;border-radius:50%;border:4px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.putt-big2{font-size:24px;font-weight:800;line-height:1;letter-spacing:-.5px}
+.putt-lbl2{font-size:10px;color:var(--t3);font-weight:600;letter-spacing:.3px;margin-top:2px}
+.putt-details2{flex:1;margin-left:16px;display:flex;flex-direction:column;gap:8px}
+.putt-detail-row{display:flex;justify-content:space-between;align-items:center}
+.putt-detail-lbl{font-size:15px;color:var(--t2)}
+.putt-detail-val{font-size:16px;font-weight:700;color:var(--t1)}
 
-/* ── PUTTING ── */
-.putt-layout{display:flex;align-items:center;gap:16px}
-.putt-ring{width:76px;height:76px;flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center}
-.putt-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
-.putt-center{text-align:center}
-.putt-big{font-family:DM Serif Display,serif;font-size:24px;line-height:1}
-.putt-unit{font-size:7px;color:var(--t3);font-family:JetBrains Mono,monospace;letter-spacing:1px}
-.putt-stats{flex:1;display:flex;flex-direction:column;gap:6px}
-.putt-stat-row{display:flex;justify-content:space-between;align-items:center;font-size:11px}
-.putt-stat-lbl{color:var(--t2)}
-.putt-stat-val{font-family:JetBrains Mono,monospace;font-weight:700;font-size:12px}
+/* Scrambling */
+.scr-row{display:flex;align-items:center;padding:16px;background:var(--white);border-bottom:1px solid var(--sep)}
+.scr-pct2{font-size:48px;font-weight:800;letter-spacing:-1.5px;line-height:1;flex-shrink:0;min-width:96px}
+.scr-detail{flex:1;margin-left:8px}
+.scr-detail-main{font-size:15px;font-weight:500;color:var(--t2);line-height:1.6}
+.scr-detail-note{font-size:13px;color:var(--t3);margin-top:4px}
+.scr-prog{margin-top:8px;background:var(--bg);border-radius:3px;height:5px;overflow:hidden}
+.scr-prog-fill{height:100%;border-radius:3px}
 
-/* ── STROKES GAINED ── */
-.sg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:6px}
-.sg-card{background:var(--s2);border:1px solid var(--b);border-radius:var(--r2);padding:12px;position:relative;overflow:hidden}
-.sg-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.sg-card.pos::before{background:var(--ak)}
-.sg-card.neg::before{background:var(--red)}
-.sg-card.neu::before{background:var(--t4)}
-.sg-label{font-size:8px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;font-family:JetBrains Mono,monospace}
-.sg-val{font-family:DM Serif Display,serif;font-size:28px;line-height:1}
-.sg-desc{font-size:9px;color:var(--t3);margin-top:4px;line-height:1.5}
-.sg-bar-bg{background:var(--s4);border-radius:3px;height:3px;margin-top:8px;overflow:hidden}
-.sg-bar-fill{height:100%;border-radius:3px}
+/* Big number cards */
+.bignum-row{display:flex;align-items:center;padding:16px;border-bottom:1px solid var(--sep);background:var(--white)}
+.bignum{font-size:44px;font-weight:800;letter-spacing:-1.5px;line-height:1;min-width:60px}
+.bignum-info{flex:1;margin-left:12px}
+.bignum-lbl{font-size:15px;font-weight:500;color:var(--t2);line-height:1.5}
+.bignum-sub{font-size:13px;color:var(--t3);margin-top:3px;line-height:1.5}
 
-/* ── RADAR CHART ── */
-.radar-wrap{display:flex;align-items:center;justify-content:center;padding:8px 0}
+/* Par breakdown */
+.par-grid{display:flex;background:var(--white);border-bottom:1px solid var(--sep)}
+.par-cell{flex:1;padding:16px 12px;border-right:1px solid var(--sep);text-align:center}
+.par-cell:last-child{border-right:none}
+.par-val{font-size:30px;font-weight:800;letter-spacing:-.5px;line-height:1}
+.par-lbl{font-size:13px;color:var(--t3);margin-top:4px;font-weight:500}
+.par-sub{font-size:12px;color:var(--t4);margin-top:2px}
 
-/* ── DISTANCE TABLE ── */
-.dist-table{width:100%}
-.dist-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--b)}
-.dist-row:last-child{border-bottom:none}
-.dist-club{font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;color:var(--t);min-width:44px}
-.dist-bar-wrap{flex:1;background:var(--s3);border-radius:3px;height:5px;overflow:hidden}
-.dist-bar-inner{height:100%;border-radius:3px}
-.dist-avg{font-family:JetBrains Mono,monospace;font-size:10px;color:var(--t2);min-width:50px;text-align:right}
-.dist-n{font-family:JetBrains Mono,monospace;font-size:8px;color:var(--t4);min-width:30px;text-align:right}
+/* SG */
+.sg-hero-row{display:flex;align-items:baseline;gap:10px;padding:18px 16px 6px;background:var(--white);border-bottom:1px solid var(--sep)}
+.sg-hero-num{font-size:52px;font-weight:800;letter-spacing:-2px;line-height:1}
+.sg-hero-lbl{font-size:16px;color:var(--t3);font-weight:500}
+.sg-cat-list{background:var(--white)}
+.sg-cat-item{display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid var(--sep)}
+.sg-cat-item:last-child{border-bottom:none}
+.sg-cat-name{font-size:16px;font-weight:500;color:var(--t2);min-width:110px}
+.sg-cat-track{flex:1;height:6px;background:var(--bg);border-radius:3px;position:relative;overflow:visible;margin:0 12px}
+.sg-cat-zero{position:absolute;top:-5px;bottom:-5px;width:1px;background:var(--sep2)}
+.sg-cat-fill{height:6px;border-radius:3px;position:absolute;top:0}
+.sg-cat-val{font-size:16px;font-weight:700;min-width:44px;text-align:right}
 
-/* ── PATTERN CARDS ── */
-.pat{background:var(--s1);border:1px solid var(--b);border-left:2px solid;border-radius:var(--r2);padding:13px;margin-bottom:6px;display:flex;align-items:flex-start;gap:12px}
-.pat-ico{font-size:18px;flex-shrink:0;margin-top:1px}
-.pat-lbl{font-size:12px;color:var(--t);font-weight:600;margin-bottom:3px;display:flex;justify-content:space-between;align-items:center}
-.pat-cnt{font-family:DM Serif Display,serif;font-size:20px}
-.pat-desc{font-size:10px;color:var(--t2);line-height:1.6}
-.pat-tip{font-size:10px;color:var(--t3);margin-top:5px;padding-top:5px;border-top:1px solid var(--b);line-height:1.6;font-style:italic}
+/* Coach */
+.coach-section{padding:16px;background:var(--white);border-bottom:1px solid var(--sep)}
+.coach-tag{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.coach-color-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.coach-tag-lbl{font-size:12px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.4px}
+.coach-body{font-size:15px;color:var(--t2);line-height:1.65}
 
-/* ── HOLE CARDS ── */
-.hc{background:var(--s1);border:1px solid var(--b);border-left:2px solid;border-radius:var(--r2);margin-bottom:5px;overflow:hidden;cursor:pointer;transition:background .15s}
-.hc:active{background:var(--s2)}
-.hch{display:flex;align-items:center;padding:11px 13px;gap:8px}
-.hnum{font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;min-width:56px;color:var(--t2)}
-.hbadges{display:flex;gap:4px;flex:1;flex-wrap:wrap;align-items:center}
-.badge{font-size:7px;border-radius:4px;padding:2px 6px;font-weight:700;font-family:JetBrains Mono,monospace;letter-spacing:.3px}
-.b-dist{color:var(--blu);background:rgba(77,166,255,.1)}
-.b-bk{color:var(--ora);background:rgba(255,159,67,.1)}
-.b-3p{color:var(--red);background:rgba(255,107,107,.1)}
-.hright{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.hpar{background:var(--s3);border-radius:6px;padding:4px 8px;text-align:center}
-.hpar-l{font-size:6px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-family:JetBrains Mono,monospace}
-.hpar-n{font-family:DM Serif Display,serif;font-size:18px;color:var(--t2);line-height:1.1}
-.hscbox{text-align:center;min-width:38px}
-.hres{font-size:6px;text-transform:uppercase;letter-spacing:1px;font-weight:700;font-family:JetBrains Mono,monospace}
-.hscn{font-family:DM Serif Display,serif;font-size:30px;line-height:1}
-.hdiff{font-size:8px;font-weight:700;opacity:.8;font-family:JetBrains Mono,monospace}
-.hbody{display:none;padding:0 13px 12px;border-top:1px solid var(--b)}
-.hbody.open{display:block;padding-top:10px}
-.hmeta{display:flex;gap:10px;margin-bottom:8px;font-size:9px;color:var(--t3);flex-wrap:wrap;font-family:JetBrains Mono,monospace}
-.srow{display:flex;align-items:flex-start;gap:7px;padding:5px 8px;margin-bottom:3px;border-radius:6px;background:rgba(255,255,255,.02)}
-.sdot{width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#000;flex-shrink:0;margin-top:1px}
-.sclub{color:var(--blu);font-size:10px;font-weight:700;min-width:42px;font-family:JetBrains Mono,monospace}
-.sres{color:var(--t2);font-size:10px;flex:1;line-height:1.5}
-.hnote{margin-top:6px;font-size:10px;color:var(--t3);font-style:italic;background:rgba(255,255,255,.02);border-radius:6px;padding:6px 8px;line-height:1.5}
+/* Practice */
+.practice-row{padding:16px;border-bottom:1px solid var(--sep);background:var(--white)}
+.practice-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.practice-title2{font-size:17px;font-weight:700;color:var(--t1)}
+.practice-time2{font-size:12px;font-weight:600;color:var(--blu);background:var(--blu-light);padding:3px 10px;border-radius:20px}
+.practice-body{font-size:15px;color:var(--t2);line-height:1.65}
 
-/* ── SCORECARD ── */
-.sct-wrap{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);overflow:hidden}
-.sct{width:100%;border-collapse:collapse;font-size:10px;font-family:JetBrains Mono,monospace}
-.sct th{background:var(--s2);color:var(--t3);font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:7px 5px;text-align:center;border-bottom:1px solid var(--b)}
-.sct td{padding:8px 5px;text-align:center;border-bottom:1px solid rgba(255,255,255,.025)}
-.sct tfoot td{background:var(--s2);font-weight:700;font-size:11px;border-top:1px solid var(--b2);border-bottom:none}
-.sc-out{background:var(--s3)!important;font-weight:700;font-size:9px}
-.s-eag{background:var(--yel);color:#000;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-weight:800}
-.s-bir{background:var(--ak);color:#000;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-weight:800}
-.s-par{color:var(--blu)}.s-bog{color:var(--yel)}.s-dbl{color:var(--red);font-weight:700}.s-tri{color:var(--red);font-weight:900;text-decoration:underline}
+/* Hole rows — Golfshot list style */
+.hole-list-item{display:flex;align-items:center;padding:13px 16px;background:var(--white);border-bottom:1px solid var(--sep);cursor:pointer}
+.hole-list-item:last-child{border-bottom:none}
+.hole-list-num{font-size:15px;font-weight:600;color:var(--t3);min-width:68px}
+.hole-list-badges{display:flex;gap:4px;flex:1;align-items:center;flex-wrap:wrap}
+.hbdg{font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px}
+.hbdg.dist{color:var(--blu);background:rgba(0,122,255,.1)}
+.hbdg.bunk{color:var(--yel);background:rgba(255,149,0,.12)}
+.hbdg.pp3 {color:var(--red);background:rgba(255,59,48,.1)}
+.hbdg.pen {color:var(--red);background:rgba(255,59,48,.1)}
+.hole-list-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.hole-par-mini{background:var(--bg);border-radius:7px;padding:4px 9px;text-align:center}
+.hole-par-lbl2{font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.hole-par-num2{font-size:20px;font-weight:700;color:var(--t2);line-height:1.1}
+.hole-score-right{text-align:right;min-width:48px}
+.hole-score-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.hole-score-num{font-size:38px;font-weight:800;letter-spacing:-1px;line-height:1}
+.hole-score-diff{font-size:11px;font-weight:700;opacity:.7}
+.hole-detail{display:none;padding:4px 16px 14px;border-bottom:1px solid var(--sep);background:var(--white)}
+.hole-detail.open{display:block}
+.hole-det-meta{display:flex;gap:12px;margin-bottom:10px;font-size:13px;color:var(--t3);flex-wrap:wrap}
+.shot-line{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;margin-bottom:4px;border-radius:10px;background:var(--bg)}
+.shot-dot2{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;flex-shrink:0;margin-top:1px}
+.shot-club2{font-size:14px;font-weight:700;color:var(--blu);min-width:106px}
+.shot-desc2{font-size:14px;color:var(--t2);flex:1;line-height:1.5}
+.hole-note2{margin-top:7px;font-size:14px;color:var(--t3);font-style:italic;line-height:1.6;padding:8px 12px;background:var(--bg);border-radius:10px}
 
-/* ── ANALYSIS TAB ── */
-.anal-section{margin-bottom:16px}
-.sg-summary{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);padding:16px;margin-bottom:8px}
-.sg-total-row{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
-.sg-total-val{font-family:DM Serif Display,serif;font-size:42px;line-height:1}
-.sg-total-lbl{font-size:11px;color:var(--t2)}
-.sg-cats{display:flex;flex-direction:column;gap:8px}
-.sg-cat-row{display:flex;align-items:center;gap:10px}
-.sg-cat-name{font-size:10px;color:var(--t2);min-width:80px}
-.sg-cat-bar-bg{flex:1;background:var(--s3);border-radius:3px;height:5px;overflow:visible;position:relative}
-.sg-cat-bar{height:5px;border-radius:3px;position:absolute;top:0}
-.sg-cat-zero{position:absolute;top:-4px;bottom:-4px;width:1px;background:var(--b3)}
-.sg-cat-val{font-family:JetBrains Mono,monospace;font-size:10px;font-weight:700;min-width:40px;text-align:right}
+/* Patterns */
+.pat-item{padding:16px;border-bottom:1px solid var(--sep);background:var(--white);border-left:3px solid}
+.pat-head2{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.pat-title2{font-size:17px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:8px}
+.pat-count2{font-size:28px;font-weight:800;letter-spacing:-.5px}
+.pat-body2{font-size:15px;color:var(--t2);line-height:1.65;margin-bottom:6px}
+.pat-tip2{font-size:13px;color:var(--t3);line-height:1.6;padding-top:7px;border-top:1px solid var(--sep)}
 
-/* ── EVO ── */
-.evo-chart{height:80px;display:flex;align-items:flex-end;gap:4px;margin-bottom:12px}
-.evo-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
-.evo-bar-outer{flex:1;display:flex;align-items:flex-end;width:100%}
-.evo-bar-inner{width:100%;border-radius:3px 3px 0 0;min-height:3px}
-.evo-bar-lbl{font-family:JetBrains Mono,monospace;font-size:7px;color:var(--t3)}
-.evo-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--b)}
-.evo-item:last-child{border-bottom:none}
-.evo-left{flex:1;min-width:0}
-.evo-date{font-size:9px;color:var(--t3);font-family:JetBrains Mono,monospace}
-.evo-name{font-size:12px;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:2px 0 5px;font-weight:500}
-.evo-pills{display:flex;gap:4px;flex-wrap:wrap}
-.evo-pill{font-size:8px;font-family:JetBrains Mono,monospace;padding:2px 6px;border-radius:4px;background:var(--s3);color:var(--t3)}
-.evo-right{text-align:right;flex-shrink:0}
-.evo-score{font-family:DM Serif Display,serif;font-size:26px;line-height:1}
-.evo-diff{font-size:10px;font-weight:700;font-family:JetBrains Mono,monospace;margin-top:2px}
+/* SCORECARD */
+.sc-wrap2{background:var(--white);margin-top:0}
+.sc-table2{width:100%;border-collapse:collapse;font-size:14px}
+.sc-table2 th{background:var(--bg);color:var(--t3);font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:9px 6px;text-align:center;border-bottom:1px solid var(--sep)}
+.sc-table2 td{padding:11px 6px;text-align:center;border-bottom:1px solid var(--sep);color:var(--t1);font-size:14px}
+.sc-table2 tfoot td{background:var(--bg);font-weight:800;font-size:16px;border-top:1.5px solid var(--sep2);border-bottom:none;padding:12px 6px}
+.sc-sub2{background:var(--sep) !important}
+.sc-sub2 td{font-size:13px !important;font-weight:700 !important;color:var(--t2) !important}
+.sc-eag2{background:var(--yel);color:#fff;border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.sc-bir2{background:var(--ak); color:#fff;border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
+.sc-par2{color:var(--blu);font-weight:600}
+.sc-bog2{color:var(--yel);font-weight:600}
+.sc-dbl2{color:var(--red);font-weight:700}
+.sc-tri2{color:var(--red);font-weight:900;text-decoration:underline}
 
-/* ── VS ── */
-.vs-cards{display:flex;gap:8px;margin-bottom:14px}
-.vs-card{flex:1;border-radius:var(--r);padding:16px;text-align:center;border:1px solid}
-.vs-card.ak{background:var(--ak2);border-color:var(--ak3)}
-.vs-card.mac{background:var(--mac2);border-color:var(--mac3)}
-.vs-pname{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;font-family:JetBrains Mono,monospace;margin-bottom:8px}
-.vs-hcp{font-family:DM Serif Display,serif;font-size:38px;line-height:1}
-.vs-rn{font-size:9px;color:var(--t3);margin-top:5px;font-family:JetBrains Mono,monospace}
-.vs-sep{display:flex;align-items:center;color:var(--t4);font-weight:900;font-size:12px;flex-shrink:0}
-.h2h-wrap{background:var(--s1);border:1px solid var(--b);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
-.h2h-row{display:flex;align-items:center;padding:11px 14px;border-bottom:1px solid var(--b)}
-.h2h-row:last-child{border-bottom:none}
-.h2h-ak{flex:1;text-align:right;font-family:DM Serif Display,serif;font-size:20px}
-.h2h-mac{flex:1;text-align:left;font-family:DM Serif Display,serif;font-size:20px}
-.h2h-lbl{font-size:8px;color:var(--t3);text-align:center;min-width:80px;font-family:JetBrains Mono,monospace;letter-spacing:.5px;text-transform:uppercase}
-.vs-empty{text-align:center;padding:24px;border:1px dashed var(--mac3);border-radius:var(--r);font-size:12px;color:var(--t3);line-height:2}
-.vs-bar-row{display:flex;gap:8px;margin-bottom:7px;align-items:center}
-.vs-bar-date{font-size:8px;color:var(--t3);font-family:JetBrains Mono,monospace;min-width:55px}
-.vs-bar-col{flex:1;display:flex;flex-direction:column;gap:3px}
-.vs-bar{height:13px;border-radius:3px;display:flex;align-items:center;padding:0 6px;font-size:8px;font-weight:700;color:#000;min-width:16px;font-family:JetBrains Mono,monospace}
+/* EVO */
+.evo-chart3{display:flex;align-items:flex-end;gap:6px;height:80px;padding:16px 16px 0;background:var(--white)}
+.evo-col3{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.evo-bar3{width:100%;border-radius:5px 5px 0 0;min-height:4px}
+.evo-score4{font-size:13px;font-weight:700;color:var(--t1)}
+.evo-date4{font-size:11px;color:var(--t3)}
+.evo-round-row{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid var(--sep);background:var(--white);cursor:pointer}
+.evo-round-left{flex:1;min-width:0}
+.evo-round-date{font-size:13px;color:var(--t3);margin-bottom:2px}
+.evo-round-name{font-size:16px;font-weight:600;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:5px}
+.evo-round-pills2{display:flex;gap:5px;flex-wrap:wrap}
+.evo-pill2{font-size:12px;font-weight:500;padding:3px 9px;border-radius:20px;background:var(--bg);color:var(--t3)}
+.evo-round-right{text-align:right;flex-shrink:0;margin-left:12px}
+.evo-round-score{font-size:40px;font-weight:800;letter-spacing:-1.5px;line-height:1}
+.evo-round-diff{font-size:14px;font-weight:700;margin-top:2px}
+.trend-row{display:flex;align-items:center;gap:16px;padding:16px;border-bottom:1px solid var(--sep);background:var(--white)}
+.trend-num2{font-size:46px;font-weight:800;letter-spacing:-1.5px;line-height:1}
+.trend-info{flex:1;font-size:15px;color:var(--t2);line-height:1.65}
 
-/* ── EMPTY ── */
-.empty{text-align:center;padding:64px 20px;color:var(--t3);font-size:13px;line-height:2}
-.empty-ico{font-size:40px;margin-bottom:14px;display:block}
+/* VS */
+.vs-header2{display:flex;gap:0;background:var(--white);border-bottom:1px solid var(--sep)}
+.vs-card3{flex:1;padding:18px 16px;text-align:center;border-right:1px solid var(--sep)}
+.vs-card3:last-child{border-right:none}
+.vs-card3.ak  {background:var(--ak-light)}
+.vs-card3.mac {background:var(--mac-light)}
+.vs-pname3{font-size:12px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.vs-hcp3{font-size:48px;font-weight:800;letter-spacing:-1.5px;line-height:1}
+.vs-rn3{font-size:13px;color:var(--t3);margin-top:4px}
+.h2h-row3{display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid var(--sep);background:var(--white)}
+.h2h-row3:last-child{border-bottom:none}
+.h2h-val-left{flex:1;text-align:right;font-size:24px;font-weight:800;letter-spacing:-.5px;padding-right:16px}
+.h2h-val-right{flex:1;text-align:left;font-size:24px;font-weight:800;letter-spacing:-.5px;padding-left:16px}
+.h2h-lbl3{font-size:13px;color:var(--t3);text-align:center;min-width:80px;font-weight:500}
+.vs-empty3{padding:32px 16px;text-align:center;background:var(--white);font-size:16px;color:var(--t3);line-height:2.2}
+.vs-bar-row3{display:flex;gap:10px;padding:8px 16px;align-items:center;border-bottom:1px solid var(--sep);background:var(--white)}
+.vs-bar-date3{font-size:13px;color:var(--t3);min-width:52px;font-weight:500}
+.vs-bar-stack2{flex:1;display:flex;flex-direction:column;gap:4px}
+.vs-bar4{height:20px;border-radius:5px;display:flex;align-items:center;padding:0 10px;font-size:12px;font-weight:700;color:#fff;min-width:24px}
+
+/* DIST ANALYSIS */
+.dist-anal-item{display:flex;align-items:center;padding:13px 16px;border-bottom:1px solid var(--sep);background:var(--white)}
+.dist-anal-club{font-size:16px;font-weight:700;color:var(--t1);min-width:120px}
+.dist-anal-track{flex:1;margin:0 10px;position:relative}
+.dist-anal-bg{background:var(--bg);border-radius:5px;height:8px;overflow:hidden;position:relative}
+.dist-anal-ref{position:absolute;top:0;left:0;height:100%;border-radius:5px;background:var(--sep2)}
+.dist-anal-field{position:absolute;top:0;left:0;height:100%;border-radius:5px}
+.dist-anal-nums{font-size:13px;color:var(--t3);text-align:right;white-space:nowrap}
+
+/* EMPTY */
+.empty2{padding:72px 24px;text-align:center;background:var(--bg)}
+.empty2-ico{font-size:44px;display:block;margin-bottom:14px}
+.empty2-text{font-size:17px;color:var(--t3);line-height:2}
 
 /* ── MODAL ── */
-.ov{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.88);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(6px)}
+.ov{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s}
 .ov.open{opacity:1;pointer-events:all}
-.sheet{width:100%;max-width:430px;margin:0 auto;background:#0c0c0c;border-radius:24px 24px 0 0;max-height:94vh;overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);border-top:1px solid var(--b2)}
+.sheet{width:100%;max-width:430px;margin:0 auto;background:var(--white);border-radius:22px 22px 0 0;max-height:94vh;overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);box-shadow:0 -4px 30px rgba(0,0,0,.15)}
 .ov.open .sheet{transform:translateY(0)}
-.drag{width:32px;height:3px;background:var(--s4);border-radius:2px;margin:14px auto 12px}
-.stitle{font-family:DM Serif Display,serif;font-size:22px;padding:0 18px 16px;color:var(--t)}
-.sbody{padding:0 18px calc(var(--sb) + 28px)}
-
-/* ── FORM ── */
-.fl{font-size:8px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;margin-top:16px;display:block;font-family:JetBrains Mono,monospace}
+.drag2{width:36px;height:4px;background:var(--sep2);border-radius:2px;margin:14px auto 12px}
+.stitle{font-size:22px;font-weight:800;padding:0 20px 16px;letter-spacing:-.4px;color:var(--t1)}
+.sbody{padding:0 20px calc(var(--sb)+28px)}
+.fl{font-size:13px;font-weight:600;color:var(--t3);letter-spacing:.3px;text-transform:uppercase;margin-bottom:6px;margin-top:20px;display:block}
 .fl:first-child{margin-top:0}
-.fi{background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:11px 13px;color:var(--t);font-size:14px;outline:none;width:100%;-webkit-appearance:none;transition:border-color .15s}
-.fi:focus{border-color:var(--ak)}.fi.mac:focus{border-color:var(--mac)}
+.fi{background:var(--bg);border:1px solid var(--sep2);border-radius:12px;padding:14px 16px;color:var(--t1);font-size:17px;outline:none;width:100%;-webkit-appearance:none;transition:border-color .15s}
+.fi:focus{border-color:var(--blu)}
+.fi.mac:focus{border-color:var(--mac)}
 .frow{display:flex;gap:8px}.frow>div{flex:1}
-.trow{display:flex;gap:6px;margin-top:4px}
-.topt{flex:1;padding:11px;border-radius:10px;border:1.5px solid var(--b2);background:transparent;color:var(--t3);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
-.topt.sel-y{border-color:var(--yel);background:rgba(255,209,102,.1);color:var(--yel)}
-.topt.sel-r{border-color:var(--red);background:rgba(255,107,107,.1);color:var(--red)}
+.trow{display:flex;gap:8px;margin-top:6px}
+.topt{flex:1;padding:14px;border-radius:12px;border:1.5px solid var(--sep2);background:transparent;color:var(--t3);font-size:16px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+.topt.sel-y{border-color:var(--yel);background:rgba(255,149,0,.1);color:var(--yel)}
+.topt.sel-r{border-color:var(--red);background:rgba(255,59,48,.1);color:var(--red)}
 
-/* ── HOLE ENTRY ── */
-.phdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;padding-top:4px}
-.phnum{font-family:DM Serif Display,serif;font-size:64px;line-height:1}
-.phres{font-size:11px;font-weight:700;margin-top:6px;font-family:JetBrains Mono,monospace;letter-spacing:.5px}
+/* Hole entry */
+.phdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;padding-top:4px}
+.phnum{font-size:80px;font-weight:800;letter-spacing:-3px;line-height:1;color:var(--t1)}
+.phres{font-size:16px;font-weight:700;margin-top:6px;letter-spacing:-.2px}
 .phinfo{text-align:right}
-.phdist{font-family:DM Serif Display,serif;font-size:26px;color:var(--blu)}
-.phpar{font-size:11px;color:var(--t3);font-family:JetBrains Mono,monospace;margin-top:2px}
-.phhcp{font-size:9px;color:var(--t4);font-family:JetBrains Mono,monospace}
-.hnav{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
-.hn{width:calc(100%/9 - 5px);aspect-ratio:1;border-radius:7px;border:1px solid var(--b2);background:transparent;color:var(--t3);font-size:10px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s}
-.hn.done{background:var(--ak2);border-color:var(--ak3);color:var(--ak)}
-.hn.cur{background:var(--ak);border-color:var(--ak);color:#000;font-weight:800}
-.hn.mdone{background:var(--mac2);border-color:var(--mac3);color:var(--mac)}
-.hn.mcur{background:var(--mac);border-color:var(--mac);color:#000;font-weight:800}
-.steppers{display:flex;gap:8px;margin-bottom:14px}
-.stepbox{flex:1;background:var(--s2);border-radius:var(--r2);padding:12px 10px;text-align:center}
-.steplbl{font-size:7px;color:var(--t3);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;font-family:JetBrains Mono,monospace}
+.phdist{font-size:34px;font-weight:800;color:var(--blu);letter-spacing:-.5px}
+.phpar{font-size:15px;color:var(--t3);margin-top:3px}
+.phhcp{font-size:13px;color:var(--t4)}
+.hnav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.hn{width:calc(100%/9 - 6px);aspect-ratio:1;border-radius:9px;border:1.5px solid var(--sep2);background:transparent;color:var(--t3);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.hn.done {background:var(--ak-light);border-color:rgba(52,199,89,.35);color:var(--ak)}
+.hn.cur  {background:var(--ak);border-color:var(--ak);color:#fff;font-weight:800}
+.hn.mdone{background:var(--mac-light);border-color:rgba(255,45,85,.35);color:var(--mac)}
+.hn.mcur {background:var(--mac);border-color:var(--mac);color:#fff;font-weight:800}
+.steppers{display:flex;gap:10px;margin-bottom:18px}
+.stepbox{flex:1;background:var(--bg);border-radius:16px;padding:14px 12px;text-align:center}
+.steplbl{font-size:12px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
 .steprow{display:flex;align-items:center;justify-content:space-between;gap:4px}
-.stepbtn{width:38px;height:38px;border-radius:50%;border:1px solid var(--b2);background:var(--s1);color:var(--t);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:300;transition:all .12s;line-height:1}
-.stepbtn:active{background:var(--ak);color:#000;border-color:var(--ak)}
-.stepval{font-family:DM Serif Display,serif;font-size:44px;line-height:1;min-width:36px;text-align:center}
-.togrow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--b)}
-.toglbl{font-size:12px;color:var(--t2);font-weight:500}
-.tog{width:44px;height:26px;border-radius:13px;background:var(--s3);border:none;cursor:pointer;position:relative;transition:background .18s;flex-shrink:0}
-.tog.on{background:var(--ak)}.tog.mon{background:var(--mac)}
-.tog::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .18s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
-.tog.on::after,.tog.mon::after{left:21px}
-.ftw{margin-top:14px}
-.fttop{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.ftlbl{font-size:8px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-family:JetBrains Mono,monospace}
-.fthint{font-size:9px;color:var(--t4);cursor:pointer;text-decoration:underline}
-.fta{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:11px 13px;color:var(--t);font-size:13px;outline:none;resize:none;min-height:80px;line-height:1.7;transition:border-color .15s}
-.fta:focus{border-color:var(--ak)}.fta.mac:focus{border-color:var(--mac)}
-.hbox{background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:12px;margin-top:6px;display:none}
+.stepbtn{width:46px;height:46px;border-radius:50%;border:none;background:var(--white);color:var(--t1);font-size:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:300;transition:all .12s;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.stepbtn:active{background:var(--ak);color:#fff}
+.stepval{font-size:56px;font-weight:800;line-height:1;min-width:44px;text-align:center;letter-spacing:-2px}
+.togrow{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--sep)}
+.toglbl{font-size:17px;font-weight:400;color:var(--t1)}
+.tog{width:50px;height:30px;border-radius:15px;background:var(--sep2);border:none;cursor:pointer;position:relative;transition:background .18s;flex-shrink:0}
+.tog.on {background:var(--ak)}
+.tog.mon{background:var(--mac)}
+.tog::after{content:'';position:absolute;width:24px;height:24px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .18s;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.tog.on::after,.tog.mon::after{left:23px}
+.ftw{margin-top:18px}
+.fttop{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.ftlbl{font-size:13px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.3px}
+.fthint{font-size:15px;color:var(--blu);cursor:pointer}
+.fta{width:100%;background:var(--bg);border:1.5px solid var(--sep2);border-radius:14px;padding:14px 16px;color:var(--t1);font-size:17px;outline:none;resize:none;min-height:90px;line-height:1.7;transition:border-color .15s}
+.fta:focus{border-color:var(--blu)}
+.fta.mac:focus{border-color:var(--mac)}
+.hbox{background:var(--bg);border:1px solid var(--sep2);border-radius:14px;padding:14px 16px;margin-top:8px;display:none}
 .hbox.open{display:block}
-.hrow{font-size:10px;color:var(--t3);padding:3px 0;line-height:1.7}
-.hrow strong{color:var(--t2);font-family:JetBrains Mono,monospace}
-.pp{margin-top:8px;background:rgba(61,220,132,.04);border:1px solid rgba(61,220,132,.1);border-radius:9px;padding:10px;display:none}
+.hrow{font-size:14px;color:var(--t3);padding:3px 0;line-height:1.7}
+.hrow strong{color:var(--t2)}
+.pp{margin-top:8px;background:var(--ak-light);border:1px solid rgba(52,199,89,.25);border-radius:12px;padding:12px;display:none}
 .pp.open{display:block}
-.ps{display:flex;align-items:center;gap:7px;padding:2px 0;font-size:10px;color:var(--t2)}
-.nota{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:10px 13px;color:var(--t);font-size:12px;outline:none;resize:none;min-height:52px;margin-top:4px;line-height:1.6}
-.btnp{width:100%;padding:15px;border:none;border-radius:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:16px;letter-spacing:.3px;transition:transform .1s,opacity .1s}
+.ps{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:15px;color:var(--t2)}
+.nota{width:100%;background:var(--bg);border:1.5px solid var(--sep2);border-radius:14px;padding:12px 16px;color:var(--t1);font-size:16px;outline:none;resize:none;min-height:60px;margin-top:6px;line-height:1.6}
+.btnp{width:100%;padding:17px;border:none;border-radius:15px;font-size:18px;font-weight:700;cursor:pointer;margin-top:20px;letter-spacing:-.2px;transition:transform .1s,opacity .1s}
 .btnp:active{transform:scale(.97);opacity:.9}
-.btnp.ak{background:var(--ak);color:#000}.btnp.mac{background:var(--mac);color:#000}
-.btns{width:100%;padding:12px;background:transparent;color:var(--t3);border:none;font-size:12px;cursor:pointer;margin-top:6px}
+.btnp.ak {background:var(--ak); color:#fff}
+.btnp.mac{background:var(--mac);color:#fff}
+.btns{width:100%;padding:14px;background:transparent;color:var(--t3);border:none;font-size:16px;cursor:pointer;margin-top:8px}
 
-/* ── ANIMATIONS ── */
-@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.scroll>*{animation:fu .22s ease}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.scroll>*{animation:fu .18s ease}
 </style>
 </head>
 <body>
 
-<!-- PLAYER BAR -->
 <div class="pbar" id="pbar">
-  <button class="pb ak-on" id="pbAK" onclick="setPlayer('ak')">
-    <div class="pb-dot"></div>
-    <div class="pb-name">AK</div>
-    <div class="pb-hcp" id="hcpAK">—</div>
-  </button>
-  <button class="pb" id="pbMAC" onclick="setPlayer('mac')">
-    <div class="pb-dot"></div>
-    <div class="pb-name">Macarena</div>
-    <div class="pb-hcp" id="hcpMAC">—</div>
-  </button>
-  <button class="pb" id="pbVS" onclick="setPlayer('vs')">
-    <div class="pb-dot"></div>
-    <div class="pb-name">VS</div>
-    <div class="pb-hcp">comparativa</div>
-  </button>
+  <button class="pb ak-on" id="pbAK" onclick="setPlayer('ak')"><div class="pb-dot"></div><div class="pb-name">AK</div><div class="pb-hcp" id="hcpAK">—</div></button>
+  <button class="pb" id="pbMAC" onclick="setPlayer('mac')"><div class="pb-dot"></div><div class="pb-name">Macarena</div><div class="pb-hcp" id="hcpMAC">—</div></button>
+  <button class="pb" id="pbVS"  onclick="setPlayer('vs')"><div class="pb-dot"></div><div class="pb-name">VS</div><div class="pb-hcp">comparativa</div></button>
 </div>
 
-<!-- HEADER -->
 <div class="hdr" id="hdr">
-  <div class="hdr-main">
+  <div class="hdr-top">
     <div class="hdr-left">
       <div class="hdr-course" id="hdrC">—</div>
       <div class="hdr-meta" id="hdrM"></div>
     </div>
-    <div class="hdr-score">
-      <div class="hdr-num" id="hdrN">—</div>
-      <div class="hdr-diff" id="hdrD"></div>
-      <div class="hdr-holes" id="hdrH"></div>
+    <div class="hdr-right">
+      <div class="hdr-score" id="hdrN">—</div>
+      <div class="hdr-diff"  id="hdrD"></div>
+      <div class="hdr-sub"   id="hdrH"></div>
     </div>
   </div>
   <div id="rcWrap" style="display:none"><div class="rchips" id="rc"></div></div>
@@ -384,17 +403,16 @@ input,select,textarea,button{font-family:'Outfit',sans-serif}
     <button class="tabB" onclick="tab('card')">Tarjeta</button>
     <button class="tabB" onclick="tab('analisis')">Análisis</button>
     <button class="tabB" onclick="tab('evo')">Evolución</button>
+    <button class="tabB tab-new" id="tabNew" onclick="openPlay()">＋</button>
   </div>
 </div>
 
 <div class="scroll" id="scroll"></div>
-<button class="fab ak" id="fab" onclick="openPlay()">+</button>
 <div class="bbar" id="bbar">Golf · Kowalski</div>
 
-<!-- MODAL -->
 <div class="ov" id="playOv">
 <div class="sheet">
-<div class="drag"></div>
+<div class="drag2"></div>
 <div id="step0">
   <div class="stitle" id="s0t">Nueva ronda</div>
   <div class="sbody">
@@ -403,10 +421,9 @@ input,select,textarea,button{font-family:'Outfit',sans-serif}
     <div id="nrf">
       <div class="frow" style="margin-top:0">
         <div><span class="fl">Fecha</span><input type="date" class="fi" id="pDate"></div>
-        <div><span class="fl">Campo</span><input type="text" class="fi" id="pCourse" placeholder="Nombre del campo"></div>
+        <div><span class="fl">Campo</span><input type="text" class="fi" id="pCourse" placeholder="Nombre"></div>
       </div>
-      <span class="fl">Ciudad</span>
-      <input type="text" class="fi" id="pCity" placeholder="Ej: Segovia">
+      <span class="fl">Ciudad</span><input type="text" class="fi" id="pCity" placeholder="Ej: Segovia">
       <div id="teeW" style="display:none">
         <span class="fl">Tees</span>
         <div class="trow">
@@ -427,44 +444,30 @@ input,select,textarea,button{font-family:'Outfit',sans-serif}
   </div>
   <div class="hnav" id="hnav"></div>
   <div class="steppers">
-    <div class="stepbox"><div class="steplbl">Score</div><div class="steprow">
-      <button class="stepbtn" onclick="step('score',-1)">−</button>
-      <div class="stepval" id="scV">4</div>
-      <button class="stepbtn" onclick="step('score',1)">+</button>
-    </div></div>
-    <div class="stepbox"><div class="steplbl">Putts</div><div class="steprow">
-      <button class="stepbtn" onclick="step('putts',-1)">−</button>
-      <div class="stepval" id="puV" style="color:var(--blu)">2</div>
-      <button class="stepbtn" onclick="step('putts',1)">+</button>
-    </div></div>
+    <div class="stepbox"><div class="steplbl">Score</div><div class="steprow"><button class="stepbtn" onclick="step('score',-1)">−</button><div class="stepval" id="scV">4</div><button class="stepbtn" onclick="step('score',1)">+</button></div></div>
+    <div class="stepbox"><div class="steplbl">Putts</div><div class="steprow"><button class="stepbtn" onclick="step('putts',-1)">−</button><div class="stepval" id="puV" style="color:var(--blu)">2</div><button class="stepbtn" onclick="step('putts',1)">+</button></div></div>
   </div>
-  <div style="margin-bottom:14px">
-    <div class="togrow" id="trFW"><span class="toglbl">Fairway hit ✓</span><button class="tog" id="tFW" onclick="tog('tFW')"></button></div>
-    <div class="togrow"><span class="toglbl">Green en regulación (GIR) ✓</span><button class="tog" id="tGIR" onclick="tog('tGIR')"></button></div>
+  <div style="margin-bottom:18px">
+    <div class="togrow" id="trFW"><span class="toglbl">Fairway</span><button class="tog" id="tFW" onclick="tog('tFW')"></button></div>
+    <div class="togrow"><span class="toglbl">Green en regulación (GIR)</span><button class="tog" id="tGIR" onclick="tog('tGIR')"></button></div>
     <div class="togrow"><span class="toglbl">Bunker</span><button class="tog" id="tBK" onclick="tog('tBK')"></button></div>
-    <div class="togrow" id="trBS"><span class="toglbl">Bunker save ↑</span><button class="tog" id="tBS" onclick="tog('tBS')"></button></div>
+    <div class="togrow"><span class="toglbl">Bunker save</span><button class="tog" id="tBS" onclick="tog('tBS')"></button></div>
     <div class="togrow"><span class="toglbl">Penalización / OB</span><button class="tog" id="tPEN" onclick="tog('tPEN')"></button></div>
   </div>
   <div class="ftw">
-    <div class="fttop">
-      <span class="ftlbl">Golpes — escribe libremente</span>
-      <span class="fthint" onclick="toggleHint()">ver ejemplos</span>
-    </div>
+    <div class="fttop"><span class="ftlbl">Golpes</span><span class="fthint" onclick="toggleHint()">Ejemplos</span></div>
     <div class="hbox" id="hBox">
-      <div class="hrow"><strong>Driver centro 220</strong> → palo, dirección, distancia</div>
-      <div class="hrow"><strong>5M izq fade 180</strong> → dirección y tipo de curva</div>
-      <div class="hrow"><strong>8H fat bunker</strong> → resultado del golpe</div>
-      <div class="hrow"><strong>SW 50m green ok</strong> → distancia y calidad</div>
-      <div class="hrow"><strong>9I sin commit fringe der</strong> → observaciones libres</div>
-      <div class="hrow" style="margin-top:6px;color:var(--t4)">Separa golpes con coma o salto de línea. Escribe en español o inglés — se entiende igual.</div>
+      <div class="hrow"><strong>Driver centro 220</strong> — palo, dirección, distancia</div>
+      <div class="hrow"><strong>Madera 5 izq fade 180</strong> — con dirección</div>
+      <div class="hrow"><strong>Hierro 8 fat bunker</strong> — tipo de golpe</div>
+      <div class="hrow"><strong>Sand Wedge 50m green</strong> — distancia y resultado</div>
+      <div class="hrow"><strong>Hierro 9 sin commit fringe</strong> — mental</div>
+      <div class="hrow" style="margin-top:8px;color:var(--t4)">Separa con coma o enter.</div>
     </div>
-    <textarea class="fta" id="ftInp" placeholder="Ej: Driver centro 220, 7H sin commit fringe izq, SW perfecto green..." oninput="onFT()"></textarea>
+    <textarea class="fta" id="ftInp" placeholder="Driver centro 220, Hierro 7 fringe izq, Sand Wedge perfecto green..." oninput="onFT()"></textarea>
     <div class="pp" id="pp"></div>
   </div>
-  <div style="margin-top:14px">
-    <span class="fl" style="margin-top:0">Notas del hoyo</span>
-    <textarea class="nota" id="pNotes" placeholder="Sensaciones, condiciones, lo que quieras..."></textarea>
-  </div>
+  <div style="margin-top:18px"><span class="fl" style="margin-top:0">Notas del hoyo</span><textarea class="nota" id="pNotes" placeholder="Sensaciones, condiciones..."></textarea></div>
   <button class="btnp ak" id="saveBtn" onclick="saveHole()">Guardar hoyo →</button>
   <button class="btns" onclick="closePlay()">Cerrar sin guardar</button>
 </div>
@@ -472,7 +475,9 @@ input,select,textarea,button{font-family:'Outfit',sans-serif}
 </div>
 </div>
 
+
 <script>
+
 // ═══════════════════════════════════════════════════════
 // COURSE DATA
 // ═══════════════════════════════════════════════════════
@@ -692,11 +697,11 @@ let pTog={tFW:false,tGIR:false,tBK:false,tBS:false,tPEN:false};
 let sTv='amarillas';
 
 function load(){
-  const s=localStorage.getItem('gtkow4');
+  const s=localStorage.getItem('gtkow6');
   if(s){try{data=JSON.parse(s);}catch(e){}}
   else{data={ak:{rounds:[AK_FAIS]},mac:{rounds:[]}};save();}
 }
-function save(){localStorage.setItem('gtkow4',JSON.stringify(data));}
+function save(){localStorage.setItem('gtkow6',JSON.stringify(data));}
 
 // ═══════════════════════════════════════════════════════
 // STATS CALCULATIONS
@@ -802,13 +807,16 @@ function eH(rounds){
 }
 
 function clubDisplay(cl){
-  const map={'3M':'Madera 3','5M':'Madera 5','7M':'Madera 7',
+  const map={
+    'Driver':'Driver',
+    '3M':'Madera 3','5M':'Madera 5','7M':'Madera 7',
     '2H':'Híbrido 2','3H':'Híbrido 3','4H':'Híbrido 4','5H':'Híbrido 5',
     '6H':'Híbrido 6','7H':'Híbrido 7','8H':'Híbrido 8','9H':'Híbrido 9',
     '2I':'Hierro 2','3I':'Hierro 3','4I':'Hierro 4','5I':'Hierro 5',
     '6I':'Hierro 6','7I':'Hierro 7','8I':'Hierro 8','9I':'Hierro 9',
-    'PW':'PW','AW':'AW','GW':'GW','SW':'SW','LW':'LW',
-    'Driver':'Driver','Putter':'Putter'};
+    'PW':'Pitching Wedge','AW':'Approach Wedge','GW':'Gap Wedge',
+    'SW':'Sand Wedge','LW':'Lob Wedge',
+    'Putter':'Putter'};
   return map[cl]||cl;
 }
 function avgDist(dists){
@@ -819,29 +827,28 @@ function avgDist(dists){
 // ═══════════════════════════════════════════════════════
 // COLOR HELPERS
 // ═══════════════════════════════════════════════════════
-function qC(q){return q==='bueno'?'var(--ak)':q==='ok'?'var(--yel)':'var(--red)'}
+function qC(q){return q==='bueno'?'var(--ak)':q==='ok'?'var(--yellow)':'var(--red)'}
 function qI(q){return q==='bueno'?'✓':q==='ok'?'·':'✗'}
-function hC(h){return h.score<h.par?'var(--ak)':h.score===h.par?'var(--blu)':h.score===h.par+1?'var(--yel)':'var(--red)'}
+function hC(h){return h.score<h.par?'var(--ak)':h.score===h.par?'var(--blu)':h.score===h.par+1?'var(--yel)':h.score>=h.par+2?'var(--red)':'var(--red)'}
 function hL(h){return h.score<h.par?'BIRDIE':h.score===h.par?'PAR':h.score===h.par+1?'BOGEY':`+${h.score-h.par}`}
 function hLF(h){return h.score<=h.par-2?'EAGLE':h.score===h.par-1?'BIRDIE':h.score===h.par?'PAR':h.score===h.par+1?'BOGEY':h.score===h.par+2?'DOBLE':'TRIPLE+'}
-function dC(d){return d<0?'var(--ak)':d===0?'var(--blu)':d===1?'var(--yel)':'var(--red)'}
+function dC(d){return d<0?'var(--ak)':d===0?'var(--blue)':d===1?'var(--yellow)':'var(--red)'}
 function sCl(s,p){const d=s-p;return d<0?'s-bir':d===0?'s-par':d===1?'s-bog':d===2?'s-dbl':'s-tri'}
 function sCl2(s,p){const d=s-p;if(d<=-2)return's-eag';return sCl(s,p);}
 function pac(p){return p==='mac'?'var(--mac)':'var(--ak)'}
 function pac2(p){return p==='mac'?'mac':'ak'}
-function sgC(v){return v>0?'var(--ak)':v<0?'var(--red)':'var(--t3)'}
+function sgC(v){return v>0?'var(--ak)':v<0?'var(--red)':'var(--label3)'}
 function sgCl(v){return v>0?'pos':v<0?'neg':'neu'}
 
 // ═══════════════════════════════════════════════════════
 // RENDER
 // ═══════════════════════════════════════════════════════
 function render(){
-  const isVS=AP==='vs';
-  const pd=isVS?null:data[AP];
-  const rounds=pd?pd.rounds:[];
-  const round=rounds[AR];
+  const isVS=AP==='vs', pd=isVS?null:data[AP];
+  const rounds=pd?pd.rounds:[], round=rounds[AR];
   const stats=round?cS(round.holes):null;
-  const hAK=eH(data.ak.rounds),hMAC=eH(data.mac.rounds);
+  const hAK=eH(data.ak.rounds), hMAC=eH(data.mac.rounds);
+  const ac=isVS?'var(--blu)':pac(AP);
 
   // Player bar
   document.getElementById('hcpAK').textContent=hAK!=null?`+${hAK}`:'—';
@@ -850,13 +857,11 @@ function render(){
     const ids={ak:'pbAK',mac:'pbMAC',vs:'pbVS'};
     document.getElementById(ids[p]).className='pb'+(AP===p?' '+(p==='vs'?'vs-on':p+'-on'):'');
   });
+  // fab inline removed
+  const tabBtns=document.querySelectorAll('.tabB:not(.tab-new)');
+  tabBtns.forEach(t=>t.style.display=isVS?'none':'');
+  document.getElementById('tabs').style.display='flex';
 
-  const fab=document.getElementById('fab');
-  fab.style.display=isVS?'none':'flex';
-  fab.className='fab '+(AP==='mac'?'mac':'ak');
-  document.getElementById('tabs').style.display=isVS?'none':'flex';
-
-  // VS mode
   if(isVS){
     document.getElementById('hdrC').textContent='AK vs Macarena';
     document.getElementById('hdrM').innerHTML='';
@@ -865,8 +870,8 @@ function render(){
     document.getElementById('hdrD').textContent='';
     document.getElementById('hdrH').textContent='';
     document.getElementById('rcWrap').style.display='none';
-    document.getElementById('bbar').textContent='Comparativa · Golf Kowalski';
-    renderVS();return;
+    document.getElementById('bbar').textContent='Golf · Kowalski';
+    renderVS(); return;
   }
 
   // Round chips
@@ -875,31 +880,38 @@ function render(){
     rcw.style.display='';
     rc.innerHTML=rounds.map((r,i)=>{
       const s=cS(r.holes);
-      return`<button class="rchip${i===AR?' on '+pac2(AP):''}" onclick="selR(${i})">${r.date} · ${r.course.split(' ').slice(0,2).join(' ')}${s?` · ${s.ts}`:''}</button>`;
+      return `<button class="rchip${i===AR?' on '+pac2(AP):''}" onclick="selR(${i})">${r.date} · ${r.course.split(' ').slice(0,2).join(' ')}${s?` · ${s.ts}`:''}</button>`;
     }).join('');
-  }else rcw.style.display='none';
+  } else rcw.style.display='none';
 
-  document.querySelectorAll('.tabB').forEach((t,i)=>t.classList.toggle('on',['stats','card','analisis','evo'][i]===AT));
+  document.querySelectorAll('.tabB').forEach((t,i)=>{if(!t.classList.contains('tab-new'))t.classList.toggle('on',['stats','card','analisis','evo'][i]===AT)});
 
   if(!round){
     document.getElementById('hdrC').textContent='Sin rondas';
     document.getElementById('hdrM').innerHTML='';
     document.getElementById('hdrN').textContent='—';
     document.getElementById('hdrN').style.color='var(--t3)';
-    document.getElementById('hdrD').textContent='';document.getElementById('hdrH').textContent='';
+    document.getElementById('hdrD').textContent='';
+    document.getElementById('hdrH').textContent='';
     document.getElementById('bbar').textContent='Golf · Kowalski';
-    document.getElementById('scroll').innerHTML=`<div class="empty"><span class="empty-ico">⛳</span>Sin rondas todavía.<br>Pulsa <strong style="color:${pac(AP)}">+</strong> para añadir la primera.</div>`;
+    document.getElementById('scroll').innerHTML=`<div class="empty2"><span class="empty2-ico">⛳</span><p>Sin rondas todavía.<br>Pulsa <strong style="color:${ac}">+</strong> para empezar.</p></div>`;
     return;
   }
 
   const tL=round.tee==='rojas'?'🔴 Rojas':'🟡 Amarillas';
   document.getElementById('hdrC').textContent=round.course;
-  document.getElementById('hdrM').innerHTML=`<span>${round.date}</span><span class="hdr-meta-dot"></span><span>${round.city||''}</span><span class="hdr-meta-dot"></span><span>${tL}</span>${round.tournament?'<span class="hdr-meta-dot"></span><span>Torneo</span>':''}`;
-  const hcp=AP==='ak'?hAK:hMAC;
+  document.getElementById('hdrM').innerHTML=`
+    <span class="hdr-meta-item">${round.date}</span>
+    <span class="hdr-meta-dot"></span>
+    <span class="hdr-meta-item">${round.city||''}</span>
+    <span class="hdr-meta-dot"></span>
+    <span class="hdr-meta-item">${tL}</span>
+    ${round.tournament?'<span class="hdr-meta-dot"></span><span class="hdr-meta-item">Torneo</span>':''}`;
 
+  const hcp=AP==='ak'?hAK:hMAC;
   if(stats){
     document.getElementById('hdrN').textContent=stats.ts;
-    document.getElementById('hdrN').style.color=pac(AP);
+    document.getElementById('hdrN').style.color=ac;
     const d=stats.diff;
     document.getElementById('hdrD').textContent=d>=0?`+${d}`:String(d);
     document.getElementById('hdrD').style.color=dC(d);
@@ -907,116 +919,55 @@ function render(){
     document.getElementById('bbar').textContent=`Par ${stats.tp} · HCP est. ${hcp?'+'+hcp:'—'} · ${stats.total} hoyos`;
   }
 
-  let html='';
+  let H=''; // html
 
-  // ─────────────────────────────────────────────────────
-  // STATS TAB
-  // ─────────────────────────────────────────────────────
+  // ── STATS ──
   if(AT==='stats'&&stats){
     // HCP
     if(hcp!=null){
-      const trend=rounds.length>=2?calcTrend(rounds):'';
-      html += '<div class="hcp-box ' + pac2(AP) + '">';
-      html += '<div class="hcp-row">';
-      html += '<div class="hcp-val" style="color:' + pac(AP) + '">+' + hcp + '</div>';
-      if(trend){
-        const tClr = trend.dir>0 ? 'var(--red)' : 'var(--ak)';
-        const tBg = trend.dir>0 ? 'rgba(255,107,107,.1)' : 'rgba(61,220,132,.1)';
-        const tArrow = trend.dir>0 ? '↑' : '↓';
-        html += '<div class="hcp-trend" style="color:' + tClr + ';background:' + tBg + '">' + tArrow + ' ' + Math.abs(trend.val) + '</div>';
-      }
-      html += '</div>';
-      html += '<div class="hcp-sub">Handicap estimado · ' + rounds.length + ' ronda' + (rounds.length!==1?'s':'') + ' · cálculo simplificado</div>';
-      html += '</div>';
+      const trend=rounds.length>=2?calcTrend(rounds):null;
+      H+=`<div class="hcp-row-wrap">
+        <div class="hcp-big" style="color:${ac}">+${hcp}</div>
+        <div class="hcp-info">
+          <div class="hcp-label">Handicap estimado</div>
+          <div class="hcp-sub">${rounds.length} ronda${rounds.length!==1?'s':''} · cálculo simplificado
+          ${trend?`<br><span style="color:${trend.dir>0?'var(--red)':'var(--ak)'};font-weight:600">${trend.dir>0?'↑':'↓'} ${Math.abs(trend.val)} vs ronda anterior</span>`:''}
+          </div>
+        </div>
+      </div>`;
     }
 
-    // Main stats
-    html+=`<div class="sgrid">
-      <div class="scell"><div class="sv" style="color:${pac(AP)}">${stats.ts}</div><div class="sl">Score</div><div class="ss">Par ${stats.tp}</div></div>
-      <div class="scell"><div class="sv" style="color:var(--blu)">${stats.avgP??'—'}</div><div class="sl">Putts/H</div><div class="ss">${stats.tpu} total</div></div>
-      <div class="scell"><div class="sv" style="color:var(--pur)">${stats.fwPct!=null?stats.fwPct+'%':'—'}</div><div class="sl">FW</div></div>
-      <div class="scell"><div class="sv" style="color:var(--yel)">${stats.girPct!=null?stats.girPct+'%':'—'}</div><div class="sl">GIR</div></div>
-    </div>
-    <div class="sgrid" style="margin-bottom:6px">
-      <div class="scell"><div class="sv" style="color:var(--ak)">${stats.bir}</div><div class="sl">Birdies</div></div>
-      <div class="scell"><div class="sv" style="color:var(--blu)">${stats.par}</div><div class="sl">Pares</div></div>
-      <div class="scell"><div class="sv" style="color:var(--yel)">${stats.bog}</div><div class="sl">Bogeys</div></div>
-      <div class="scell"><div class="sv" style="color:var(--red)">${stats.dbl}</div><div class="sl">+2 o más</div></div>
+    // Main stats grid — 4 cells
+    H+=`<div class="par-grid">
+      <div class="par-cell">
+        <div class="par-val" style="color:${ac}">${stats.ts}</div>
+        <div class="par-lbl">Score</div>
+        <div class="par-sub">Par ${stats.tp}</div>
+      </div>
+      <div class="par-cell">
+        <div class="par-val" style="color:var(--blu)">${stats.avgP??'—'}</div>
+        <div class="par-lbl">Putts/H</div>
+        <div class="par-sub">${stats.tpu} total</div>
+      </div>
+      <div class="par-cell">
+        <div class="par-val" style="color:var(--pur)">${stats.fwPct!=null?stats.fwPct+'%':'—'}</div>
+        <div class="par-lbl">FW</div>
+      </div>
+      <div class="par-cell">
+        <div class="par-val" style="color:var(--yel)">${stats.girPct!=null?stats.girPct+'%':'—'}</div>
+        <div class="par-lbl">GIR</div>
+      </div>
     </div>`;
 
-    // SCRAMBLING + UP&DOWN — la stat más importante del juego corto
-    if(stats.scramblePct!==null){
-      const scrColor=stats.scramblePct>=50?'var(--ak)':stats.scramblePct>=33?'var(--yel)':'var(--red)';
-      const scrBench=stats.scramblePct>=50?'✓ Nivel Tour':'↑ Zona de mejora';
-      html+=`<div class="cc" style="margin-bottom:6px">
-        <div class="ct">Juego corto / Scrambling<span style="color:var(--t4)">Objetivo ≥ 50%</span></div>
-        <div style="display:flex;gap:12px;align-items:center">
-          <div style="text-align:center;flex-shrink:0">
-            <div style="font-family:DM Serif Display,serif;font-size:44px;line-height:1;color:${scrColor}">${stats.scramblePct}%</div>
-            <div style="font-size:9px;color:${scrColor};margin-top:2px;font-family:JetBrains Mono,monospace">${scrBench}</div>
-          </div>
-          <div style="flex:1">
-            <div style="background:var(--s3);border-radius:4px;height:8px;overflow:hidden;margin-bottom:6px">
-              <div style="width:${Math.min(100,stats.scramblePct)}%;height:100%;background:${scrColor};border-radius:4px"></div>
-            </div>
-            <div style="font-size:10px;color:var(--t2);line-height:1.8">
-              <span style="color:${scrColor};font-weight:600">${stats.scrambleSaves}</span> pares o mejor de <span style="font-weight:600">${stats.missGIR}</span> greens fallados<br>
-              <span style="font-size:9px;color:var(--t3)">Subir del 33% al 50% = −3 golpes por ronda</span>
-            </div>
-          </div>
-        </div>
-      </div>`;
-    }
+    // Results grid
+    H+=`<div class="par-grid">
+      <div class="par-cell"><div class="par-val" style="color:var(--ak)">${stats.bir}</div><div class="par-lbl">Birdies</div></div>
+      <div class="par-cell"><div class="par-val" style="color:var(--blu)">${stats.par}</div><div class="par-lbl">Pares</div></div>
+      <div class="par-cell"><div class="par-val" style="color:var(--yel)">${stats.bog}</div><div class="par-lbl">Bogeys</div></div>
+      <div class="par-cell"><div class="par-val" style="color:var(--red)">${stats.dbl}</div><div class="par-lbl">+2 o más</div></div>
+    </div>`;
 
-    // GRANDES NÚMEROS — dobles bogeys y peor
-    if(stats.bigNumbers>0){
-      html+=`<div class="cc" style="border-left:2px solid var(--red);margin-bottom:6px">
-        <div class="ct" style="color:var(--red)">Grandes números<span style="color:var(--t4)">+2 o peor</span></div>
-        <div style="display:flex;gap:16px;align-items:center">
-          <div style="text-align:center">
-            <div style="font-family:DM Serif Display,serif;font-size:36px;color:var(--red)">${stats.bigNumbers}</div>
-            <div style="font-size:8px;color:var(--t3);font-family:JetBrains Mono,monospace">hoyos</div>
-          </div>
-          <div style="font-size:10px;color:var(--t2);flex:1;line-height:1.8">
-            ${stats.strokesLostBig} golpe${stats.strokesLostBig!==1?'s':''} de doble bogey o peor<br>
-            <span style="font-size:9px;color:var(--t3)">Con HCP +10, un hoyo de +3 o más destruye la tarjeta — gestiona el riesgo antes de atacar</span>
-          </div>
-        </div>
-      </div>`;
-    }
-
-    // PAR 3 / PAR 4 / PAR 5 breakdown
-    const p3=stats.byPar[3],p4=stats.byPar[4],p5=stats.byPar[5];
-    if(p3||p4||p5){
-      html+=`<div class="sgrid two" style="margin-bottom:6px">
-        ${p3?`<div class="scell"><div class="sv" style="color:${dC(p3.diff)}">${p3.diff>0?'+':''}${p3.diff}</div><div class="sl">Par 3</div><div class="ss">${p3.avg} media · ${p3.n}h</div></div>`:''}
-        ${p4?`<div class="scell"><div class="sv" style="color:${dC(p4.diff)}">${p4.diff>0?'+':''}${p4.diff}</div><div class="sl">Par 4</div><div class="ss">${p4.avg} media · ${p4.n}h</div></div>`:''}
-        ${p5?`<div class="scell"><div class="sv" style="color:${dC(p5.diff)}">${p5.diff>0?'+':''}${p5.diff}</div><div class="sl">Par 5</div><div class="ss">${p5.avg} media · ${p5.n}h</div></div>`:''}
-        ${stats.girHoles>0&&stats.birConv!=null?`<div class="scell"><div class="sv" style="color:var(--ak)">${stats.birConv}%</div><div class="sl">Conv. birdie</div><div class="ss">${stats.girHoles} GIR</div></div>`:''}
-      </div>`;
-    }
-
-    // FRONT 9 / BACK 9
-    if(stats.front9!=null&&stats.back9!=null&&stats.total>=18){
-      const f9d=stats.frontScore-stats.frontPar,b9d=stats.backScore-stats.backPar;
-      html+=`<div class="cc" style="margin-bottom:12px">
-        <div class="ct">Salida vs Vuelta</div>
-        <div style="display:flex;gap:8px">
-          <div style="flex:1;text-align:center;background:var(--s2);border-radius:10px;padding:10px">
-            <div style="font-size:9px;color:var(--t3);font-family:JetBrains Mono,monospace;margin-bottom:4px">SALIDA (1-9)</div>
-            <div style="font-family:DM Serif Display,serif;font-size:28px;color:${dC(f9d)}">${stats.frontScore}</div>
-            <div style="font-size:10px;color:${dC(f9d)};font-family:JetBrains Mono,monospace;font-weight:700">${f9d>0?'+':''}${f9d}</div>
-          </div>
-          <div style="flex:1;text-align:center;background:var(--s2);border-radius:10px;padding:10px">
-            <div style="font-size:9px;color:var(--t3);font-family:JetBrains Mono,monospace;margin-bottom:4px">VUELTA (10-18)</div>
-            <div style="font-family:DM Serif Display,serif;font-size:28px;color:${dC(b9d)}">${stats.backScore}</div>
-            <div style="font-size:10px;color:${dC(b9d)};font-family:JetBrains Mono,monospace;font-weight:700">${b9d>0?'+':''}${b9d}</div>
-          </div>
-        </div>
-      </div>`;
-    }
-
-    // Score distribution
+    // Distribution chart
     const dItems=[
       {l:'Eagle',v:stats.eagles,c:'var(--yel)'},
       {l:'Birdie',v:stats.bir,c:'var(--ak)'},
@@ -1025,575 +976,448 @@ function render(){
       {l:'+2',v:stats.dbl,c:'var(--red)'}
     ].filter(i=>i.v>0||i.l==='Par'||i.l==='Bogey');
     const mxV=Math.max(...dItems.map(i=>i.v),1);
-    html+=`<div class="cc"><div class="ct">Distribución<span style="color:var(--t4)">${stats.total} hoyos</span></div>
-      <div class="dist-bars">
-        ${dItems.map(i=>`<div class="dist-col">
-          <div class="dist-num" style="color:${i.c}">${i.v}</div>
-          <div class="dist-bar" style="background:${i.c};height:${Math.max(3,Math.round(i.v/mxV*44))}px"></div>
-          <div class="dist-lbl">${i.l}</div>
+    H+=`<div class="group" style="padding:16px">
+      <div style="font-size:13px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:14px">Distribución</div>
+      <div style="display:flex;align-items:flex-end;gap:8px;height:72px">
+        ${dItems.map(i=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px">
+          <div style="font-size:16px;font-weight:700;color:${i.c}">${i.v}</div>
+          <div style="width:100%;border-radius:5px 5px 0 0;min-height:4px;background:${i.c};height:${Math.max(4,Math.round(i.v/mxV*48))}px"></div>
+          <div style="font-size:13px;color:var(--t3)">${i.l}</div>
         </div>`).join('')}
       </div>
     </div>`;
 
-    // Putting with ring
+    // Putting
     if(stats.avgP){
-      const av=parseFloat(stats.avgP),g=av<=2.0;
+      const av=parseFloat(stats.avgP), good=av<=2.0;
       const pct=Math.min(100,av/3*100);
-      const r=32,circ=2*Math.PI*r;
-      const stroke=circ*(1-pct/100);
-      html+=`<div class="cc"><div class="ct">Putting</div>
-        <div class="putt-layout">
-          <div class="putt-ring">
-            <svg viewBox="0 0 76 76" width="76" height="76">
-              <circle cx="38" cy="38" r="${r}" fill="none" stroke="var(--s3)" stroke-width="5"/>
-              <circle cx="38" cy="38" r="${r}" fill="none" stroke="${g?'var(--blu)':'var(--yel)'}" stroke-width="5" stroke-dasharray="${circ}" stroke-dashoffset="${stroke}" stroke-linecap="round"/>
+      const r=32, circ=2*Math.PI*r;
+      H+=`<div class="group" style="padding:16px">
+        <div style="display:flex;align-items:center;gap:18px">
+          <div style="width:80px;height:80px;flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center">
+            <svg viewBox="0 0 76 76" width="76" height="76" style="position:absolute;inset:0;transform:rotate(-90deg)">
+              <circle cx="38" cy="38" r="${r}" fill="none" stroke="var(--sep2)" stroke-width="5"/>
+              <circle cx="38" cy="38" r="${r}" fill="none" stroke="${good?'var(--blu)':'var(--yel)'}" stroke-width="5"
+                stroke-dasharray="${circ}" stroke-dashoffset="${circ*(1-pct/100)}" stroke-linecap="round"/>
             </svg>
-            <div class="putt-center">
-              <div class="putt-big" style="color:${g?'var(--blu)':'var(--yel)'}">${stats.avgP}</div>
-              <div class="putt-unit">p/hoyo</div>
+            <div style="text-align:center">
+              <div style="font-size:24px;font-weight:800;letter-spacing:-.5px;color:${good?'var(--blu)':'var(--yel)'}">${stats.avgP}</div>
+              <div style="font-size:10px;color:var(--t3);font-weight:600;letter-spacing:.3px">P/HOYO</div>
             </div>
           </div>
-          <div class="putt-stats">
-            <div class="putt-stat-row"><span class="putt-stat-lbl">Total putts</span><span class="putt-stat-val" style="color:var(--blu)">${stats.tpu}</span></div>
-            <div class="putt-stat-row"><span class="putt-stat-lbl">3-putts</span><span class="putt-stat-val" style="color:${stats.tp3>1?'var(--red)':'var(--t2)'}">${stats.tp3}</span></div>
-            <div class="putt-stat-row"><span class="putt-stat-lbl">Objetivo</span><span class="putt-stat-val" style="color:var(--t3)">≤ 2.0</span></div>
-            <div class="putt-stat-row"><span class="putt-stat-lbl">Estado</span><span class="putt-stat-val" style="color:${g?'var(--ak)':'var(--yel)'}">${g?'✓ Bien':'↑ Mejorar'}</span></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:9px">
+            <div style="display:flex;justify-content:space-between"><span style="font-size:16px;color:var(--t2)">Total putts</span><span style="font-size:16px;font-weight:700">${stats.tpu}</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="font-size:16px;color:var(--t2)">3-putts</span><span style="font-size:16px;font-weight:700;color:${stats.tp3>1?'var(--red)':'var(--t1)'}">${stats.tp3}</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="font-size:16px;color:var(--t2)">Objetivo</span><span style="font-size:16px;font-weight:700;color:var(--t3)">≤ 2.0</span></div>
           </div>
         </div>
       </div>`;
     }
 
-    // Bunkers
+    // Bunker
     if(stats.bkCt>0){
-      html+=`<div class="cc" style="border-left:2px solid var(--ora)"><div class="ct" style="color:var(--ora)">Bunkers</div>
-        <div style="display:flex;align-items:center;gap:20px">
-          <div style="font-family:DM Serif Display,serif;font-size:44px;color:var(--ora)">${stats.bkPct}%</div>
-          <div style="font-size:11px;color:var(--t2);line-height:2">${stats.bkCt} bunkers · ${stats.bkSaves} saves<br>
-            <span style="color:${stats.bkPct>=50?'var(--ak)':'var(--red)'}">Objetivo ≥ 50%</span>
+      H+=`<div class="bignum-row" style="border-left:3px solid var(--yel)">
+        <div class="bignum" style="color:${stats.bkPct>=50?'var(--ak)':'var(--red)'}">${stats.bkPct}%</div>
+        <div class="bignum-info">
+          <div class="bignum-lbl">Bunker saves</div>
+          <div class="bignum-sub">${stats.bkSaves} de ${stats.bkCt} bunkers · Objetivo ≥ 50%</div>
+        </div>
+      </div>`;
+    }
+
+    // Scrambling
+    if(stats.scramblePct!=null){
+      const sc=stats.scramblePct, ok=sc>=50;
+      H+=`<div class="bignum-row" style="border-left:3px solid ${ok?'var(--ak)':'var(--red)'}">
+        <div class="bignum" style="color:${ok?'var(--ak)':'var(--red)'}">${sc}%</div>
+        <div class="bignum-info">
+          <div class="bignum-lbl">Scrambling</div>
+          <div class="bignum-sub">${stats.scrambleSaves} pares o mejor de ${stats.missGIR} greens fallados<br>
+            <span style="color:${ok?'var(--ak)':'var(--t3)'}">Objetivo ≥ 50%${ok?'' : ' · Subir al 50% = −3 golpes'}</span>
           </div>
+          <div style="background:var(--sep);border-radius:3px;height:4px;overflow:hidden;margin-top:7px">
+            <div style="width:${Math.min(100,sc)}%;height:100%;background:${ok?'var(--ak)':'var(--red)'};border-radius:3px"></div>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    // Big numbers
+    if(stats.bigNumbers>0){
+      H+=`<div class="bignum-row" style="border-left:3px solid var(--red)">
+        <div class="bignum" style="color:var(--red)">${stats.bigNumbers}</div>
+        <div class="bignum-info">
+          <div class="bignum-lbl">Dobles bogeys o peor</div>
+          <div class="bignum-sub">${stats.strokesLostBig} golpe${stats.strokesLostBig!==1?'s':''} sobre bogey · Gestiona el riesgo</div>
+        </div>
+      </div>`;
+    }
+
+    // Par 3/4/5
+    const p3=stats.byPar[3],p4=stats.byPar[4],p5=stats.byPar[5];
+    if(p3||p4||p5){
+      H+=`<div class="par-grid">
+        ${p3?`<div class="par-cell"><div class="par-val" style="color:${dC(p3.diff)}">${p3.diff>0?'+':''}${p3.diff}</div><div class="par-lbl">Par 3</div><div class="par-sub">${p3.avg} media</div></div>`:''}
+        ${p4?`<div class="par-cell"><div class="par-val" style="color:${dC(p4.diff)}">${p4.diff>0?'+':''}${p4.diff}</div><div class="par-lbl">Par 4</div><div class="par-sub">${p4.avg} media</div></div>`:''}
+        ${p5?`<div class="par-cell"><div class="par-val" style="color:${dC(p5.diff)}">${p5.diff>0?'+':''}${p5.diff}</div><div class="par-lbl">Par 5</div><div class="par-sub">${p5.avg} media</div></div>`:''}
+        ${stats.birConv!=null?`<div class="par-cell"><div class="par-val" style="color:var(--ak)">${stats.birConv}%</div><div class="par-lbl">Conv. birdie</div><div class="par-sub">${stats.girHoles} GIR</div></div>`:''}
+      </div>`;
+    }
+
+    // Front/Back 9
+    if(stats.front9!=null&&stats.back9!=null&&stats.total>=18){
+      const f9d=stats.frontScore-stats.frontPar, b9d=stats.backScore-stats.backPar;
+      H+=`<div class="par-grid">
+        <div class="par-cell" style="grid-column:span 2">
+          <div style="font-size:13px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:10px">Salida 1–9</div>
+          <div style="font-size:36px;font-weight:800;color:${dC(f9d)}">${stats.frontScore}</div>
+          <div style="font-size:14px;font-weight:700;color:${dC(f9d)}">${f9d>=0?'+':''}${f9d}</div>
+        </div>
+        <div class="par-cell" style="grid-column:span 2">
+          <div style="font-size:13px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:10px">Vuelta 10–18</div>
+          <div style="font-size:36px;font-weight:800;color:${dC(b9d)}">${stats.backScore}</div>
+          <div style="font-size:14px;font-weight:700;color:${dC(b9d)}">${b9d>=0?'+':''}${b9d}</div>
         </div>
       </div>`;
     }
 
     // Holes
-    html+=`<div class="slbl">Hoyos</div>`;
+    H+=`<div class="group-header">Hoyos</div><div class="group">`;
     [...round.holes].sort((a,b)=>a.h-b.h).forEach(h=>{
-      const col=hC(h),lbl=hL(h),ch=getCH(round.courseId,round.tee,h.h),open=EX.has(h.h);
-      const diff=h.score-h.par,dS=diff===0?'E':diff>0?`+${diff}`:String(diff);
-      html+=`<div class="hc" style="border-left-color:${col}" onclick="togExp(${h.h})">
-        <div class="hch">
-          <div class="hnum">Hoyo ${h.h}</div>
-          <div class="hbadges">
-            ${ch.m?`<span class="badge b-dist">${ch.m}m</span>`:''}
-            ${h.bk?`<span class="badge b-bk">Bunker</span>`:''}${h.pen?`<span class="badge" style="color:var(--red);background:rgba(255,107,107,.1)">OB/Pen</span>`:''}
-            ${h.putts>=3?`<span class="badge b-3p">3 putts</span>`:''}
+      const col=hC(h), lbl=hL(h), ch=getCH(round.courseId,round.tee,h.h);
+      const diff=h.score-h.par, dS=diff===0?'E':diff>0?`+${diff}`:String(diff);
+      const open=EX.has(h.h);
+      H+=`<div style="border-left:3px solid ${col};border-bottom:1px solid var(--sep);background:var(--white);cursor:pointer" onclick="togExp(${h.h})">
+        <div style="display:flex;align-items:center;padding:13px 16px;gap:10px">
+          <div style="font-size:16px;font-weight:600;color:var(--t3);min-width:68px">Hoyo ${h.h}</div>
+          <div style="display:flex;gap:4px;flex:1;flex-wrap:wrap;align-items:center">
+            ${ch.m?`<span class="hbdg dist">${ch.m}m</span>`:''}
+            ${h.bk?`<span class="hbdg bunk">Bunker</span>`:''}
+            ${(h.putts||0)>=3?`<span class="hbdg pp3">3 putts</span>`:''}
+            ${h.pen?`<span class="hbdg pen">OB</span>`:''}
           </div>
-          <div class="hright">
-            <div class="hpar"><div class="hpar-l">Par</div><div class="hpar-n">${h.par}</div></div>
-            <div class="hscbox">
-              <div class="hres" style="color:${col}">${lbl}</div>
-              <div class="hscn" style="color:${col}">${h.score}</div>
-              <div class="hdiff" style="color:${col}">${dS}</div>
+          <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+            <div style="background:var(--bg);border-radius:7px;padding:4px 9px;text-align:center">
+              <div style="font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.4px">Par</div>
+              <div style="font-size:20px;font-weight:700;color:var(--t2);line-height:1.1">${h.par}</div>
+            </div>
+            <div style="text-align:right;min-width:48px">
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:${col}">${lbl}</div>
+              <div style="font-size:38px;font-weight:800;letter-spacing:-1px;line-height:1;color:${col}">${h.score}</div>
+              <div style="font-size:11px;font-weight:700;color:${col};opacity:.75">${dS}</div>
             </div>
           </div>
         </div>
-        <div class="hbody${open?' open':''}">
-          <div class="hmeta">
+        <div class="hole-detail${open?' open':''}" style="padding:4px 16px 14px">
+          <div style="display:flex;gap:12px;margin-bottom:10px;font-size:13px;color:var(--t3);flex-wrap:wrap">
             ${(h.shots||[]).length?`<span>🏌️ ${h.shots.length} golpes</span>`:''}
             ${h.putts!=null?`<span>🎯 ${h.putts} putts</span>`:''}
             ${h.fw!=null?`<span style="color:${h.fw?'var(--ak)':'var(--red)'}">${h.fw?'✓':'✗'} FW</span>`:''}
-            ${h.gir!=null?`<span style="color:${h.gir?'var(--ak)':'var(--red)'}">${h.gir?'✓':'✗'} GIR</span>`:''}${h.pen?`<span style="color:var(--red)">⚠️ Penalización</span>`:''}
+            ${h.gir!=null?`<span style="color:${h.gir?'var(--ak)':'var(--red)'}">${h.gir?'✓':'✗'} GIR</span>`:''}
           </div>
-          ${(h.shots||[]).map(s=>`<div class="srow">
-            <div class="sdot" style="background:${qC(s.q)}">${qI(s.q)}</div>
-            <span class="sclub">${s.c}</span>
-            <span class="sres">${s.r}${s.d?` <span style="color:var(--t4);font-family:JetBrains Mono,monospace;font-size:9px">${s.d}m</span>`:''}</span>
+          ${(h.shots||[]).map(s=>`<div class="shot-line">
+            <div class="shot-dot2" style="background:${qC(s.q)}">${qI(s.q)}</div>
+            <span class="shot-club2">${clubDisplay(s.c)}</span>
+            <span class="shot-desc2">${s.r}${s.d?` <span style="color:var(--t3);font-size:13px">${s.d}m</span>`:''}</span>
           </div>`).join('')}
-          ${h.notes?`<div class="hnote">📝 ${h.notes}</div>`:''}
+          ${h.notes?`<div class="hole-note2">📝 ${h.notes}</div>`:''}
         </div>
       </div>`;
     });
+    H+=`</div>`;
 
-    // Error patterns
+    // Patterns
     const pats=[
       {i:'🧠',l:'Sin commit',v:stats.noC,c:'var(--pur)',
        desc:'Falta de convicción en la ejecución.',
-       tip:'Rutina pre-shot obligatoria. Decide el palo, visualiza el vuelo, ejecuta sin dudar. Si tienes dudas, toma un paso atrás y empieza de nuevo.'},
+       tip:'Rutina pre-shot: alineación → visualización → ejecución. Una vez que empiezas, no hay marcha atrás.'},
       {i:'⬅️',l:'Tiros izquierda / Pull',v:stats.left,c:'var(--red)',
        desc:'Tendencia consistente de salida a la izquierda.',
-       tip:'Revisa la alineación de hombros — probablemente cerrados. En el driver, siente que el hombro derecho va hacia abajo en la bajada, no hacia afuera.'},
-      {i:'💥',l:'Fat shots',v:stats.fat,c:'var(--ora)',
+       tip:'Revisa alineación de hombros. Con tu velocidad de swing, el exceso de rotación antes de impacto genera el pull.'},
+      {i:'💥',l:'Fat shots',v:stats.fat,c:'var(--yel)',
        desc:'Contacto con el suelo antes de la bola.',
-       tip:'Transfiere el peso hacia el lado izquierdo antes de impacto. El fat está relacionado con tu falta de commit — más confianza, más peso adelante.'},
+       tip:'Transfiere el peso hacia el lado izquierdo antes de impacto. El fat está ligado a la falta de commit.'},
       {i:'🎯',l:'3-putts',v:stats.tp3,c:'var(--blu)',
        desc:'Gestión de distancia en putts largos.',
-       tip:'En putts de más de 6 metros, el objetivo es la zona, no el hoyo. Practica "lag putting": termina a menos de 1 metro del hoyo desde 8-10 metros.'}
+       tip:'En putts de más de 6m, el objetivo es la zona. Termina a menos de 1m del hoyo — nunca más de 1m pasado.'}
     ].filter(p=>p.v>0);
     if(pats.length){
-      html+=`<div class="slbl">Patrones de error</div>`;
-      pats.forEach(p=>html+=`<div class="pat" style="border-left-color:${p.c}">
-        <div class="pat-ico">${p.i}</div>
-        <div style="flex:1">
-          <div class="pat-lbl"><span>${p.l}</span><span class="pat-cnt" style="color:${p.c}">${p.v}×</span></div>
-          <div class="pat-desc">${p.desc}</div>
-          <div class="pat-tip">${p.tip}</div>
-        </div>
-      </div>`);
+      H+=`<div class="group-header">Patrones de error</div><div class="group">`;
+      pats.forEach(p=>{
+        H+=`<div class="pat-item" style="border-left-color:${p.c}">
+          <div class="pat-head2">
+            <div class="pat-title2">${p.i} ${p.l}</div>
+            <div class="pat-count2" style="color:${p.c}">${p.v}×</div>
+          </div>
+          <div class="pat-body2">${p.desc}</div>
+          <div class="pat-tip2">${p.tip}</div>
+        </div>`;
+      });
+      H+=`</div>`;
     }
   }
 
-  // ─────────────────────────────────────────────────────
-  // SCORECARD TAB
-  // ─────────────────────────────────────────────────────
+  // ── SCORECARD ──
   else if(AT==='card'){
     const oh={};round.holes.forEach(h=>oh[h.h]=h);
-    const ci=CR[round.courseId],td=ci?ci.tees[round.tee||'amarillas']:null;
-    const ch=td?td.holes:Array.from({length:18},(_,i)=>({h:i+1,par:oh[i+1]?.par||4,m:null,hcp:null}));
-    let ts=0,tp=0,tpu=0,ts1=0,tp1=0,ts2=0,tp2=0;
-
-    html+=`<div class="sct-wrap"><table class="sct"><thead><tr>
+    const ci=CR[round.courseId], td=ci?ci.tees[round.tee||'amarillas']:null;
+    const choles=td?td.holes:Array.from({length:18},(_,i)=>({h:i+1,par:oh[i+1]?.par||4,m:null,hcp:null}));
+    let ts=0,tp=0,tpu=0,ts1=0,tp1=0,ts2=0,tp2=0,tpu1=0,tpu2=0;
+    H+=`<div class="sc-wrap2"><table class="sc-table2"><thead><tr>
       <th>Hoyo</th><th>Par</th><th>m</th><th>HCP</th><th>Score</th><th>+/−</th><th>Putts</th>
     </tr></thead><tbody>`;
-
-    ch.forEach((c,idx)=>{
-      const h=oh[c.h];
-      // Separator between front/back 9
+    choles.forEach((c,idx)=>{
       if(idx===9){
-        html+=`<tr class="sc-out"><td colspan="2" style="text-align:left;padding-left:8px;color:var(--t3)">OUT</td><td style="color:var(--blu)">${td?Math.round(td.total/2):'—'}</td><td></td><td style="color:${pac(AP)}">${ts1}</td><td style="color:${dC(ts1-tp1)}">${ts1-tp1>=0?'+':''}${ts1-tp1}</td><td style="color:var(--t2)">${tpu}</td></tr>`;
+        H+=`<tr class="sc-sub2"><td colspan="2" style="text-align:left;padding-left:8px">OUT</td>
+          <td>${td?choles.slice(0,9).reduce((a,c)=>a+(c.m||0),0):'—'}</td><td></td>
+          <td style="color:${ac}">${ts1}</td>
+          <td style="color:${dC(ts1-tp1)}">${ts1-tp1>=0?'+':''}${ts1-tp1}</td>
+          <td>${tpu1||'—'}</td></tr>`;
       }
+      const h=oh[c.h];
       if(h){
-        ts+=h.score;tp+=h.par;
-        if(h.putts!=null)tpu+=h.putts;
-        if(idx<9){ts1+=h.score;tp1+=h.par;}
-        else{ts2+=h.score;tp2+=h.par;}
-        const d=h.score-h.par,ds=d<0?String(d):d===0?'E':`+${d}`;
+        ts+=h.score;tp+=h.par;if(h.putts!=null)tpu+=h.putts;
+        if(idx<9){ts1+=h.score;tp1+=h.par;if(h.putts!=null)tpu1+=h.putts;}
+        else{ts2+=h.score;tp2+=h.par;if(h.putts!=null)tpu2+=h.putts;}
+        const d=h.score-h.par, ds=d<0?String(d):d===0?'E':`+${d}`;
         let sc;
-        if(d<=-2)sc=`<span class="s-eag">${h.score}</span>`;
-        else if(d===-1)sc=`<span class="s-bir">${h.score}</span>`;
-        else sc=`<span class="${sCl(h.score,h.par)}">${h.score}</span>`;
-        html+=`<tr>
-          <td style="color:var(--t2);font-weight:600">${c.h}</td>
+        if(d<=-2)sc=`<span class="sc-eag2">${h.score}</span>`;
+        else if(d===-1)sc=`<span class="sc-bir2">${h.score}</span>`;
+        else sc=`<span class="${d===0?'sc-par2':d===1?'sc-bog2':d===2?'sc-dbl2':'sc-tri2'}">${h.score}</span>`;
+        H+=`<tr>
+          <td style="font-weight:600;color:var(--t2)">${c.h}</td>
           <td style="color:var(--t3)">${c.par}</td>
           <td style="color:var(--blu)">${c.m||'—'}</td>
           <td style="color:var(--t4)">${c.hcp||'—'}</td>
           <td>${sc}</td>
           <td style="color:${dC(d)};font-weight:700">${ds}</td>
-          <td style="color:var(--t2)">${h.putts!=null?h.putts:'—'}</td>
+          <td>${h.putts!=null?h.putts:'—'}</td>
         </tr>`;
-      }else{
-        html+=`<tr style="opacity:.2"><td>${c.h}</td><td>${c.par}</td><td style="color:var(--blu)">${c.m||'—'}</td><td>${c.hcp||'—'}</td><td colspan="3">—</td></tr>`;
+      } else {
+        H+=`<tr style="opacity:.3"><td>${c.h}</td><td>${c.par}</td><td style="color:var(--blu)">${c.m||'—'}</td><td>${c.hcp||'—'}</td><td colspan="3">—</td></tr>`;
       }
     });
     const tot=ts-tp;
-    html+=`</tbody><tfoot>
-      <tr class="sc-out"><td colspan="2" style="text-align:left;padding-left:8px;color:var(--t3)">IN</td><td></td><td></td><td style="color:${pac(AP)}">${ts2}</td><td style="color:${dC(ts2-tp2)}">${ts2-tp2>=0?'+':''}${ts2-tp2}</td><td></td></tr>
-      <tr><td colspan="2" style="text-align:left;padding-left:8px">TOTAL</td><td style="color:var(--blu)">${td?td.total:'—'}</td><td></td><td style="color:${pac(AP)};font-size:15px">${ts}</td><td style="color:${dC(tot)}">${tot>=0?'+':''}${tot}</td><td style="color:var(--t2)">${tpu||'—'}</td></tr>
+    H+=`</tbody><tfoot>
+      <tr class="sc-sub2"><td colspan="2" style="text-align:left;padding-left:8px">IN</td>
+        <td>${td?choles.slice(9,18).reduce((a,c)=>a+(c.m||0),0):'—'}</td><td></td>
+        <td style="color:${ac}">${ts2}</td>
+        <td style="color:${dC(ts2-tp2)}">${ts2-tp2>=0?'+':''}${ts2-tp2}</td>
+        <td>${tpu2||'—'}</td></tr>
+      <tr><td colspan="2" style="text-align:left;padding-left:8px">TOTAL</td>
+        <td style="color:var(--blu)">${td?td.total:'—'}</td><td></td>
+        <td style="color:${ac}">${ts}</td>
+        <td style="color:${dC(tot)}">${tot>=0?'+':''}${tot}</td>
+        <td>${tpu||'—'}</td></tr>
     </tfoot></table></div>`;
   }
 
-  // ─────────────────────────────────────────────────────
-  // ANÁLISIS TAB
-  // ─────────────────────────────────────────────────────
+  // ── ANÁLISIS ──
   else if(AT==='analisis'&&stats){
     const sg=stats.sg;
-    const allStats=data[AP].rounds.map(r=>cS(r.holes)).filter(Boolean);
-
-    // Strokes Gained overview
-    html+=`<div class="slbl">Strokes Gained · Análisis por categoría</div>`;
-    html+=`<div class="sg-summary">
-      <div class="sg-total-row">
-        <div class="sg-total-val" style="color:${sgC(sg.total)}">${sg.total>0?'+':''}${sg.total}</div>
-        <div class="sg-total-lbl">strokes gained total esta ronda</div>
-      </div>
-      <div class="sg-cats">`;
-    const sgCats=[
-      {k:'tee',l:'Salida (Tee)',desc:'Driver y maderas en par 4/5'},
-      {k:'app',l:'Approach',desc:'Hierros al green'},
-      {k:'short',l:'Juego corto',desc:'Chip, pitch, bunker'},
-      {k:'putt',l:'Putting',desc:'Eficiencia en el green'}
-    ];
+    // SG hero
+    H+=`<div style="padding:20px 16px 8px;background:var(--white);border-bottom:1px solid var(--sep)">
+      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">
+        <div style="font-size:52px;font-weight:800;letter-spacing:-2px;color:${sgC(sg.total)}">${sg.total>0?'+':''}${sg.total}</div>
+        <div style="font-size:16px;color:var(--t3)">Strokes Gained total</div>
+      </div>`;
+    const sgCats=[{k:'tee',l:'Salida'},{k:'app',l:'Approach'},{k:'short',l:'Juego corto'},{k:'putt',l:'Putting'}];
     sgCats.forEach(cat=>{
-      const v=sg[cat.k];
-      const pct=Math.min(100,Math.abs(v)/2*100);
-      html+=`<div class="sg-cat-row">
-        <div class="sg-cat-name">${cat.l}</div>
-        <div class="sg-cat-bar-bg">
-          <div class="sg-cat-zero" style="left:50%"></div>
-          <div class="sg-cat-bar" style="width:${pct/2}%;${v>=0?'left:50%':'right:50%'};background:${sgC(v)}"></div>
+      const v=sg[cat.k], pct=Math.min(100,Math.abs(v)/2*100);
+      H+=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+        <div style="font-size:16px;color:var(--t2);min-width:100px">${cat.l}</div>
+        <div style="flex:1;height:6px;background:var(--bg);border-radius:3px;position:relative">
+          <div style="position:absolute;top:-5px;bottom:-5px;left:50%;width:1px;background:var(--sep2)"></div>
+          <div style="position:absolute;top:0;height:6px;border-radius:3px;background:${sgC(v)};width:${pct/2}%;${v>=0?'left:50%':'right:50%'}"></div>
         </div>
-        <div class="sg-cat-val" style="color:${sgC(v)}">${v>0?'+':''}${v}</div>
+        <div style="font-size:16px;font-weight:700;min-width:40px;text-align:right;color:${sgC(v)}">${v>0?'+':''}${v}</div>
       </div>`;
     });
-    html+=`</div></div>`;
+    H+=`</div>`;
 
-    // SG cards
-    html+=`<div class="sg-grid">`;
+    // SG cards 2x2
+    H+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--sep)">`;
     sgCats.forEach(cat=>{
       const v=sg[cat.k];
-      html+=`<div class="sg-card ${sgCl(v)}">
-        <div class="sg-label">${cat.l}</div>
-        <div class="sg-val" style="color:${sgC(v)}">${v>0?'+':''}${v}</div>
-        <div class="sg-desc">${cat.desc}</div>
-        <div class="sg-bar-bg"><div class="sg-bar-fill" style="width:${Math.min(100,Math.abs(v)/2*100)}%;background:${sgC(v)}"></div></div>
+      H+=`<div style="background:var(--white);padding:16px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${sgC(v)}"></div>
+        <div style="font-size:12px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${cat.l}</div>
+        <div style="font-size:36px;font-weight:800;letter-spacing:-1px;color:${sgC(v)}">${v>0?'+':''}${v}</div>
       </div>`;
     });
-    html+=`</div>`;
+    H+=`</div>`;
 
-    // Insight personalizado — como un entrenador profesional
+    // Coach diagnosis
+    function getTeeInsight(){const fw=stats.fwPct;if(fw===null)return{neg:'Registra FW para análisis del driver.',pos:'Tee sólido.'};if(fw<40)return{neg:`${fw}% de fairways — debajo de tu nivel. Revisa alineación de hombros y tempo en la bajada. ¿Estás atacando desde dentro?`,pos:`${fw}% FW — buen control.`};if(fw<60)return{neg:`${fw}% de fairways — margen de mejora. Considera dosificar en hoyos penalizadores.`,pos:`${fw}% FW — sólido.`};return{neg:`${fw}% FW — bien.`,pos:`${fw}% de fairways — excelente. El driver te da plataforma de ataque.`};}
+    function getAppInsight(){const gir=stats.girPct;if(gir===null)return{neg:'Registra GIR para análisis de approach.',pos:'Approach funcionando.'};if(gir<30)return{neg:`${gir}% GIR — el approach es tu área más rentable. Cada 10 puntos de GIR = 1.5 golpes menos por ronda.`,pos:`${gir}% GIR.`};if(gir<50)return{neg:`${gir}% GIR — ¿el error es de distancia, dirección o contacto? Identificarlo es la mitad del trabajo.`,pos:`${gir}% GIR — razonable.`};return{neg:`${gir}% GIR — bien.`,pos:`${gir}% GIR — excelente approach. Llegas con opciones de birdie.`};}
+    function getShortInsight(){const sc=stats.scramblePct;if(sc===null)return{neg:'Registra GIR para calcular scrambling.',pos:'Juego corto activo.'};if(sc<33)return{neg:`${sc}% scrambling — a tu nivel, subir al 50% vale −3 golpes. El juego corto es creatividad: chip con variedad de palos, no solo SW.`,pos:`${sc}% — margen importante.`};if(sc<50)return{neg:`${sc}% scrambling — cerca del umbral. La diferencia entre 40% y 55% son 2-3 golpes por ronda.`,pos:`${sc}% scrambling — bien.`};return{neg:`${sc}% scrambling — bueno.`,pos:`${sc}% scrambling — excelente. Estás salvando rondas que otros perderían.`};}
+    function getPuttInsight(){const avg=parseFloat(stats.avgP)||2,t3=stats.tp3;if(avg>2.2)return{neg:`${avg} putts/hoyo — los ${t3} three-putts te costaron ${t3} golpes. Trabaja velocidad desde 6+ metros: objetivo terminar a menos de 1m del hoyo.`,pos:`${avg} p/h.`};if(avg>2.0)return{neg:`${avg} putts/hoyo — ligeramente por encima. ${t3>0?`Los ${t3} three-putts son golpes directos regalados.`:'Sin 3-putts — bien.'}`,pos:`${avg} p/h — bien.`};return{neg:`${avg} p/h — buen putting.`,pos:`${avg} putts/hoyo — excelente. Tu putting está compensando errores del juego largo.`};}
+    const ins={tee:getTeeInsight(),app:getAppInsight(),short:getShortInsight(),putt:getPuttInsight()};
     const weakest=sgCats.reduce((a,c)=>sg[c.k]<sg[a.k]?c:a,sgCats[0]);
     const strongest=sgCats.reduce((a,c)=>sg[c.k]>sg[a.k]?c:a,sgCats[0]);
 
-    // Insights con contexto real de esta ronda
-    function getTeeInsight(){
-      const fw=stats.fwPct;
-      if(fw===null)return{neg:'Registra si llegas al fairway en cada hoyo para obtener análisis del driver.',pos:'Sólido desde el tee. La posición en el fairway está creando oportunidades de approach.'};
-      if(fw<40)return{neg:`${fw}% de fairways — debajo de tu nivel. Revisa la alineación de hombros en el tee y el tempo en la bajada. Con tu velocidad de swing, el exceso de rotación de cadera antes de impacto genera el pull. ¿Estás atacando desde dentro?`,pos:`${fw}% FW — buen control.`};
-      if(fw<60)return{neg:`${fw}% de fairways — margen de mejora. A tu nivel, el driver desde el tee no es solo distancia: es posición de ataque. Considera si en hoyos con OB o rough penalizador merece la pena dosificar.`,pos:`${fw}% FW — sólido.`};
-      return{neg:`${fw}% FW — bien desde el tee.`,pos:`${fw}% de fairways — excelente. El driver te da plataforma de ataque.`};
-    }
-    function getAppInsight(){
-      const gir=stats.girPct;
-      if(gir===null)return{neg:'Registra GIR en cada hoyo para análisis de approach.',pos:'Approach funcionando.'};
-      if(gir<30)return{neg:`${gir}% GIR — por debajo de lo esperado a tu nivel. El approach es el área más rentable: cada 10 puntos de GIR son 1.5 golpes menos por ronda. Revisa si el problema está en la selección de palo o en el contacto — los dos tienen soluciones distintas.`,pos:`${gir}% GIR.`};
-      if(gir<50)return{neg:`${gir}% GIR — zona de trabajo. A +10, con buen contacto deberías estar por encima del 50%. ¿El error es de distancia, dirección o contacto? Identificarlo es la mitad del trabajo.`,pos:`${gir}% GIR — razonable.`};
-      return{neg:`${gir}% GIR — bien.`,pos:`${gir}% GIR — excelente approach. Llegas con opciones reales de birdie.`};
-    }
-    function getShortInsight(){
-      const sc=stats.scramblePct;
-      if(sc===null)return{neg:'Registra GIR para calcular scrambling.',pos:'Juego corto activo.'};
-      if(sc<33)return{neg:`${sc}% scrambling — por debajo de tu potencial. A +10 deberías convertir al menos 1 de cada 2 hoyos sin GIR. El juego corto a este nivel es creatividad y sensación: chip con variedad de palos, no solo SW. ¿Estás atacando la bandera o jugando a zona?`,pos:`${sc}% — margen importante.`};
-      if(sc<50)return{neg:`${sc}% scrambling — rozando el nivel de referencia. La diferencia entre 40% y 55% en scrambling son 2-3 golpes por ronda. Trabaja la velocidad en el primer putt tras chip — ese es el punto crítico.`,pos:`${sc}% scrambling — bien.`};
-      return{neg:`${sc}% scrambling — bueno.`,pos:`${sc}% scrambling — excelente juego corto. Estás salvando rondas que otros perderían.`};
-    }
-    function getPuttInsight(){
-      const avg=parseFloat(stats.avgP)||2;
-      const t3=stats.tp3;
-      if(avg>2.2)return{neg:`${avg} putts/hoyo — costoso. A tu nivel, el putting debería ser un punto fuerte. Los ${t3} three-putts te costaron ${t3} golpes directos. Trabaja la lectura y la velocidad en putts de 6-12 metros: el objetivo no es meterlos, es que el segundo putt sea un trámite.`,pos:`${avg} p/h.`};
-      if(avg>2.0)return{neg:`${avg} putts/hoyo — ligeramente por encima del objetivo de 2.0. `+(t3>0?`Los ${t3} three-putts te costaron ${t3} golpes extra.`:'Sin 3-putts — bien.'),pos:`${avg} p/h — bien.`};
-      return{neg:`${avg} p/h — buen putting.`,pos:`${avg} putts/hoyo — excelente. Tu putting está ahorrando golpes que el juego largo no da.`};
-    }
-
-    const ins={tee:getTeeInsight(),app:getAppInsight(),short:getShortInsight(),putt:getPuttInsight()};
-
-    html+=`<div class="cc" style="margin-top:4px">
-      <div class="ct">Diagnóstico del entrenador</div>
-      <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--b)">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-          <div style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0"></div>
-          <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;font-family:JetBrains Mono,monospace">Zona a trabajar: ${weakest.l}</div>
-        </div>
-        <div style="font-size:12px;color:var(--t2);line-height:1.7">${ins[weakest.k].neg}</div>
+    H+=`<div class="group-header">Diagnóstico</div>
+    <div class="group">
+      <div class="coach-section">
+        <div class="coach-tag"><div class="coach-color-dot" style="background:var(--red)"></div><div class="coach-tag-lbl">Zona a trabajar · ${weakest.l}</div></div>
+        <div class="coach-body">${ins[weakest.k].neg}</div>
       </div>
-      <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--b)">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-          <div style="width:8px;height:8px;border-radius:50%;background:var(--ak);flex-shrink:0"></div>
-          <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;font-family:JetBrains Mono,monospace">Punto fuerte: ${strongest.l}</div>
-        </div>
-        <div style="font-size:12px;color:var(--t2);line-height:1.7">${ins[strongest.k].pos}</div>
+      <div class="coach-section">
+        <div class="coach-tag"><div class="coach-color-dot" style="background:var(--ak)"></div><div class="coach-tag-lbl">Punto fuerte · ${strongest.l}</div></div>
+        <div class="coach-body">${ins[strongest.k].pos}</div>
       </div>
-      ${stats.bigNumbers>0?`<div>
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-          <div style="width:8px;height:8px;border-radius:50%;background:var(--ora);flex-shrink:0"></div>
-          <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;font-family:JetBrains Mono,monospace">Gestión de grandes números</div>
-        </div>
-        <div style="font-size:12px;color:var(--t2);line-height:1.7">Tuviste ${stats.bigNumbers} hoyos con doble bogey o peor — ${stats.strokesLostBig} golpe${stats.strokesLostBig!==1?'s':''} sobre bogey. Con tu nivel, estos hoyos no son de mala técnica sino de decisiones: cuando estás fuera de posición, la gestión del riesgo es la habilidad. Lee el campo, acepta el bogey, protege la tarjeta.</div>
+      ${stats.bigNumbers>0?`<div class="coach-section">
+        <div class="coach-tag"><div class="coach-color-dot" style="background:var(--yel)"></div><div class="coach-tag-lbl">Gestión de riesgo</div></div>
+        <div class="coach-body">Tuviste ${stats.bigNumbers} doble${stats.bigNumbers!==1?'s':''} bogey o peor. Con tu nivel, estos hoyos no son de mala técnica sino de decisiones: cuando estés fuera de posición, acepta el bogey y protege la tarjeta.</div>
       </div>`:''}
     </div>`;
 
-    // Plan de práctica personalizado
-    html+=`<div class="slbl">Plan de práctica</div>`;
-    html+=`<div class="cc"><div class="ct">Basado en esta ronda</div>`;
+    // Practice plan
     const practice=[];
-    if(stats.scramblePct!==null&&stats.scramblePct<50){
-      practice.push({priority:1,area:'Juego corto',time:'20 min',drill:`Scrambling actual: ${stats.scramblePct}%. Trabaja chips con diferentes palos (7I, PW, SW) desde rough y fringe. A tu nivel la variedad es clave — no siempre el SW es la mejor opción. Objetivo: 50%+ de saves.`});
+    if(stats.scramblePct!=null&&stats.scramblePct<50)practice.push({a:'Juego corto',t:'20 min',d:`Scrambling actual: ${stats.scramblePct}%. Chips con diferentes palos desde rough y fringe. Objetivo: 50%+ de saves.`});
+    if(stats.tp3>1)practice.push({a:'Putting — lag',t:'15 min',d:`${stats.tp3} three-putts. Desde 8-15 metros: objetivo zona de 60cm alrededor del hoyo. La velocidad es la variable clave.`});
+    if(stats.girPct!=null&&stats.girPct<40)practice.push({a:'Approach',t:'20 min',d:`GIR: ${stats.girPct}%. El GIR no mejora con más potencia, mejora con más precisión y mejor lectura del lie y el viento.`});
+    if(stats.noC>2)practice.push({a:'Rutina pre-shot',t:'Sin coste',d:`${stats.noC} golpes sin commit. Comprométete con el palo y el objetivo ANTES de entrar a la bola.`});
+    if(practice.length){
+      H+=`<div class="group-header">Plan de práctica</div><div class="group">`;
+      practice.slice(0,3).forEach((p,i)=>{
+        H+=`<div class="practice-row">
+          <div class="practice-top">
+            <div class="practice-title2">${i+1}. ${p.a}</div>
+            <div class="practice-time2">${p.t}/día</div>
+          </div>
+          <div class="practice-body">${p.d}</div>
+        </div>`;
+      });
+      H+=`</div>`;
     }
-    if(stats.tp3>1){
-      practice.push({priority:2,area:'Putting — lag',time:'15 min',drill:`${stats.tp3} three-putts en esta ronda. Practica "lag putting" desde 8-15 metros: el objetivo es la zona de 60cm alrededor del hoyo, no el hoyo. La velocidad es la variable — la línea viene después.`});
-    }
-    if(stats.girPct!==null&&stats.girPct<40){
-      practice.push({priority:3,area:'Approach',time:'20 min',drill:`GIR: ${stats.girPct}%. Trabaja con tu hierro de referencia desde distancias reales de campo — no las del simulador. El GIR no mejora con más potencia, mejora con más precisión y mejor lectura del viento y del lie.`});
-    }
-    if(stats.fwPct!==null&&stats.fwPct<50){
-      practice.push({priority:4,area:'Driver — dirección',time:'15 min',drill:`FW: ${stats.fwPct}%. Identifica si el miss es siempre al mismo lado — si es así es un patrón técnico, no un error puntual. Graba un swing de driver y revisa la posición del cuerpo en la bajada.`});
-    }
-    if(stats.noC>2){
-      practice.push({priority:5,area:'Rutina pre-shot',time:'Sin coste',drill:`${stats.noC} golpes sin commit en esta ronda. Con 15 años de experiencia y nivel +10, la duda en el shot no es técnica — es decisión. Comprométete con el palo y el objetivo ANTES de entrar a la bola. Una vez que empiezas la rutina, no hay marcha atrás.`});
-    }
-    if(!practice.length){
-      practice.push({priority:1,area:'Mantenimiento',time:'30 min',drill:'Ronda sólida. Trabaja la técnica que más trabajas normalmente — el objetivo es mantener lo que funciona.'});
-    }
-    practice.slice(0,3).forEach((p,i)=>{
-      html+=`<div style="${i>0?'margin-top:10px;padding-top:10px;border-top:1px solid var(--b)':''}">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-          <div style="font-size:10px;font-weight:700;color:var(--t)">${i+1}. ${p.area}</div>
-          <div style="font-size:8px;color:var(--t3);font-family:JetBrains Mono,monospace;background:var(--s3);padding:2px 7px;border-radius:4px">${p.time}/día</div>
-        </div>
-        <div style="font-size:11px;color:var(--t2);line-height:1.7">${p.drill}</div>
-      </div>`;
-    });
-    html+=`</div>`;
 
     // Club distances
     const clubs=Object.entries(stats.cm).sort((a,b)=>b[1].t-a[1].t);
     const clubsWithDist=clubs.filter(([,d])=>d.dists&&d.dists.length>0);
     if(clubsWithDist.length){
-      const maxDist=Math.max(...clubsWithDist.map(([,d])=>avgDist(d.dists)||0));
-      html+=`<div class="slbl">Distancias medias por palo</div>`;
-      // Distancias: referencias + campo real
-      const refs = AP==='ak' ? AK_REFS : {};
-      const refClubs = Object.keys(refs);
-      const allDistClubs = [...new Set([...clubsWithDist.map(([cl])=>cl), ...refClubs])];
-      const maxDistAll = Math.max(
-        ...clubsWithDist.map(([,d])=>avgDist(d.dists)||0),
-        ...Object.values(refs).map(r=>r.carry||0),
-        1
-      );
-      allDistClubs.sort((a,b)=>(refs[b]?.carry||0)-(refs[a]?.carry||0));
-
-      html += '<div class="cc">';
-      html += '<div class="ct">Distancias <span style="color:var(--t4)">campo vs referencia · ' + clubs.reduce((a,[,d])=>a+d.t,0) + ' golpes</span></div>';
-      html += '<div style="font-size:8px;color:var(--t3);font-family:&#39;JetBrains Mono&#39;,monospace;margin-bottom:12px">Ref = carry máximo · 25°C · llano · sin viento. SW/PW/9I tienen distancia variable según el backswing.</div>';
-      html += '<div class="dist-table">';
-
-      allDistClubs.forEach(function(cl){
-        const d = stats.cm[cl];
-        const avg = d ? avgDist(d.dists) : null;
-        const ref = refs[cl];
-        if(!avg && !ref) return;
-
-        let clr = 'var(--blu)';
-        if(cl==='Driver'||cl.includes('M')) clr = 'var(--pur)';
-        else if(cl.endsWith('H')) clr = 'var(--ak)';
-        else if(['PW','AW','GW','SW','LW'].includes(cl)) clr = 'var(--yel)';
-        else if(cl==='Putter') clr = 'var(--red)';
-
-        const avgW = avg ? Math.round(avg/maxDistAll*100) : 0;
-        const refW = ref ? Math.round(ref.carry/maxDistAll*100) : 0;
-        const diff = (avg && ref) ? avg - ref.carry : null;
-        const diffStr = diff!==null ? (diff>0?'+':'')+diff+'m' : '';
-        const diffClr = diff===null ? '' : diff >= -10 ? 'var(--ak)' : 'var(--red)';
-
-        html += '<div style="margin-bottom:12px">';
-        html += '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">';
-        html += '<span style="font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;color:var(--t)">' + clubDisplay(cl) + '</span>';
-        html += '<span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--t3)">';
-        if(avg) html += '<span style="color:'+clr+';font-weight:700">'+avg+'m</span> campo';
-        else html += '<span style="color:var(--t4)">sin datos campo</span>';
-        if(ref) html += ' · <span style="color:var(--t3)">'+ref.carry+'m carry / '+ref.total+'m total</span>';
-        if(diffStr) html += ' · <span style="color:'+diffClr+'">'+diffStr+'</span>';
-        html += '</span></div>';
-
-        // Barra doble: gris=referencia carry, color=campo
-        html += '<div style="position:relative;background:var(--s3);border-radius:3px;height:6px;overflow:hidden">';
-        if(ref) html += '<div style="position:absolute;top:0;left:0;width:'+refW+'%;height:100%;background:var(--t4);border-radius:3px"></div>';
-        if(avg) html += '<div style="position:absolute;top:0;left:0;width:'+avgW+'%;height:100%;background:'+clr+';border-radius:3px;opacity:0.9"></div>';
-        html += '</div>';
-
-        // Leyenda
-        html += '<div style="display:flex;gap:12px;margin-top:3px">';
-        if(avg) html += '<span style="font-size:7px;font-family:JetBrains Mono,monospace;color:'+clr+'">━ Campo '+avg+'m</span>';
-        if(ref) html += '<span style="font-size:7px;font-family:JetBrains Mono,monospace;color:var(--t4)">━ Carry ref '+ref.carry+'m (total '+ref.total+'m)</span>';
-        html += '</div>';
-        html += '</div>';
+      const refs=AP==='ak'?AK_REFS:{};
+      const maxD=Math.max(...clubsWithDist.map(([,d])=>avgDist(d.dists)||0),...Object.values(refs).map(r=>r.carry||0),1);
+      H+=`<div class="group-header">Distancias por palo</div>
+      <div style="font-size:12px;color:var(--t3);padding:6px 16px;background:var(--white);border-bottom:1px solid var(--sep)">Ref = carry máximo · 25°C · llano · sin viento</div>
+      <div class="group">`;
+      const allC=[...new Set([...clubsWithDist.map(([cl])=>cl),...Object.keys(refs)])].sort((a,b)=>(refs[b]?.carry||0)-(refs[a]?.carry||0));
+      allC.forEach(cl=>{
+        const d=stats.cm[cl], avg=d?avgDist(d.dists):null, ref=refs[cl];
+        if(!avg&&!ref)return;
+        const avgW=avg?Math.round(avg/maxD*100):0, refW=ref?Math.round(ref.carry/maxD*100):0;
+        const diff=avg&&ref?avg-ref.carry:null;
+        let clr='var(--blu)';
+        if(cl==='Driver'||cl.includes('M'))clr='var(--pur)';
+        else if(cl.endsWith('H'))clr='var(--ak)';
+        else if(['PW','AW','GW','SW','LW'].includes(cl))clr='var(--yel)';
+        H+=`<div class="dist-anal-item">
+          <div class="dist-anal-club">${clubDisplay(cl)}</div>
+          <div style="flex:1;margin:0 10px">
+            <div style="position:relative;background:var(--bg);border-radius:5px;height:8px;overflow:hidden">
+              ${ref?`<div style="position:absolute;top:0;left:0;width:${refW}%;height:100%;background:var(--sep2);border-radius:5px"></div>`:''}
+              ${avg?`<div style="position:absolute;top:0;left:0;width:${avgW}%;height:100%;background:${clr};border-radius:5px;opacity:.85"></div>`:''}
+            </div>
+            <div style="display:flex;gap:12px;margin-top:4px">
+              ${avg?`<span style="font-size:12px;color:${clr}">━ Campo ${avg}m</span>`:'<span style="font-size:12px;color:var(--t4)">Sin datos campo</span>'}
+              ${ref?`<span style="font-size:12px;color:var(--t3)">━ Carry ref ${ref.carry}m</span>`:''}
+            </div>
+          </div>
+          <div style="font-size:14px;font-weight:600;color:${diff!=null?(diff>=-10?'var(--ak)':'var(--red)'):'var(--t3)'};text-align:right;white-space:nowrap">
+            ${avg?`${avg}m`:'—'}
+            ${diff!=null?`<br><span style="font-size:12px">${diff>0?'+':''}${diff}m</span>`:''}
+          </div>
+        </div>`;
       });
-
-      html += '</div></div>';
+      H+=`</div>`;
     }
 
     // Club usage
     if(clubs.length){
       const totalShots=clubs.reduce((a,[,d])=>a+d.t,0);
       const maxSh=clubs[0][1].t;
-      html+=`<div class="slbl">Uso de palos</div>`;
-      html+=`<div class="cc"><div class="ct">Distribución · ${totalShots} golpes</div>`;
+      H+=`<div class="group-header">Uso de palos</div><div class="group">`;
       clubs.forEach(([cl,d])=>{
-        const pct=Math.round(d.t/totalShots*100);
-        const w=Math.round(d.t/maxSh*100);
-        let clr='var(--blu)';
-        if(cl==='Driver'||cl.includes('M')) clr='var(--pur)';
-        else if(cl.endsWith('H')) clr='var(--ak)';
-        else if(['PW','AW','GW','SW','LW'].includes(cl)) clr='var(--yel)';
-        else if(cl==='Putter') clr='var(--red)';
+        const pct=Math.round(d.t/totalShots*100), w=Math.round(d.t/maxSh*100);
         const qPct=v=>d.t?Math.round(v/d.t*100):0;
-        html+=`<div style="margin-bottom:10px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-            <span style="font-family:JetBrains Mono,monospace;font-size:10px;font-weight:700;color:var(--t)">${cl}</span>
-            <span style="font-family:JetBrains Mono,monospace;font-size:9px;color:var(--t3)">${d.t} golpes · ${pct}%</span>
+        let clr='var(--blu)';
+        if(cl==='Driver'||cl.includes('M'))clr='var(--pur)';
+        else if(cl.endsWith('H'))clr='var(--ak)';
+        else if(['PW','AW','GW','SW','LW'].includes(cl))clr='var(--yel)';
+        H+=`<div style="padding:13px 16px;border-bottom:1px solid var(--sep)">
+          <div style="display:flex;justify-content:space-between;margin-bottom:7px">
+            <span style="font-size:16px;font-weight:700">${clubDisplay(cl)}</span>
+            <span style="font-size:13px;color:var(--t3)">${d.t} golpes · ${pct}%</span>
           </div>
-          <div style="background:var(--s3);border-radius:4px;height:8px;overflow:hidden;margin-bottom:4px">
-            <div style="width:${w}%;height:100%;background:${clr};border-radius:4px"></div>
+          <div style="background:var(--bg);border-radius:5px;height:7px;overflow:hidden;margin-bottom:5px">
+            <div style="width:${w}%;height:100%;background:${clr};border-radius:5px"></div>
           </div>
-          <div style="display:flex;gap:8px">
-            <span style="font-size:8px;color:var(--ak);font-family:JetBrains Mono,monospace">✓ ${d.bueno} (${qPct(d.bueno)}%)</span>
-            <span style="font-size:8px;color:var(--yel);font-family:JetBrains Mono,monospace">· ${d.ok} (${qPct(d.ok)}%)</span>
-            <span style="font-size:8px;color:var(--red);font-family:JetBrains Mono,monospace">✗ ${d.malo} (${qPct(d.malo)}%)</span>
+          <div style="display:flex;gap:10px">
+            <span style="font-size:13px;color:var(--ak)">✓ ${d.bueno} (${qPct(d.bueno)}%)</span>
+            <span style="font-size:13px;color:var(--yel)">~ ${d.ok} (${qPct(d.ok)}%)</span>
+            <span style="font-size:13px;color:var(--red)">✗ ${d.malo} (${qPct(d.malo)}%)</span>
           </div>
         </div>`;
       });
-      html+=`</div>`;
+      H+=`</div>`;
     }
   }
 
-  // ─────────────────────────────────────────────────────
-  // EVOLUCIÓN TAB
-  // ─────────────────────────────────────────────────────
+  // ── EVOLUCIÓN ──
   else if(AT==='evo'){
     const allStats=rounds.map(r=>({r,s:cS(r.holes)})).filter(x=>x.s);
     if(allStats.length<2){
-      html+=`<div class="empty"><span class="empty-ico">📈</span>La evolución aparece con 2+ rondas.<br>Pulsa <strong style="color:${pac(AP)}">+</strong> para añadir más.</div>`;
-    }else{
-      const mxS=Math.max(...allStats.map(x=>x.s.ts));
-      const mnS=Math.min(...allStats.map(x=>x.s.ts));
-
+      H=`<div class="empty2"><span class="empty2-ico">📈</span><p>La evolución aparece con 2+ rondas.<br>Pulsa <strong style="color:${ac}">+</strong> para añadir más.</p></div>`;
+    } else {
+      const mxS=Math.max(...allStats.map(x=>x.s.ts)), mnS=Math.min(...allStats.map(x=>x.s.ts));
+      const first=allStats[0].s.ts, last=allStats[allStats.length-1].s.ts, diff=first-last;
+      H+=`<div class="trend-row">
+        <div class="trend-num2" style="color:${diff>0?'var(--ak)':diff<0?'var(--red)':'var(--t3)'}">
+          ${diff>0?'↓':'↑'}${Math.abs(diff)}
+        </div>
+        <div class="trend-info">
+          ${diff>0?`Mejoraste ${diff} golpes en ${allStats.length} rondas`:`Subiste ${Math.abs(diff)} golpes en ${allStats.length} rondas`}<br>
+          <span style="color:var(--t3)">Score más bajo: <strong style="color:${ac}">${mnS}</strong></span>
+        </div>
+      </div>`;
       // Chart
-      html+=`<div class="cc"><div class="ct">Score por ronda</div>
-        <div class="evo-chart">
-          ${allStats.map(x=>{
+      H+=`<div class="group" style="padding:16px 16px 0;border-bottom:1px solid var(--sep)">
+        <div style="display:flex;align-items:flex-end;gap:6px;height:80px">
+          ${allStats.map((x,i)=>{
             const h=Math.max(4,Math.round((x.s.ts-mnS+2)/(mxS-mnS+2)*72));
-            return`<div class="evo-bar-col">
-              <div class="evo-bar-outer"><div class="evo-bar-inner" style="height:${h}px;background:${pac(AP)};opacity:${allStats.indexOf(x)===allStats.length-1?1:0.5}"></div></div>
-              <div class="evo-bar-lbl">${x.s.ts}</div>
+            const isLast=i===allStats.length-1;
+            return`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="font-size:12px;font-weight:700;color:${isLast?ac:'var(--t3)'}">${x.s.ts}</div>
+              <div style="width:100%;border-radius:5px 5px 0 0;height:${h}px;background:${isLast?ac:'var(--sep2)'}"></div>
             </div>`;
           }).join('')}
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--t4);font-family:JetBrains Mono,monospace;margin-top:4px">
-          <span>${allStats[0].r.date}</span>
-          <span>${allStats[allStats.length-1].r.date}</span>
-        </div>
       </div>`;
-
-      // Trend summary
-      if(allStats.length>=2){
-        const first=allStats[0].s.ts,last=allStats[allStats.length-1].s.ts;
-        const diff=first-last;
-        html+=`<div class="cc"><div class="ct">Tendencia</div>
-          <div style="display:flex;gap:20px;align-items:center">
-            <div style="font-family:DM Serif Display,serif;font-size:36px;color:${diff>0?'var(--ak)':diff<0?'var(--red)':'var(--t3)'}">
-              ${diff>0?'↓':'↑'} ${Math.abs(diff)}
-            </div>
-            <div style="font-size:11px;color:var(--t2);line-height:1.8">
-              ${diff>0?`Mejoraste ${diff} golpes en ${allStats.length} rondas`:`Subiste ${Math.abs(diff)} golpes en ${allStats.length} rondas`}<br>
-              <span style="color:var(--t3)">Score más bajo: <strong style="color:${pac(AP)}">${mnS}</strong></span>
-            </div>
-          </div>
-        </div>`;
-      }
-
-      html+=`<div class="slbl">Todas las rondas</div>`;
+      H+=`<div class="group-header">Todas las rondas</div><div class="group">`;
       allStats.forEach(({r,s})=>{
-        html+=`<div class="evo-item">
-          <div class="evo-left">
-            <div class="evo-date">${r.date}${r.tee==='rojas'?' · 🔴':' · 🟡'}${r.tournament?' · Torneo':''}</div>
-            <div class="evo-name">${r.course}${r.city?' · '+r.city:''}</div>
-            <div class="evo-pills">
-              ${s.bir>0?`<span class="evo-pill" style="color:var(--ak)">${s.bir} birdie${s.bir>1?'s':''}</span>`:''}
-              ${s.avgP?`<span class="evo-pill">${s.avgP} putts/h</span>`:''}
-              ${s.girPct!=null?`<span class="evo-pill">${s.girPct}% GIR</span>`:''}
-              ${s.fwPct!=null?`<span class="evo-pill">${s.fwPct}% FW</span>`:''}
+        H+=`<div class="evo-round-row">
+          <div class="evo-round-left">
+            <div class="evo-round-date">${r.date}${r.tee==='rojas'?' · 🔴':' · 🟡'}${r.tournament?' · Torneo':''}</div>
+            <div class="evo-round-name">${r.course}${r.city?' · '+r.city:''}</div>
+            <div class="evo-round-pills2">
+              ${s.bir>0?`<span class="evo-pill2" style="color:var(--ak)">🦅 ${s.bir} birdie${s.bir>1?'s':''}</span>`:''}
+              ${s.avgP?`<span class="evo-pill2">${s.avgP} putts/h</span>`:''}
+              ${s.girPct!=null?`<span class="evo-pill2">${s.girPct}% GIR</span>`:''}
             </div>
           </div>
-          <div class="evo-right">
-            <div class="evo-score" style="color:${pac(AP)}">${s.ts}</div>
-            <div class="evo-diff" style="color:${dC(s.diff)}">${s.diff>=0?'+':''}${s.diff}</div>
+          <div class="evo-round-right">
+            <div class="evo-round-score" style="color:${ac}">${s.ts}</div>
+            <div class="evo-round-diff" style="color:${dC(s.diff)}">${s.diff>=0?'+':''}${s.diff}</div>
           </div>
         </div>`;
       });
+      H+=`</div>`;
     }
   }
 
-  document.getElementById('scroll').innerHTML=html;
+  document.getElementById('scroll').innerHTML=H;
 }
 
-// ─────────────────────────────────────────────────────
-// VS
-// ─────────────────────────────────────────────────────
-function renderVS(){
-  const hAK=eH(data.ak.rounds),hMAC=eH(data.mac.rounds);
-  const akA=data.ak.rounds.flatMap(r=>r.holes),macA=data.mac.rounds.flatMap(r=>r.holes);
-  const akS=cS(akA),macS=cS(macA);
-  let html=`<div class="vs-cards">
-    <div class="vs-card ak">
-      <div class="vs-pname" style="color:var(--ak)">AK</div>
-      <div class="vs-hcp" style="color:var(--ak)">${hAK!=null?'+'+hAK:'—'}</div>
-      <div class="vs-rn">${data.ak.rounds.length} ronda${data.ak.rounds.length!==1?'s':''}</div>
-    </div>
-    <div class="vs-sep">VS</div>
-    <div class="vs-card mac">
-      <div class="vs-pname" style="color:var(--mac)">Macarena</div>
-      <div class="vs-hcp" style="color:var(--mac)">${hMAC!=null?'+'+hMAC:'—'}</div>
-      <div class="vs-rn">${data.mac.rounds.length} ronda${data.mac.rounds.length!==1?'s':''}</div>
-    </div>
-  </div>`;
-
-  if(akS&&macS){
-    const ms=[
-      {l:'Score medio',ak:(akS.ts/Math.max(data.ak.rounds.length,1)).toFixed(1),mac:(macS.ts/Math.max(data.mac.rounds.length,1)).toFixed(1),lb:true},
-      {l:'Putts/hoyo',ak:akS.avgP||'—',mac:macS.avgP||'—',lb:true},
-      {l:'Birdies totales',ak:akS.bir,mac:macS.bir,lb:false},
-      {l:'Bogeys',ak:akS.bog,mac:macS.bog,lb:true},
-      {l:'+2 o más',ak:akS.dbl,mac:macS.dbl,lb:true},
-      {l:'GIR %',ak:akS.girPct!=null?akS.girPct+'%':'—',mac:macS.girPct!=null?macS.girPct+'%':'—',lb:false},
-      {l:'FW %',ak:akS.fwPct!=null?akS.fwPct+'%':'—',mac:macS.fwPct!=null?macS.fwPct+'%':'—',lb:false},
-    ];
-    html+=`<div class="h2h-wrap">`;
-    ms.forEach(m=>{
-      const an=parseFloat(m.ak),mn=parseFloat(m.mac);
-      const aw=!isNaN(an)&&!isNaN(mn)&&(m.lb?an<mn:an>mn);
-      const mw=!isNaN(an)&&!isNaN(mn)&&(m.lb?mn<an:mn>an);
-      html+=`<div class="h2h-row">
-        <div class="h2h-ak" style="color:${aw?'var(--ak)':'var(--t3)'}">${m.ak}</div>
-        <div class="h2h-lbl">${m.l}</div>
-        <div class="h2h-mac" style="color:${mw?'var(--mac)':'var(--t3)'}">${m.mac}</div>
-      </div>`;
-    });
-    html+=`</div>`;
-
-    // SG comparison
-    if(akS.sg&&macS.sg){
-      html+=`<div class="slbl">Strokes Gained comparado</div>`;
-      html+=`<div class="h2h-wrap">`;
-      [{k:'tee',l:'Salida'},{k:'app',l:'Approach'},{k:'short',l:'Juego corto'},{k:'putt',l:'Putting'}].forEach(cat=>{
-        const av=akS.sg[cat.k],mv=macS.sg[cat.k];
-        const aw=av>mv,mw=mv>av;
-        html+=`<div class="h2h-row">
-          <div class="h2h-ak" style="color:${aw?'var(--ak)':'var(--t3)'}">${av>0?'+':''}${av}</div>
-          <div class="h2h-lbl">${cat.l}</div>
-          <div class="h2h-mac" style="color:${mw?'var(--mac)':'var(--t3)'}">${mv>0?'+':''}${mv}</div>
-        </div>`;
-      });
-      html+=`</div>`;
-    }
-  }else if(!macS){
-    html+=`<div class="vs-empty">Macarena aún no tiene rondas.<br>Selecciónala arriba y pulsa <strong style="color:var(--mac)">+</strong> para empezar.</div>`;
-  }
-
-  // Head to head by date
-  if(data.ak.rounds.length>0&&data.mac.rounds.length>0){
-    html+=`<div class="slbl">Head to Head por ronda</div>`;
-    const allD=[...new Set([...data.ak.rounds,...data.mac.rounds].map(r=>r.date))].sort();
-    const mxSc=Math.max(...data.ak.rounds.map(r=>cS(r.holes)?.ts||0),...data.mac.rounds.map(r=>cS(r.holes)?.ts||0));
-    allD.forEach(date=>{
-      const akR=data.ak.rounds.filter(r=>r.date===date);
-      const macR=data.mac.rounds.filter(r=>r.date===date);
-      const akSc=akR.map(r=>cS(r.holes)?.ts).filter(Boolean);
-      const macSc=macR.map(r=>cS(r.holes)?.ts).filter(Boolean);
-      if(!akSc.length&&!macSc.length)return;
-      html+=`<div class="vs-bar-row">
-        <div class="vs-bar-date">${date.slice(5)}</div>
-        <div class="vs-bar-col">
-          ${akSc.map(s=>`<div class="vs-bar" style="width:${Math.round(s/mxSc*100)}%;background:var(--ak)">${s}</div>`).join('')}
-          ${macSc.map(s=>`<div class="vs-bar" style="width:${Math.round(s/mxSc*100)}%;background:var(--mac)">${s}</div>`).join('')}
-        </div>
-      </div>`;
-    });
-  }
-
-  document.getElementById('scroll').innerHTML=html;
-}
-
-// ─────────────────────────────────────────────────────
-// TREND CALC
-// ─────────────────────────────────────────────────────
 function calcTrend(rounds){
   if(rounds.length<2)return null;
   const recent=rounds.slice(-2);
@@ -1616,7 +1440,7 @@ function setPlayer(p){AP=p;AR=0;EX.clear();if(p!=='vs')AT='stats';render();}
 // ─────────────────────────────────────────────────────
 function openPlay(){
   pPl=AP==='mac'?'mac':'ak';sTv='amarillas';pSc=4;pPu=2;
-  Object.keys(pTog).forEach(k=>{pTog[k]=false;document.getElementById(k).className='tog';});
+  Object.keys(pTog).forEach(k=>{pTog[k]=false;document.getElementById(k).className='tog2';});
   document.getElementById('ftInp').value='';
   document.getElementById('pp').className='pp';
   document.getElementById('pNotes').value='';
@@ -1627,9 +1451,9 @@ function openPlay(){
   const isMac=pPl==='mac';
   document.getElementById('s0t').textContent=isMac?'Nueva ronda — Macarena':'Nueva ronda — AK';
   document.getElementById('teeW').style.display=isMac?'':'none';
-  document.getElementById('s0btn').className='btnp '+(isMac?'mac':'ak');
-  document.getElementById('saveBtn').className='btnp '+(isMac?'mac':'ak');
-  document.getElementById('ftInp').className='fta'+(isMac?' mac':'');
+  document.getElementById('s0btn').className='btn-main '+(isMac?'mac':'ak');
+  document.getElementById('saveBtn').className='btn-main '+(isMac?'mac':'ak');
+  document.getElementById('ftInp').className='ft-area'+(isMac?' mac':'');
   const rounds=data[pPl].rounds;
   const sel=document.getElementById('pRS');
   sel.innerHTML=`<option value="new">+ Nueva ronda</option>`;
@@ -1685,7 +1509,7 @@ function loadHole(){
     else if(done)cl+=isMac?' mdone':' done';
     return`<button class="${cl}" onclick="jH(${n})">${n}</button>`;
   }).join('');
-  Object.keys(pTog).forEach(k=>{pTog[k]=false;document.getElementById(k).className='tog';});
+  Object.keys(pTog).forEach(k=>{pTog[k]=false;document.getElementById(k).className='tog2';});
   document.getElementById('ftInp').value='';
   document.getElementById('pp').className='pp';
   document.getElementById('pNotes').value='';
@@ -1708,7 +1532,7 @@ function updateSU(){
 function tog(id){
   const isMac=pPl==='mac';
   pTog[id]=!pTog[id];
-  document.getElementById(id).className='tog'+(pTog[id]?(isMac?' mon':' on'):'');
+  document.getElementById(id).className='tog2'+(pTog[id]?(isMac?' mon':' on'):'');
 }
 function toggleHint(){
   const b=document.getElementById('hBox');
@@ -1720,11 +1544,11 @@ function onFT(){
   const prev=document.getElementById('pp');
   if(!shots.length){prev.className='pp';return;}
   prev.className='pp open';
-  prev.innerHTML=`<div style="font-size:7px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;font-family:JetBrains Mono,monospace">Vista previa interpretada</div>`+
-    shots.map(s=>`<div class="ps">
+  prev.innerHTML=`<div style="font-size:7px;color:var(--label3);letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;font-family:JetBrains Mono,monospace">Vista previa interpretada</div>`+
+    shots.map(s=>`<div class="parsed-shot2">
       <div class="sdot" style="background:${qC(s.q)};width:13px;height:13px;font-size:7px">${qI(s.q)}</div>
       <span class="sclub">${s.c}</span>
-      <span style="color:var(--t2);font-size:10px;flex:1">${s.r}${s.d?` · <span style="color:var(--t4)">${s.d}m</span>`:''}</span>
+      <span style="color:var(--label2);font-size:10px;flex:1">${s.r}${s.d?` · <span style="color:var(--label4)">${s.d}m</span>`:''}</span>
     </div>`).join('');
 }
 function saveHole(){
@@ -1756,6 +1580,7 @@ document.getElementById('playOv').addEventListener('click',e=>{
 // INIT
 // ─────────────────────────────────────────────────────
 load();render();
+
 </script>
 </body>
 </html>
