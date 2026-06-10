@@ -444,7 +444,16 @@ input,select,textarea,button{font-family:inherit}
     <div id="nrf">
       <div class="frow" style="margin-top:0">
         <div><span class="fl">Fecha</span><input type="date" class="fi" id="pDate"></div>
-        <div><span class="fl">Campo</span><input type="text" class="fi" id="pCourse" placeholder="Nombre"></div>
+        <div style="flex:1">
+          <span class="fl">Campo</span>
+          <select class="fi" id="pCourseSelect" onchange="onCourseSelect()">
+            <option value="">— Seleccionar —</option>
+            <option value="faisanera">La Faisanera Golf</option>
+            <option value="valle_del_este">Valle del Este Golf</option>
+            <option value="otro">Otro campo...</option>
+          </select>
+          <input type="text" class="fi" id="pCourse" placeholder="Nombre del campo" style="display:none;margin-top:6px">
+        </div>
       </div>
       <span class="fl">Ciudad</span><input type="text" class="fi" id="pCity" placeholder="Ej: Segovia">
       <div id="teeW" style="display:none">
@@ -466,10 +475,6 @@ input,select,textarea,button{font-family:inherit}
     <div class="phinfo"><div class="phdist" id="phD">—</div><div class="phpar" id="phP">Par —</div><div class="phhcp" id="phHcp"></div></div>
   </div>
   <div class="hnav" id="hnav"></div>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-    <span style="font-size:14px;font-weight:600;color:var(--t3)">Modo campo</span>
-    <button class="tog" id="tFieldMode" onclick="togFieldMode()" title="Solo score y putts"></button>
-  </div>
   <div class="steppers">
     <div class="stepbox"><div class="steplbl">Score</div><div class="steprow"><button class="stepbtn" onclick="step('score',-1)">−</button><div class="stepval" id="scV">4</div><button class="stepbtn" onclick="step('score',1)">+</button></div></div>
     <div class="stepbox"><div class="steplbl">Putts</div><div class="steprow"><button class="stepbtn" onclick="step('putts',-1)">−</button><div class="stepval" id="puV" style="color:var(--blu)">2</div><button class="stepbtn" onclick="step('putts',1)">+</button></div></div>
@@ -608,7 +613,49 @@ const FAISANERA={id:'faisanera',name:'La Faisanera Golf',city:'Segovia',tees:{
     {h:13,par:5,m:434,hcp:6},{h:14,par:4,m:357,hcp:4},{h:15,par:5,m:443,hcp:14},
     {h:16,par:4,m:321,hcp:8},{h:17,par:3,m:113,hcp:12},{h:18,par:5,m:395,hcp:16}]}}};
 
-const CR={faisanera:FAISANERA};
+const CR={
+  'valle_del_este':{id:'valle_del_este',name:'Valle del Este Golf',city:'Almería',tees:{
+    amarillas:{par:71,total:null,cr:null,slope:null,holes:[
+      {h:1,par:4,m:null,hcp:null},
+      {h:2,par:3,m:null,hcp:null},
+      {h:3,par:4,m:null,hcp:null},
+      {h:4,par:5,m:null,hcp:null},
+      {h:5,par:4,m:null,hcp:null},
+      {h:6,par:3,m:null,hcp:null},
+      {h:7,par:4,m:null,hcp:null},
+      {h:8,par:4,m:null,hcp:null},
+      {h:9,par:5,m:null,hcp:null},
+      {h:10,par:5,m:null,hcp:null},
+      {h:11,par:4,m:null,hcp:null},
+      {h:12,par:3,m:null,hcp:null},
+      {h:13,par:4,m:null,hcp:null},
+      {h:14,par:3,m:null,hcp:null},
+      {h:15,par:4,m:null,hcp:null},
+      {h:16,par:4,m:null,hcp:null},
+      {h:17,par:4,m:null,hcp:null},
+      {h:18,par:4,m:null,hcp:null},
+    ]},
+    rojas:{par:71,total:null,cr:null,slope:null,holes:[
+      {h:1,par:4,m:null,hcp:null},
+      {h:2,par:3,m:null,hcp:null},
+      {h:3,par:4,m:null,hcp:null},
+      {h:4,par:5,m:null,hcp:null},
+      {h:5,par:4,m:null,hcp:null},
+      {h:6,par:3,m:null,hcp:null},
+      {h:7,par:4,m:null,hcp:null},
+      {h:8,par:4,m:null,hcp:null},
+      {h:9,par:5,m:null,hcp:null},
+      {h:10,par:5,m:null,hcp:null},
+      {h:11,par:4,m:null,hcp:null},
+      {h:12,par:3,m:null,hcp:null},
+      {h:13,par:4,m:null,hcp:null},
+      {h:14,par:3,m:null,hcp:null},
+      {h:15,par:4,m:null,hcp:null},
+      {h:16,par:4,m:null,hcp:null},
+      {h:17,par:4,m:null,hcp:null},
+      {h:18,par:4,m:null,hcp:null},
+    ]},
+  }},faisanera:FAISANERA};
 
 // ── DISTANCIAS DE REFERENCIA AK (golpe completo, simulator) ──────────────────
 const AK_REFS={
@@ -1102,11 +1149,99 @@ function deleteRangeSession(id){
 
 
 function deleteRound(idx){
-  if(!confirm('¿Eliminar esta ronda? No se puede deshacer.')) return;
   data[AP].rounds.splice(idx,1);
   if(AR>=data[AP].rounds.length) AR=Math.max(0,data[AP].rounds.length-1);
   save();
   render();
+}
+
+function renderVS(){
+  const akR = data.ak.rounds, macR = data.mac.rounds;
+  const hAK = eH(akR), hMAC = eH(macR);
+  let H = '';
+
+  // Header cards
+  H += `<div class="vs-header2">
+    <div class="vs-card3 ak">
+      <div class="vs-pname3">AK</div>
+      <div class="vs-hcp3" style="color:var(--ak)">${hAK!=null?'+'+hAK:'—'}</div>
+      <div class="vs-rn3">${akR.length} ronda${akR.length!==1?'s':''}</div>
+    </div>
+    <div class="vs-card3 mac">
+      <div class="vs-pname3">Macarena</div>
+      <div class="vs-hcp3" style="color:var(--mac)">${hMAC!=null?'+'+hMAC:'—'}</div>
+      <div class="vs-rn3">${macR.length} ronda${macR.length!==1?'s':''}</div>
+    </div>
+  </div>`;
+
+  if(!akR.length || !macR.length){
+    H += `<div class="vs-empty3">Necesitas rondas de ambos jugadores<br>para ver la comparativa.</div>`;
+    document.getElementById('scroll').innerHTML = H;
+    return;
+  }
+
+  // Head to head stats (últimas rondas de cada uno)
+  const akS = cS(akR[akR.length-1].holes);
+  const macS = cS(macR[macR.length-1].holes);
+
+  if(akS && macS){
+    H += `<div class="group-header">Última ronda</div>`;
+    const rows = [
+      {l:'Score', ak:akS.ts, mac:macS.ts, better:'lower'},
+      {l:'Putts/H', ak:akS.avgP, mac:macS.avgP, better:'lower'},
+      {l:'FW%', ak:akS.fwPct!=null?akS.fwPct+'%':'—', mac:macS.fwPct!=null?macS.fwPct+'%':'—', better:'higher'},
+      {l:'GIR%', ak:akS.girPct!=null?akS.girPct+'%':'—', mac:macS.girPct!=null?macS.girPct+'%':'—', better:'higher'},
+      {l:'Scrambling', ak:akS.scramblePct!=null?akS.scramblePct+'%':'—', mac:macS.scramblePct!=null?macS.scramblePct+'%':'—', better:'higher'},
+      {l:'Birdies', ak:akS.bir, mac:macS.bir, better:'higher'},
+      {l:'Bogeys', ak:akS.bog, mac:macS.bog, better:'lower'},
+    ];
+    H += `<div class="group">`;
+    rows.forEach(r=>{
+      const akN = parseFloat(r.ak), macN = parseFloat(r.mac);
+      let akClr='var(--t1)', macClr='var(--t1)';
+      if(!isNaN(akN)&&!isNaN(macN)){
+        if(r.better==='lower'){
+          if(akN<macN){akClr='var(--ak)';} else if(macN<akN){macClr='var(--ak)';}
+        } else {
+          if(akN>macN){akClr='var(--ak)';} else if(macN>akN){macClr='var(--ak)';}
+        }
+      }
+      H += `<div class="h2h-row3">
+        <div class="h2h-val-left" style="color:${akClr}">${r.ak}</div>
+        <div class="h2h-lbl3">${r.l}</div>
+        <div class="h2h-val-right" style="color:${macClr}">${r.mac}</div>
+      </div>`;
+    });
+    H += `</div>`;
+  }
+
+  // Historial de rondas comunes (mismo campo y fecha próxima)
+  const sharedRounds = [];
+  akR.forEach(ar=>{
+    macR.forEach(mr=>{
+      if(ar.course===mr.course && ar.date===mr.date){
+        sharedRounds.push({date:ar.date, course:ar.course, ak:cS(ar.holes), mac:cS(mr.holes)});
+      }
+    });
+  });
+
+  if(sharedRounds.length){
+    H += `<div class="group-header">Rondas juntos</div><div class="group">`;
+    sharedRounds.forEach(s=>{
+      if(!s.ak||!s.mac) return;
+      const winner = s.ak.ts < s.mac.ts ? 'ak' : s.mac.ts < s.ak.ts ? 'mac' : 'tie';
+      H += `<div class="vs-bar-row3">
+        <div class="vs-bar-date3">${s.date.slice(5)}<br><span style="font-size:11px;color:var(--t3)">${s.course.split(' ').slice(0,2).join(' ')}</span></div>
+        <div class="vs-bar-stack2">
+          <div class="vs-bar4" style="background:var(--ak);width:${Math.round(s.ak.ts/Math.max(s.ak.ts,s.mac.ts)*100)}%;${winner==='ak'?'box-shadow:0 0 0 2px var(--ak)':''}">${s.ak.ts}</div>
+          <div class="vs-bar4" style="background:var(--mac);width:${Math.round(s.mac.ts/Math.max(s.ak.ts,s.mac.ts)*100)}%;${winner==='mac'?'box-shadow:0 0 0 2px var(--mac)':''}">${s.mac.ts}</div>
+        </div>
+      </div>`;
+    });
+    H += `</div>`;
+  }
+
+  document.getElementById('scroll').innerHTML = H;
 }
 
 function load(){
@@ -1273,6 +1408,8 @@ function render(){
   // fab inline removed
   const tabBtns=document.querySelectorAll('.tabB:not(.tab-new)');
   tabBtns.forEach(t=>t.style.display=isVS?'none':'');
+  const tabNewBtn=document.getElementById('tabNew');
+  if(tabNewBtn) tabNewBtn.style.display=isVS?'none':'';
   document.getElementById('tabs').style.display='flex';
 
   if(isVS){
@@ -1294,10 +1431,11 @@ function render(){
     rc.innerHTML=rounds.map((r,i)=>{
       const s=cS(r.holes);
       const active=i===AR;
-      return `<span style="display:inline-flex;align-items:center;gap:0;flex-shrink:0">
-        <button class="rchip${active?' on '+pac2(AP):''}" style="border-radius:20px 0 0 20px;border-right:none" onclick="selR(${i})">${r.date} · ${r.course.split(' ').slice(0,2).join(' ')}${s?` · ${s.ts}`:''}</button>
-        <button onclick="deleteRound(${i})" style="flex-shrink:0;padding:6px 9px;border-radius:0 20px 20px 0;border:1px solid var(--sep2);border-left:none;background:${active?'var(--red)':'var(--bg)'};color:${active?'#fff':'var(--t4)'};font-size:13px;cursor:pointer;line-height:1">✕</button>
-      </span>`;
+      const col=active?pac(AP):'var(--t3)';
+      return `<button class="rchip${active?' on '+pac2(AP):''}" onclick="selR(${i})" style="padding-right:8px">`+
+        `${r.date} · ${r.course.split(' ').slice(0,2).join(' ')}${s?` · ${s.ts}`:''}` +
+        ` <span onclick="event.stopPropagation();deleteRound(${i})" style="display:inline-block;margin-left:6px;background:rgba(255,59,48,.15);color:var(--red);border-radius:50%;width:18px;height:18px;line-height:18px;text-align:center;font-size:11px;font-weight:700;vertical-align:middle">✕</span>` +
+        `</button>`;
     }).join('');
   } else rcw.style.display='none';
 
@@ -1345,6 +1483,16 @@ function render(){
 
   // ── STATS ──
   if(AT==='stats'&&stats){
+    // Sin hoyos todavía
+    if(stats.total===0){
+      H+=`<div class="empty2">
+        <span class="empty2-ico">⛳</span>
+        <p style="font-size:17px;color:var(--t2);font-weight:600">Ronda iniciada</p>
+        <p style="font-size:15px;color:var(--t3);margin-top:8px">Pulsa <strong style="color:var(--ak)">+</strong> para entrar los hoyos.</p>
+      </div>`;
+      document.getElementById('scroll').innerHTML=H;
+      return;
+    }
     // HCP
     if(hcp!=null){
       const trend=rounds.length>=2?calcTrend(rounds):null;
@@ -1873,8 +2021,12 @@ function openPlay(){
   document.getElementById('pp').className='pp';
   document.getElementById('pNotes').value='';
   document.getElementById('pDate').value=new Date().toISOString().split('T')[0];
-  document.getElementById('pCourse').value='';
-  document.getElementById('pCity').value='';
+  if(document.getElementById('pCourseSelect')){
+    document.getElementById('pCourseSelect').value='';
+    document.getElementById('pCourse').style.display='none';
+    document.getElementById('pCourse').value='';
+    document.getElementById('pCity').value='';
+  }
   document.getElementById('hBox').className='hbox';
   const isMac=pPl==='mac';
   document.getElementById('s0t').textContent=isMac?'Nueva ronda — Macarena':'Nueva ronda — AK';
@@ -1897,15 +2049,42 @@ function selTee(t){
   document.getElementById('teeY').className='topt'+(t==='amarillas'?' sel-y':'');
   document.getElementById('teeR').className='topt'+(t==='rojas'?' sel-r':'');
 }
+function onCourseSelect(){
+  const sel = document.getElementById('pCourseSelect');
+  if(!sel) return;
+  const val = sel.value;
+  const txt = document.getElementById('pCourse');
+  const city = document.getElementById('pCity');
+  if(val === 'faisanera'){
+    txt.style.display = 'none';
+    txt.value = 'La Faisanera Golf';
+    city.value = 'Segovia';
+  } else if(val === 'valle_del_este'){
+    txt.style.display = 'none';
+    txt.value = 'Valle del Este Golf';
+    city.value = 'Almería';
+  } else if(val === 'otro'){
+    txt.style.display = '';
+    txt.value = '';
+    txt.focus();
+    city.value = '';
+  } else {
+    txt.style.display = 'none';
+    txt.value = '';
+    city.value = '';
+  }
+}
+
 function goPlay(){
   const sel=document.getElementById('pRS').value;
   if(sel==='new'){
     const course=document.getElementById('pCourse').value.trim()||'Campo';
     const date=document.getElementById('pDate').value;
     const city=document.getElementById('pCity').value.trim();
-    const tee=pPl==='mac'?sTv:'amarillas';
+    const tee=sTv||'amarillas';
     let cid='custom_'+Date.now();
     if(course.toLowerCase().includes('faisanera'))cid='faisanera';
+  else if(course.toLowerCase().includes('valle del este')||course.toLowerCase().includes('valle este'))cid='valle_del_este';
     data[pPl].rounds.push({id:'r'+Date.now(),player:pPl,date,course,courseId:cid,city,tee,holes:[]});
     pRI=data[pPl].rounds.length-1;save();
   }else pRI=parseInt(sel);
@@ -1923,12 +2102,13 @@ function loadHole(){
   document.getElementById('phN').textContent=`Hoyo ${pH}`;
   document.getElementById('phN').style.color=ac;
   document.getElementById('phD').textContent=ch.m?`${ch.m}m`:'—';
-  document.getElementById('phP').textContent=`Par ${ch.par}`;
+  const customPar=round.customPars&&round.customPars[pH]!=null?round.customPars[pH]:ch.par;
+  document.getElementById('phP').textContent=`Par ${customPar}`;
   document.getElementById('phHcp').textContent=ch.hcp?`HCP ${ch.hcp} · ${tee==='rojas'?'🔴':'🟡'}`:'';
-  pSc=ch.par;pPu=2;
+  pSc=customPar;pPu=2;
   document.getElementById('scV').textContent=pSc;
   document.getElementById('puV').textContent=pPu;
-  document.getElementById('trFW').style.display=ch.par===3?'none':'flex';
+  document.getElementById('trFW').style.display=customPar===3?'none':'flex';
   const eH2=new Set(round.holes.map(h=>h.h));
   document.getElementById('hnav').innerHTML=Array.from({length:18},(_,i)=>{
     const n=i+1,done=eH2.has(n),cur=n===pH;
@@ -1943,6 +2123,21 @@ function loadHole(){
   document.getElementById('pNotes').value='';
   updateSU();
 }
+function adjPar(d){
+  const round=data[pPl].rounds[pRI];
+  if(!round.customPars) round.customPars={};
+  const ch=getCH(round.courseId,round.tee||'amarillas',pH);
+  const current=round.customPars[pH]!=null?round.customPars[pH]:ch.par;
+  const newPar=Math.max(3,Math.min(5,current+d));
+  round.customPars[pH]=newPar;
+  document.getElementById('phP').textContent=`Par ${newPar}`;
+  // Actualizar score default si no se ha tocado
+  if(pSc===current) { pSc=newPar; document.getElementById('scV').textContent=pSc; }
+  // Ocultar/mostrar FW según par
+  document.getElementById('trFW').style.display=newPar===3?'none':'flex';
+  save();
+}
+
 function jH(n){pH=n;loadHole();}
 function step(f,d){
   if(f==='score'){pSc=Math.max(1,Math.min(15,pSc+d));document.getElementById('scV').textContent=pSc;}
