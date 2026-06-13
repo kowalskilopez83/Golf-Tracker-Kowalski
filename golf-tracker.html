@@ -458,13 +458,14 @@ input,select,textarea,button{font-family:inherit}
             <option value="">— Seleccionar —</option>
             <option value="faisanera">La Faisanera Golf</option>
             <option value="valle_del_este">Valle del Este Golf</option>
+          <option value="aguilon">Aguilon Golf</option>
             <option value="otro">Otro campo...</option>
           </select>
           <input type="text" class="fi" id="pCourse" placeholder="Nombre del campo" style="display:none;margin-top:6px">
         </div>
       </div>
       <span class="fl">Ciudad</span><input type="text" class="fi" id="pCity" placeholder="Ej: Segovia">
-      <div id="teeW" style="display:none">
+      <div id="teeW">
         <span class="fl">Tees</span>
         <div class="trow">
           <button class="topt sel-y" id="teeY" onclick="selTee('amarillas')">🟡 Amarillas</button>
@@ -472,6 +473,7 @@ input,select,textarea,button{font-family:inherit}
         </div>
         <div class="trow" style="margin-top:4px">
           <button class="topt" id="teeI" onclick="selTee('iguana')" style="flex:none;padding:10px 18px">🦎 Iguana (Valle del Este)</button>
+          <button class="topt" id="teeF" onclick="selTee('falcon')" style="flex:none;padding:10px 18px">🦅 Falcon (Aguilon)</button>
         </div>
       </div>
     </div>
@@ -512,7 +514,11 @@ input,select,textarea,button{font-family:inherit}
     </div>
     <textarea class="nota" id="pNotes" placeholder="Sensaciones, condiciones..."></textarea>
   </div>
-  <button class="btnp ak" id="saveBtn" onclick="saveHole()">Guardar hoyo →</button>
+  <div id="holeSummary" style="background:var(--bg);border-radius:12px;padding:12px 16px;margin-top:16px;display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:15px;color:var(--t3)" id="holeSumLbl">Hoyo 1 · Par 4</span>
+    <span style="font-size:28px;font-weight:800;color:var(--ak)" id="holeSumScore">4</span>
+  </div>
+  <button class="btnp ak" id="saveBtn" onclick="saveHole()" style="font-size:20px;padding:18px;letter-spacing:.5px">💾 Guardar hoyo</button>
   <button class="btns" onclick="closePlay()">Cerrar sin guardar</button>
 </div>
 </div>
@@ -606,6 +612,12 @@ input,select,textarea,button{font-family:inherit}
 <script>
 const AK_VALLE_IGUANA = {"id": "r_valle_iguana_ak_jun2026", "player": "ak", "date": "2026-06-13", "course": "Valle del Este Golf", "courseId": "valle_del_este", "city": "Almería", "tee": "iguana", "tournament": false, "holes": [{"h": 1, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": true, "bkSave": false, "pen": false}, {"h": 2, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 3, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 4, "par": 5, "score": 6, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 5, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 6, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 7, "par": 4, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": true, "bkSave": false, "pen": false}, {"h": 8, "par": 4, "score": 5, "putts": 3, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 9, "par": 5, "score": 5, "putts": 1, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 10, "par": 5, "score": 6, "putts": 3, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 11, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 12, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 13, "par": 4, "score": 4, "putts": 2, "fw": false, "gir": true, "bk": true, "bkSave": false, "pen": false}, {"h": 14, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 15, "par": 4, "score": 5, "putts": 1, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 16, "par": 4, "score": 6, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "pen": true}, {"h": 17, "par": 4, "score": 5, "putts": 3, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 18, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}]};
 
+const AK_AGUILON = {"id": "r_aguilon_falcon_jun2026", "player": "ak", "date": "2026-06-13", "course": "Aguilon Golf", "courseId": "aguilon", "city": "Almería", "tee": "falcon", "tournament": false, "holes": [{"h": 1, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false, "shots": [{"c": "Driver", "q": "ok", "r": "fairway", "d": 200}, {"c": "5M", "q": "ok", "r": "derecha fringe", "d": 175}, {"c": "SW", "q": "good", "r": "a 4m del pin", "d": null}]}, {"h": 2, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false, "shots": [{"c": "Driver", "q": "good", "r": "fairway", "d": 205}, {"c": "SW", "q": "good", "r": "green", "d": 70}]}, {"h": 3, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": true, "bkSave": true, "pen": false, "shots": [{"c": "7I", "q": "bad", "r": "bunker", "d": 140}, {"c": "SW", "q": "good", "r": "bunker a green", "d": null}]}, {"h": 4, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": true, "bkSave": true, "pen": false, "shots": [{"c": "Driver", "q": "ok", "r": "fairway", "d": 205}, {"c": "5I", "q": "bad", "r": "derecha bunker", "d": null}, {"c": "SW", "q": "good", "r": "bunker a green", "d": null}]}, {"h": 5, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false, "shots": [{"c": "Driver", "q": "good", "r": "fairway", "d": 210}, {"c": "5M", "q": "good", "r": "perfecta", "d": 175}, {"c": "PW", "q": "good", "r": "green", "d": null}]}, {"h": 6, "par": 4, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": true, "bkSave": false, "pen": false, "shots": [{"c": "Driver", "q": "ok", "r": "derecha bunker", "d": null}, {"c": "8I", "q": "bad", "r": "bunker mal golpe", "d": null}, {"c": "8I", "q": "good", "r": "green", "d": null}]}, {"h": 7, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false, "shots": [{"c": "Driver", "q": "good", "r": "perfecto", "d": 205}, {"c": "PW", "q": "good", "r": "a 3m del pin", "d": null}]}, {"h": 8, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false, "shots": [{"c": "7I", "q": "bad", "r": "sin commit, corto antes del green", "d": 110}, {"c": "SW", "q": "good", "r": "chip a 2m", "d": null}], "notes": "Sin commit — typical pattern"}, {"h": 9, "par": 5, "score": 6, "putts": 1, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": true, "shots": [{"c": "7M", "q": "ok", "r": "fairway", "d": 180}, {"c": "5M", "q": "bad", "r": "al agua — penalización", "d": null}, {"c": "7I", "q": "ok", "r": "fringe", "d": null}, {"c": "SW", "q": "good", "r": "chip a 2m", "d": null}], "notes": "Madera 5 al agua — penalización"}, {"h": 10, "par": 5, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "pen": false, "shots": [{"c": "Driver", "q": "bad", "r": "izq rough", "d": null}, {"c": "5M", "q": "good", "r": "bien", "d": null}, {"c": "SW", "q": "ok", "r": "chip a green", "d": null}]}, {"h": 11, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false, "shots": [{"c": "Driver", "q": "ok", "r": "derecha FW", "d": null}, {"c": "8I", "q": "ok", "r": "fringe", "d": null}, {"c": "SW", "q": "bad", "r": "chip malo — sin commit", "d": null}], "notes": "Sin commit en el chip — muchos hoy"}, {"h": 12, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": true, "bkSave": true, "pen": false, "shots": [{"c": "8I", "q": "bad", "r": "bunker", "d": null}, {"c": "SW", "q": "good", "r": "bunker a green", "d": null}]}, {"h": 13, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false, "shots": [{"c": "Driver", "q": "good", "r": "fairway", "d": null}, {"c": "6I", "q": "ok", "r": "izquierda green", "d": null}, {"c": "SW", "q": "good", "r": "chip bien", "d": null}]}, {"h": 14, "par": 3, "score": 2, "putts": 1, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false, "shots": [{"c": "PW", "q": "good", "r": "perfecto — birdie", "d": null}], "notes": "BIRDIE — one putt"}, {"h": 15, "par": 4, "score": 4, "putts": 2, "fw": false, "gir": true, "bk": false, "bkSave": false, "pen": false, "shots": [{"c": "Driver", "q": "bad", "r": "derecha fuera", "d": null}, {"c": "AW", "q": "good", "r": "green", "d": null}]}, {"h": 16, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false, "shots": [{"c": "Driver", "q": "good", "r": "fairway", "d": null}, {"c": "AW", "q": "good", "r": "green", "d": null}]}, {"h": 17, "par": 3, "score": 4, "putts": 1, "fw": null, "gir": false, "bk": true, "bkSave": true, "pen": false, "shots": [{"c": "AW", "q": "bad", "r": "bunker", "d": null}, {"c": "SW", "q": "good", "r": "a 1m — save", "d": null}]}, {"h": 18, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false, "shots": [{"c": "Driver", "q": "good", "r": "fairway", "d": null}, {"c": "6I", "q": "good", "r": "bien", "d": null}, {"c": "SW", "q": "good", "r": "green", "d": null}]}]};
+
+const MAC_AGUILON = {"id": "r_aguilon_falcon_mac_jun2026", "player": "mac", "date": "2026-06-13", "course": "Aguilon Golf", "courseId": "aguilon", "city": "Almería", "tee": "falcon", "tournament": false, "holes": [{"h": 1, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 2, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 3, "par": 3, "score": 5, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 4, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 5, "par": 5, "score": 6, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 6, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 7, "par": 4, "score": 3, "putts": 1, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 8, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 9, "par": 5, "score": 6, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 10, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 11, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 12, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 13, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 14, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 15, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 16, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 17, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 18, "par": 5, "score": 6, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}]};
+
+const AK_AGUILON2 = {"id": "r_aguilon2_ak_jun2026", "player": "ak", "date": "2026-06-13", "course": "Aguilon Golf", "courseId": "aguilon", "city": "Almería", "tee": "falcon", "tournament": false, "holes": [{"h": 1, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 2, "par": 4, "score": 6, "putts": 3, "fw": true, "gir": false, "bk": true, "bkSave": false, "pen": false}, {"h": 3, "par": 3, "score": 3, "putts": 1, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 4, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 5, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 6, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 7, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 8, "par": 3, "score": 3, "putts": 1, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 9, "par": 5, "score": 7, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": true}, {"h": 10, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 11, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 12, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": true, "bkSave": false, "pen": false}, {"h": 13, "par": 4, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 14, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 15, "par": 4, "score": 6, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 16, "par": 4, "score": 4, "putts": 2, "fw": false, "gir": true, "bk": true, "bkSave": true, "pen": false}, {"h": 17, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 18, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": true, "bkSave": true, "pen": false}]};
+
 const MAC_VALLE_IGUANA = {"id": "r_valle_iguana_mac_jun2026", "player": "mac", "date": "2026-06-13", "course": "Valle del Este Golf", "courseId": "valle_del_este", "city": "Almería", "tee": "iguana", "tournament": false, "holes": [{"h": 1, "par": 4, "score": 6, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 2, "par": 3, "score": 5, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 3, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 4, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 5, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 6, "par": 3, "score": 3, "putts": 1, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 7, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 8, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 9, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 10, "par": 5, "score": 6, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 11, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 12, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 13, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 14, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 15, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 16, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 17, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 18, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}]};
 
 
@@ -683,6 +695,9 @@ const AK_REFS={
   'PW':{carry:99, total:105,ballSpeed:89},
   'AW':{carry:87, total:92, ballSpeed:81},
   'SW':{carry:78, total:80, ballSpeed:76},
+  'aguilon':{id:'aguilon',name:'Aguilon Golf',city:'Almería',tees:{
+    falcon:{par:71,total:2823,cr:71.3,slope:132,holes:[{"h": 1, "par": 4, "m": 401, "hcp": 4}, {"h": 2, "par": 4, "m": 322, "hcp": 12}, {"h": 3, "par": 3, "m": 148, "hcp": 16}, {"h": 4, "par": 4, "m": 282, "hcp": 6}, {"h": 5, "par": 5, "m": 377, "hcp": 10}, {"h": 6, "par": 4, "m": 337, "hcp": 2}, {"h": 7, "par": 4, "m": 338, "hcp": 8}, {"h": 8, "par": 3, "m": 154, "hcp": 14}, {"h": 9, "par": 5, "m": 395, "hcp": 18}, {"h": 10, "par": 5, "m": 435, "hcp": 1}, {"h": 11, "par": 4, "m": 321, "hcp": 7}, {"h": 12, "par": 3, "m": 152, "hcp": 11}, {"h": 13, "par": 4, "m": 318, "hcp": 3}, {"h": 14, "par": 3, "m": 120, "hcp": 17}, {"h": 15, "par": 4, "m": 368, "hcp": 5}, {"h": 16, "par": 4, "m": 340, "hcp": 13}, {"h": 17, "par": 3, "m": 150, "hcp": 15}, {"h": 18, "par": 5, "m": 435, "hcp": 9}]},
+  }},
 };
 function getCH(cid,tee,h){
   const c=CR[cid];if(!c)return{par:4,m:null,hcp:null};
@@ -1184,7 +1199,7 @@ function closeIncomplete(action){
     // Guardar parcial y cerrar
     document.getElementById('playOv').classList.remove('open');
     window._pendingResume=null;
-    localStorage.removeItem('gtkow7_state');
+    localStorage.removeItem('gtkow7_st');
     save(); render();
   } else if(action==='delete'){
     // Borrar la ronda
@@ -1192,7 +1207,7 @@ function closeIncomplete(action){
     AR=Math.max(0,data[pPl].rounds.length-1);
     document.getElementById('playOv').classList.remove('open');
     window._pendingResume=null;
-    localStorage.removeItem('gtkow7_state');
+    localStorage.removeItem('gtkow7_st');
     save(); render();
   }
 }
@@ -1215,12 +1230,12 @@ function deleteRound(idx){
 }
 
 function renderVS(){
-  const akR = data.ak.rounds, macR = data.mac.rounds;
-  const hAK = eH(akR), hMAC = eH(macR);
-  let H = '';
+  const akR=data.ak.rounds, macR=data.mac.rounds;
+  const hAK=eH(akR), hMAC=eH(macR);
+  let H='';
 
-  // Header cards
-  H += `<div class="vs-header2">
+  // ── HEADER CARDS ──
+  H+=`<div class="vs-header2">
     <div class="vs-card3 ak">
       <div class="vs-pname3">AK</div>
       <div class="vs-hcp3" style="color:var(--ak)">${hAK!=null?'+'+hAK:'—'}</div>
@@ -1233,74 +1248,147 @@ function renderVS(){
     </div>
   </div>`;
 
-  if(!akR.length || !macR.length){
-    H += `<div class="vs-empty3">Necesitas rondas de ambos jugadores<br>para ver la comparativa.</div>`;
-    document.getElementById('scroll').innerHTML = H;
-    return;
+  if(!akR.length||!macR.length){
+    H+=`<div class="vs-empty3">Necesitas rondas de ambos jugadores<br>para ver la comparativa.</div>`;
+    document.getElementById('scroll').innerHTML=H; return;
   }
 
-  // Head to head stats (últimas rondas de cada uno)
-  const akS = cS(akR[akR.length-1].holes);
-  const macS = cS(macR[macR.length-1].holes);
+  // ── STATS ACUMULADAS AK vs MAC ──
+  const akAllStats=akR.map(r=>cS(r.holes)).filter(Boolean);
+  const macAllStats=macR.map(r=>cS(r.holes)).filter(Boolean);
+  const avgStat=(arr,fn)=>arr.length?Math.round(arr.reduce((a,s)=>a+(fn(s)||0),0)/arr.length*10)/10:null;
+  const akAvgScore=avgStat(akAllStats,s=>s.ts);
+  const macAvgScore=avgStat(macAllStats,s=>s.ts);
+  const akAvgPutts=avgStat(akAllStats,s=>parseFloat(s.avgP)||0);
+  const macAvgPutts=avgStat(macAllStats,s=>parseFloat(s.avgP)||0);
+  const akAvgGIR=avgStat(akAllStats.filter(s=>s.girPct!=null),s=>s.girPct);
+  const macAvgGIR=avgStat(macAllStats.filter(s=>s.girPct!=null),s=>s.girPct);
+  const akAvgFW=avgStat(akAllStats.filter(s=>s.fwPct!=null),s=>s.fwPct);
+  const macAvgFW=avgStat(macAllStats.filter(s=>s.fwPct!=null),s=>s.fwPct);
+  const akAvgScr=avgStat(akAllStats.filter(s=>s.scramblePct!=null),s=>s.scramblePct);
+  const macAvgScr=avgStat(macAllStats.filter(s=>s.scramblePct!=null),s=>s.scramblePct);
 
-  if(akS && macS){
-    H += `<div class="group-header">Última ronda</div>`;
-    const rows = [
-      {l:'Score', ak:akS.ts, mac:macS.ts, better:'lower'},
-      {l:'Putts/H', ak:akS.avgP, mac:macS.avgP, better:'lower'},
-      {l:'FW%', ak:akS.fwPct!=null?akS.fwPct+'%':'—', mac:macS.fwPct!=null?macS.fwPct+'%':'—', better:'higher'},
-      {l:'GIR%', ak:akS.girPct!=null?akS.girPct+'%':'—', mac:macS.girPct!=null?macS.girPct+'%':'—', better:'higher'},
-      {l:'Scrambling', ak:akS.scramblePct!=null?akS.scramblePct+'%':'—', mac:macS.scramblePct!=null?macS.scramblePct+'%':'—', better:'higher'},
-      {l:'Birdies', ak:akS.bir, mac:macS.bir, better:'higher'},
-      {l:'Bogeys', ak:akS.bog, mac:macS.bog, better:'lower'},
-    ];
-    H += `<div class="group">`;
-    rows.forEach(r=>{
-      const akN = parseFloat(r.ak), macN = parseFloat(r.mac);
-      let akClr='var(--t1)', macClr='var(--t1)';
-      if(!isNaN(akN)&&!isNaN(macN)){
-        if(r.better==='lower'){
-          if(akN<macN){akClr='var(--ak)';} else if(macN<akN){macClr='var(--ak)';}
-        } else {
-          if(akN>macN){akClr='var(--ak)';} else if(macN>akN){macClr='var(--ak)';}
-        }
-      }
-      H += `<div class="h2h-row3">
-        <div class="h2h-val-left" style="color:${akClr}">${r.ak}</div>
-        <div class="h2h-lbl3">${r.l}</div>
-        <div class="h2h-val-right" style="color:${macClr}">${r.mac}</div>
-      </div>`;
-    });
-    H += `</div>`;
-  }
+  const h2hRow=(lbl,akV,macV,better,unit='')=>{
+    const akN=parseFloat(akV), macN=parseFloat(macV);
+    let akClr='var(--t1)', macClr='var(--t1)';
+    if(!isNaN(akN)&&!isNaN(macN)){
+      const akWins=better==='lower'?akN<macN:akN>macN;
+      const macWins=better==='lower'?macN<akN:macN>akN;
+      if(akWins)akClr='var(--ak)'; if(macWins)macClr='var(--mac)';
+    }
+    return `<div class="h2h-row3">
+      <div class="h2h-val-left" style="color:${akClr}">${akV!=null?akV+unit:'—'}</div>
+      <div class="h2h-lbl3">${lbl}</div>
+      <div class="h2h-val-right" style="color:${macClr}">${macV!=null?macV+unit:'—'}</div>
+    </div>`;
+  };
 
-  // Historial de rondas comunes (mismo campo y fecha próxima)
-  const sharedRounds = [];
+  H+=`<div class="group-header">Comparativa general (${Math.max(akR.length,macR.length)} rondas)</div>
+  <div class="group">
+    ${h2hRow('Media score',akAvgScore,macAvgScore,'lower')}
+    ${h2hRow('HCP oficial','+11.5','+6.5','lower')}
+    ${h2hRow('Putts/H',akAvgPutts,macAvgPutts,'lower')}
+    ${h2hRow('FW%',akAvgFW,macAvgFW,'higher','%')}
+    ${h2hRow('GIR%',akAvgGIR,macAvgGIR,'higher','%')}
+    ${h2hRow('Scrambling',akAvgScr,macAvgScr,'higher','%')}
+  </div>`;
+
+  // ── TODAS LAS RONDAS COMPARTIDAS ──
+  const sharedRounds=[];
   akR.forEach(ar=>{
     macR.forEach(mr=>{
-      if(ar.course===mr.course && ar.date===mr.date){
-        sharedRounds.push({date:ar.date, course:ar.course, ak:cS(ar.holes), mac:cS(mr.holes)});
+      if(ar.course===mr.course&&ar.date===mr.date){
+        sharedRounds.push({date:ar.date,course:ar.course,tee:ar.tee,ak:cS(ar.holes),mac:cS(mr.holes)});
       }
     });
   });
 
   if(sharedRounds.length){
-    H += `<div class="group-header">Rondas juntos</div><div class="group">`;
+    let akW=0,macW=0,tie=0;
     sharedRounds.forEach(s=>{
-      if(!s.ak||!s.mac) return;
-      const winner = s.ak.ts < s.mac.ts ? 'ak' : s.mac.ts < s.ak.ts ? 'mac' : 'tie';
-      H += `<div class="vs-bar-row3">
-        <div class="vs-bar-date3">${s.date.slice(5)}<br><span style="font-size:11px;color:var(--t3)">${s.course.split(' ').slice(0,2).join(' ')}</span></div>
-        <div class="vs-bar-stack2">
-          <div class="vs-bar4" style="background:var(--ak);width:${Math.round(s.ak.ts/Math.max(s.ak.ts,s.mac.ts)*100)}%;${winner==='ak'?'box-shadow:0 0 0 2px var(--ak)':''}">${s.ak.ts}</div>
-          <div class="vs-bar4" style="background:var(--mac);width:${Math.round(s.mac.ts/Math.max(s.ak.ts,s.mac.ts)*100)}%;${winner==='mac'?'box-shadow:0 0 0 2px var(--mac)':''}">${s.mac.ts}</div>
+      if(s.ak&&s.mac){
+        if(s.ak.ts<s.mac.ts)akW++;
+        else if(s.mac.ts<s.ak.ts)macW++;
+        else tie++;
+      }
+    });
+    H+=`<div class="group-header">Rondas juntos — AK ${akW} · Maca ${macW}${tie?' · Empate '+tie:''}</div>
+    <div class="group">`;
+    sharedRounds.forEach(s=>{
+      if(!s.ak||!s.mac)return;
+      const winner=s.ak.ts<s.mac.ts?'ak':s.mac.ts<s.ak.ts?'mac':'tie';
+      const emoji=s.tee==='rojas'?'🔴':s.tee==='iguana'?'🦎':s.tee==='falcon'?'🦅':'🟡';
+      const maxSc=Math.max(s.ak.ts,s.mac.ts);
+      const akDiff=s.ak.diff>=0?'+'+s.ak.diff:s.ak.diff;
+      const macDiff=s.mac.diff>=0?'+'+s.mac.diff:s.mac.diff;
+      H+=`<div style="padding:14px 16px;border-bottom:1px solid var(--sep)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div>
+            <div style="font-size:15px;font-weight:600;color:var(--t1)">${s.course} ${emoji}</div>
+            <div style="font-size:13px;color:var(--t3)">${s.date}</div>
+          </div>
+          ${winner==='tie'?`<span style="font-size:13px;font-weight:700;color:var(--t3)">EMPATE</span>`:
+            `<span style="font-size:13px;font-weight:700;color:var(--${winner})">${winner==='ak'?'AK gana':'Maca gana'}</span>`}
+        </div>
+        <div style="display:flex;gap:8px;flex-direction:column">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:13px;font-weight:700;color:var(--ak);min-width:24px">AK</span>
+            <div style="flex:1;background:var(--bg);border-radius:6px;height:28px;overflow:hidden">
+              <div style="width:${Math.round(s.ak.ts/maxSc*100)}%;height:100%;background:var(--ak);border-radius:6px;display:flex;align-items:center;padding-left:10px">
+                <span style="font-size:14px;font-weight:800;color:#fff">${s.ak.ts} (${akDiff})</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:13px;font-weight:700;color:var(--mac);min-width:24px">Mac</span>
+            <div style="flex:1;background:var(--bg);border-radius:6px;height:28px;overflow:hidden">
+              <div style="width:${Math.round(s.mac.ts/maxSc*100)}%;height:100%;background:var(--mac);border-radius:6px;display:flex;align-items:center;padding-left:10px">
+                <span style="font-size:14px;font-weight:800;color:#fff">${s.mac.ts} (${macDiff})</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:8px;font-size:12px;color:var(--t3)">
+          ${s.ak.fwPct!=null?`<span>FW AK:${s.ak.fwPct}% Mac:${s.mac.fwPct??'—'}%</span>`:''}
+          ${s.ak.girPct!=null?`<span>GIR AK:${s.ak.girPct}% Mac:${s.mac.girPct??'—'}%</span>`:''}
+          ${s.ak.avgP?`<span>Putts AK:${s.ak.avgP} Mac:${s.mac.avgP??'—'}</span>`:''}
         </div>
       </div>`;
     });
-    H += `</div>`;
+    H+=`</div>`;
   }
 
-  document.getElementById('scroll').innerHTML = H;
+  // ── RONDAS SOLO AK (sin Maca) ──
+  const akOnlyRounds=akR.filter(ar=>!macR.some(mr=>mr.course===ar.course&&mr.date===ar.date));
+  if(akOnlyRounds.length){
+    H+=`<div class="group-header">Solo AK (${akOnlyRounds.length})</div><div class="group">`;
+    akOnlyRounds.forEach(r=>{
+      const s=cS(r.holes); if(!s)return;
+      const d=s.diff>=0?'+'+s.diff:s.diff;
+      H+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-bottom:1px solid var(--sep)">
+        <div><div style="font-size:15px;font-weight:600">${r.course}</div><div style="font-size:13px;color:var(--t3)">${r.date}</div></div>
+        <div style="text-align:right"><div style="font-size:28px;font-weight:800;color:var(--ak)">${s.ts}</div><div style="font-size:13px;color:var(--t3)">${d}</div></div>
+      </div>`;
+    });
+    H+=`</div>`;
+  }
+
+  // ── RONDAS SOLO MAC ──
+  const macOnlyRounds=macR.filter(mr=>!akR.some(ar=>ar.course===mr.course&&ar.date===mr.date));
+  if(macOnlyRounds.length){
+    H+=`<div class="group-header">Solo Macarena (${macOnlyRounds.length})</div><div class="group">`;
+    macOnlyRounds.forEach(r=>{
+      const s=cS(r.holes); if(!s)return;
+      const d=s.diff>=0?'+'+s.diff:s.diff;
+      H+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-bottom:1px solid var(--sep)">
+        <div><div style="font-size:15px;font-weight:600">${r.course}</div><div style="font-size:13px;color:var(--t3)">${r.date}</div></div>
+        <div style="text-align:right"><div style="font-size:28px;font-weight:800;color:var(--mac)">${s.ts}</div><div style="font-size:13px;color:var(--t3)">${d}</div></div>
+      </div>`;
+    });
+    H+=`</div>`;
+  }
+
+  document.getElementById('scroll').innerHTML=H;
 }
 
 function load(){
@@ -1309,19 +1397,21 @@ function load(){
     try{data=JSON.parse(s);}catch(e){}
     // Si AK no tiene rondas, restaurar las precargadas
     if(!data.ak||!data.ak.rounds||data.ak.rounds.length===0){
-      data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA]},mac:{rounds:[MAC_VALLE_IGUANA]}};
+      data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2]},mac:{rounds:[MAC_VALLE_IGUANA, MAC_AGUILON]}};
       save();
     }
     if(!data.ak.range) data.ak.range=[];
-    if(!data.mac) data.mac={rounds:[MAC_VALLE_IGUANA],range:[]};
+    if(!data.mac) data.mac={rounds:[MAC_VALLE_IGUANA, MAC_AGUILON],range:[]};
     if(!data.mac.range) data.mac.range=[];
   }
-  else{data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA]},mac:{rounds:[MAC_VALLE_IGUANA]}};save();}
+  else{data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2]},mac:{rounds:[MAC_VALLE_IGUANA, MAC_AGUILON]}};save();}
 }
 function save(){
-  localStorage.setItem('gtkow7',JSON.stringify(data));
-  // Guardar estado de la sesión activa
-  localStorage.setItem('gtkow6_state',JSON.stringify({AP,AT,AR,pPl,pRI,pH,modalOpen:document.getElementById('playOv').classList.contains('open')}));
+  try{localStorage.setItem('gtkow7',JSON.stringify(data));}catch(e){}
+  try{
+    const _mo=document.getElementById('playOv')&&document.getElementById('playOv').classList.contains('open');
+    localStorage.setItem('gtkow7_st',JSON.stringify({AP,AT,AR,pPl:pPl||'ak',pRI:pRI!=null?pRI:0,pH:pH||1,mo:_mo}));
+  }catch(e){}
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1516,17 +1606,21 @@ function render(){
 
   // Round chips
   const rcw=document.getElementById('rcWrap'),rc=document.getElementById('rc');
-  if(rounds.length>1){
+  if(rounds.length>0){
     rcw.style.display='';
-    rc.innerHTML=rounds.map((r,i)=>{
-      const s=cS(r.holes);
-      const active=i===AR;
-      const col=active?pac(AP):'var(--t3)';
-      return `<button class="rchip${active?' on '+pac2(AP):''}" onclick="selR(${i})" style="padding-right:8px">`+
-        `${r.date} · ${r.course.split(' ').slice(0,2).join(' ')}${s?` · ${s.ts}`:''}` +
-        ` <span onclick="event.stopPropagation();deleteRound(${i})" style="display:inline-block;margin-left:6px;background:rgba(255,59,48,.15);color:var(--red);border-radius:50%;width:18px;height:18px;line-height:18px;text-align:center;font-size:11px;font-weight:700;vertical-align:middle">✕</span>` +
-        `</button>`;
-    }).join('');
+    // Selector de ronda + botón borrar
+    const s=cS(rounds[AR].holes);
+    rc.innerHTML=`
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 0 4px">
+        <select onchange="selR(parseInt(this.value))" style="flex:1;background:var(--white);border:1.5px solid var(--sep2);border-radius:12px;padding:10px 14px;font-size:15px;font-weight:600;color:var(--t1);outline:none;-webkit-appearance:none;appearance:none;background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22><path d=%22M1 1l5 5 5-5%22 stroke=%22%238e8e93%22 stroke-width=%222%22 fill=%22none%22/></svg>');background-repeat:no-repeat;background-position:right 14px center">
+          ${rounds.map((r,i)=>{
+            const rs=cS(r.holes);
+            const emoji=r.tee==='rojas'?'🔴':r.tee==='iguana'?'🦎':r.tee==='falcon'?'🦅':'🟡';
+            return `<option value="${i}"${i===AR?' selected':''}>${r.date} · ${r.course.split(' ').slice(0,2).join(' ')} ${emoji}${rs?' · '+rs.ts:' · —'}</option>`;
+          }).join('')}
+        </select>
+        <button onclick="deleteRound(${AR})" style="flex-shrink:0;width:38px;height:38px;border-radius:10px;border:1.5px solid rgba(255,59,48,.3);background:rgba(255,59,48,.08);color:var(--red);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">🗑️</button>
+      </div>`;
   } else rcw.style.display='none';
 
   document.querySelectorAll('.tabB').forEach((t,i)=>{if(!t.classList.contains('tab-new'))t.classList.toggle('on',['stats','card','analisis','evo','range'][i]===AT)});
@@ -2187,8 +2281,22 @@ function setPlayer(p){AP=p;AR=0;EX.clear();if(p!=='vs')AT='stats';render();}
 function openPlay(){
   try {
   pPl=AP==='mac'?'mac':'ak';sTv='amarillas';pSc=4;pPu=2;
-  Object.keys(pTog).forEach(k=>{pTog[k]=false;document.getElementById(k).className='tog';});
-  document.getElementById('pNotes').value='';
+  const existHole=round.holes.find(h=>h.h===pH);
+  if(existHole){
+    pSc=existHole.score||customPar; pPu=existHole.putts!=null?existHole.putts:2;
+    document.getElementById('scV').textContent=pSc;
+    document.getElementById('puV').textContent=pPu;
+    pTog.tFW=existHole.fw||false; pTog.tGIR=existHole.gir||false;
+    pTog.tBK=existHole.bk||false; pTog.tBS=existHole.bs||false;
+    pTog.tCS=existHole.cs||false; pTog.tPEN=existHole.pen||false;
+  } else {
+    pSc=customPar; pPu=2;
+    document.getElementById('scV').textContent=pSc;
+    document.getElementById('puV').textContent=pPu;
+    Object.keys(pTog).forEach(k=>pTog[k]=false);
+  }
+  Object.keys(pTog).forEach(k=>{const el=document.getElementById(k);if(el)el.className='tog'+(pTog[k]?(isMac?' mon':' on'):'');});
+  document.getElementById('pNotes').value=existHole&&existHole.notes?existHole.notes:'';
   document.getElementById('pDate').value=new Date().toISOString().split('T')[0];
   if(document.getElementById('pCourseSelect')){
     document.getElementById('pCourseSelect').value='';
@@ -2200,6 +2308,14 @@ function openPlay(){
   const isMac=pPl==='mac';
   document.getElementById('s0t').textContent=isMac?'Nueva ronda — Macarena':'Nueva ronda — AK';
   document.getElementById('teeW').style.display='';
+  const _tI=document.getElementById('teeI'),_tF=document.getElementById('teeF');
+  if(_tI)_tI.style.display='none'; if(_tF)_tF.style.display='none';
+  sTv='amarillas';
+  ['teeY','teeR','teeI','teeF'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('sel-y','sel-r');});
+  const _tY=document.getElementById('teeY');if(_tY)_tY.classList.add('sel-y');
+  const _cS=document.getElementById('pCourseSelect');if(_cS)_cS.value='';
+  const _cIn=document.getElementById('pCourse');if(_cIn){_cIn.style.display='none';_cIn.value='';}
+  const _cCi=document.getElementById('pCity');if(_cCi)_cCi.value='';
   document.getElementById('s0btn').className='btn-main '+(isMac?'mac':'ak');
   document.getElementById('saveBtn').className='btn-main '+(isMac?'mac':'ak');
   const rounds=data[pPl].rounds;
@@ -2317,50 +2433,50 @@ function resumeRound(){
 }
 function dismissResume(){
   window._pendingResume=null;
-  localStorage.removeItem('gtkow7_state');
+  localStorage.removeItem('gtkow7_st');
   document.getElementById('resumeBanner').style.display='none';
 }
 
 function onCourseSelect(){
-  const sel = document.getElementById('pCourseSelect');
+  const sel=document.getElementById('pCourseSelect');
   if(!sel) return;
-  const val = sel.value;
-  const txt = document.getElementById('pCourse');
-  const city = document.getElementById('pCity');
-  if(val === 'faisanera'){
-    txt.style.display = 'none';
-    txt.value = 'La Faisanera Golf';
-    city.value = 'Segovia';
-  } else if(val === 'valle_del_este'){
-    txt.style.display = 'none';
-    txt.value = 'Valle del Este Golf';
-    city.value = 'Almería';
-  } else if(val === 'otro'){
-    txt.style.display = '';
-    txt.value = '';
-    txt.focus();
-    city.value = '';
+  const val=sel.value;
+  const txt=document.getElementById('pCourse');
+  const city=document.getElementById('pCity');
+  const teeI=document.getElementById('teeI');
+  const teeF=document.getElementById('teeF');
+  if(teeI) teeI.style.display='none';
+  if(teeF) teeF.style.display='none';
+  const cMap={faisanera:['La Faisanera Golf','Segovia','amarillas'],valle_del_este:['Valle del Este Golf','Almería','iguana'],aguilon:['Aguilon Golf','Almería','falcon']};
+  if(cMap[val]){
+    const [name,ct,tee]=cMap[val];
+    txt.style.display='none'; txt.value=name; city.value=ct; selTee(tee);
+    if(val==='valle_del_este'&&teeI) teeI.style.display='';
+    if(val==='aguilon'&&teeF) teeF.style.display='';
+  } else if(val==='otro'){
+    txt.style.display=''; txt.value=''; txt.focus(); city.value=''; selTee('amarillas');
   } else {
-    txt.style.display = 'none';
-    txt.value = '';
-    city.value = '';
+    txt.style.display='none'; txt.value=''; city.value='';
   }
 }
 
 function goPlay(){
-  const sel=document.getElementById('pRS').value;
-  if(sel==='new'){
-    const course=document.getElementById('pCourse').value.trim()||'Campo';
-    const date=document.getElementById('pDate').value;
+  const rsSel=document.getElementById('pRS').value;
+  if(rsSel==='new'){
+    const cSel=document.getElementById('pCourseSelect');
+    const cVal=cSel?cSel.value:'';
+    const cMap={faisanera:'La Faisanera Golf',valle_del_este:'Valle del Este Golf',aguilon:'Aguilon Golf'};
+    const course=cMap[cVal]||document.getElementById('pCourse').value.trim()||'Campo';
+    const date=document.getElementById('pDate').value||new Date().toISOString().split('T')[0];
     const city=document.getElementById('pCity').value.trim();
     const tee=sTv||'amarillas';
-    let cid='custom_'+Date.now();
-    if(course.toLowerCase().includes('faisanera'))cid='faisanera';
-  else if(course.toLowerCase().includes('valle del este')||course.toLowerCase().includes('valle este'))cid='valle_del_este';
-    data[pPl].rounds.push({id:'r'+Date.now(),player:pPl,date,course,courseId:cid,city,tee,holes:[]});
-    pRI=data[pPl].rounds.length-1;save();
-  }else pRI=parseInt(sel);
-  AR=pRI;pH=1;
+    const cid=(cVal&&cVal!=='otro')?cVal:'custom_'+Date.now();
+    data[pPl].rounds.push({id:'r'+Date.now(),player:pPl,date,course,courseId:cid,city,tee,holes:[],customPars:{}});
+    pRI=data[pPl].rounds.length-1; save();
+  } else {
+    pRI=parseInt(rsSel);
+  }
+  AR=pRI; pH=1;
   document.getElementById('step0').style.display='none';
   document.getElementById('step1').style.display='';
   loadHole();
@@ -2389,18 +2505,36 @@ function loadHole(){
     else if(done)cl+=isMac?' mdone':' done';
     return`<button class="${cl}" onclick="jH(${n})">${n}</button>`;
   }).join('');
-  Object.keys(pTog).forEach(k=>{pTog[k]=false;document.getElementById(k).className='tog';});
-  document.getElementById('pNotes').value='';
-  // Inicializar entradas de golpes
-  const existH=round.holes.find(h=>h.h===pH);
-  initShotEntries(existH&&existH.shots?existH.shots:[]);
-  if(!existH||!existH.shots||!existH.shots.length) addShotEntry(); // Salida por defecto
+  const existHole=round.holes.find(h=>h.h===pH);
+  if(existHole){
+    pSc=existHole.score||customPar; pPu=existHole.putts!=null?existHole.putts:2;
+    document.getElementById('scV').textContent=pSc;
+    document.getElementById('puV').textContent=pPu;
+    pTog.tFW=existHole.fw||false; pTog.tGIR=existHole.gir||false;
+    pTog.tBK=existHole.bk||false; pTog.tBS=existHole.bs||false;
+    pTog.tCS=existHole.cs||false; pTog.tPEN=existHole.pen||false;
+  } else {
+    pSc=customPar; pPu=2;
+    document.getElementById('scV').textContent=pSc;
+    document.getElementById('puV').textContent=pPu;
+    Object.keys(pTog).forEach(k=>pTog[k]=false);
+  }
+  Object.keys(pTog).forEach(k=>{const el=document.getElementById(k);if(el)el.className='tog'+(pTog[k]?(isMac?' mon':' on'):'');});
+  document.getElementById('pNotes').value=existHole&&existHole.notes?existHole.notes:'';
+  const seEl=document.getElementById('shotEntries');
+  if(seEl) seEl.innerHTML='';
+  shotCount=0;
+  if(existHole&&existHole.shots&&existHole.shots.length){
+    existHole.shots.forEach(s=>addShotEntry(s));
+  } else {addShotEntry();}
   // Cargar distancia al pin y lie si existen
-  const pdEl=document.getElementById('pPinDist');
-  const plEl=document.getElementById('pLie');
-  if(pdEl) pdEl.value=existH&&existH.pinDist?existH.pinDist:'';
-  if(plEl) plEl.value=existH&&existH.lie?existH.lie:'';
+
   updateSU();
+  // Actualizar resumen visual
+  const sumLbl=document.getElementById('holeSumLbl');
+  const sumSc=document.getElementById('holeSumScore');
+  if(sumLbl) sumLbl.textContent='Hoyo '+pH+' · Par '+customPar;
+  if(sumSc){ sumSc.textContent=pSc; sumSc.style.color=pSc<customPar?'var(--ak)':pSc===customPar?'var(--blu)':pSc===customPar+1?'var(--yel)':'var(--red)'; }
 }
 function adjPar(d){
   const round=data[pPl].rounds[pRI];
@@ -2422,6 +2556,11 @@ function step(f,d){
   if(f==='score'){pSc=Math.max(1,Math.min(15,pSc+d));document.getElementById('scV').textContent=pSc;}
   else{pPu=Math.max(0,Math.min(9,pPu+d));document.getElementById('puV').textContent=pPu;}
   updateSU();
+  // Actualizar resumen visual
+  const sumLbl=document.getElementById('holeSumLbl');
+  const sumSc=document.getElementById('holeSumScore');
+  if(sumLbl) sumLbl.textContent='Hoyo '+pH+' · Par '+customPar;
+  if(sumSc){ sumSc.textContent=pSc; sumSc.style.color=pSc<customPar?'var(--ak)':pSc===customPar?'var(--blu)':pSc===customPar+1?'var(--yel)':'var(--red)'; }
 }
 function updateSU(){
   const round=data[pPl].rounds[pRI];if(!round)return;
@@ -2448,20 +2587,54 @@ function saveHole(){
   const shots=typeof getShotsFromEntries==='function'?getShotsFromEntries():[];
   const hole={
     h:pH,par:customPar,score:pSc,putts:pPu,
-    fw:ch.par===3?null:pTog.tFW,
+    fw:customPar===3?null:pTog.tFW,
     gir:pTog.tGIR,bk:pTog.tBK,bs:pTog.tBS,cs:pTog.tCS,pen:pTog.tPEN,
     notes:document.getElementById('pNotes').value,
     shots
   };
   round.holes=round.holes.filter(h=>h.h!==pH);
   round.holes.push(hole);
-  save();AR=pRI;render();
-  const next=pH<18?pH+1:1;pH=next;loadHole();
-  const btn=document.getElementById('saveBtn'),orig=btn.textContent;
-  btn.textContent='✓ Guardado';btn.style.opacity='.75';
-  setTimeout(()=>{btn.textContent=orig;btn.style.opacity='';},800);
+  round.holes.sort((a,b)=>a.h-b.h);
+  save();
+  const btn=document.getElementById('saveBtn');
+  if(btn){const orig=btn.textContent;btn.textContent='✓';btn.style.background='#34c759';
+    setTimeout(()=>{btn.textContent=orig;btn.style.background='';},600);}
+  if(round.holes.length>=18){
+    document.getElementById('playOv').classList.remove('open');
+    AR=pRI; render();
+  } else {
+    const done=new Set(round.holes.map(h=>h.h));
+    let next=pH>=18?1:pH+1;
+    for(let i=1;i<=18;i++){const n=(pH+i-1)%18+1;if(!done.has(n)){next=n;break;}}
+    pH=next; loadHole();
+  }
 }
-function closePlay(){document.getElementById('playOv').classList.remove('open');}
+function closePlay(){
+  // Si estamos en step1 (jugando), verificar estado de la ronda
+  const step1=document.getElementById('step1');
+  const isPlaying=step1&&step1.style.display!=='none';
+  if(isPlaying&&pRI!=null&&data[pPl]&&data[pPl].rounds[pRI]){
+    const r=data[pPl].rounds[pRI];
+    const nH=r.holes?r.holes.length:0;
+    if(nH>0&&nH<18){
+      // Ronda incompleta — mostrar opciones
+      const el=document.getElementById('confirmIncSheet');
+      if(el){
+        document.getElementById('cfIncTitle').textContent='Ronda incompleta — '+nH+'/18 hoyos';
+        document.getElementById('cfIncSub').textContent=r.course+' · '+r.date;
+        el.classList.add('open');
+        return;
+      }
+    } else if(nH===0){
+      // Sin hoyos — borrar silenciosamente
+      data[pPl].rounds=data[pPl].rounds.filter((_,i)=>i!==pRI);
+      AR=Math.max(0,data[pPl].rounds.length-1);
+      save();
+    }
+  }
+  document.getElementById('playOv').classList.remove('open');
+  render();
+}
 document.getElementById('playOv').addEventListener('click',e=>{
   if(e.target===document.getElementById('playOv'))closePlay();
 });
