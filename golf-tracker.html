@@ -2281,22 +2281,8 @@ function setPlayer(p){AP=p;AR=0;EX.clear();if(p!=='vs')AT='stats';render();}
 function openPlay(){
   try {
   pPl=AP==='mac'?'mac':'ak';sTv='amarillas';pSc=4;pPu=2;
-  const existHole=round.holes.find(h=>h.h===pH);
-  if(existHole){
-    pSc=existHole.score||customPar; pPu=existHole.putts!=null?existHole.putts:2;
-    document.getElementById('scV').textContent=pSc;
-    document.getElementById('puV').textContent=pPu;
-    pTog.tFW=existHole.fw||false; pTog.tGIR=existHole.gir||false;
-    pTog.tBK=existHole.bk||false; pTog.tBS=existHole.bs||false;
-    pTog.tCS=existHole.cs||false; pTog.tPEN=existHole.pen||false;
-  } else {
-    pSc=customPar; pPu=2;
-    document.getElementById('scV').textContent=pSc;
-    document.getElementById('puV').textContent=pPu;
-    Object.keys(pTog).forEach(k=>pTog[k]=false);
-  }
-  Object.keys(pTog).forEach(k=>{const el=document.getElementById(k);if(el)el.className='tog'+(pTog[k]?(isMac?' mon':' on'):'');});
-  document.getElementById('pNotes').value=existHole&&existHole.notes?existHole.notes:'';
+  Object.keys(pTog).forEach(k=>{pTog[k]=false;});
+  document.getElementById('pNotes').value='';
   document.getElementById('pDate').value=new Date().toISOString().split('T')[0];
   if(document.getElementById('pCourseSelect')){
     document.getElementById('pCourseSelect').value='';
