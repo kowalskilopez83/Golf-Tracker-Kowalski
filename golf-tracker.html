@@ -375,6 +375,9 @@ input,select,textarea,button{font-family:inherit}
 .btns{width:100%;padding:14px;background:transparent;color:var(--t3);border:none;font-size:16px;cursor:pointer;margin-top:8px}
 
 @keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.anal-toggle{display:flex;background:var(--bg);border-radius:10px;padding:3px;margin:12px 16px 0;gap:3px}
+.anal-toggle button{flex:1;padding:8px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;color:var(--t3);background:transparent;transition:all .15s}
+.anal-toggle button.on{background:var(--white);color:var(--t1);box-shadow:0 1px 4px rgba(0,0,0,.10)}
 
 /* ── RANGE ── */
 .range-session{background:var(--white);border-bottom:2px solid var(--sep);margin-bottom:0}
@@ -445,10 +448,19 @@ input,select,textarea,button{font-family:inherit}
 <div class="sheet">
 <div class="drag2"></div>
 <div id="step0">
-  <div class="stitle" id="s0t">Nueva ronda</div>
+  <div class="stitle" id="s0t">Rondas</div>
   <div class="sbody">
-    <span class="fl">Añadir a ronda existente</span>
-    <select class="fi" id="pRS" onchange="onRS()"></select>
+
+    <!-- Rondas existentes para editar -->
+    <div id="existingRounds" style="margin-bottom:16px"></div>
+
+    <!-- Separador -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div style="flex:1;height:1px;background:var(--sep)"></div>
+      <span style="font-size:13px;color:var(--t4);font-weight:600">NUEVA RONDA</span>
+      <div style="flex:1;height:1px;background:var(--sep)"></div>
+    </div>
+
     <div id="nrf">
       <div class="frow" style="margin-top:0">
         <div><span class="fl">Fecha</span><input type="date" class="fi" id="pDate"></div>
@@ -458,7 +470,7 @@ input,select,textarea,button{font-family:inherit}
             <option value="">— Seleccionar —</option>
             <option value="faisanera">La Faisanera Golf</option>
             <option value="valle_del_este">Valle del Este Golf</option>
-          <option value="aguilon">Aguilon Golf</option>
+            <option value="aguilon">Aguilon Golf</option>
             <option value="otro">Otro campo...</option>
           </select>
           <input type="text" class="fi" id="pCourse" placeholder="Nombre del campo" style="display:none;margin-top:6px">
@@ -477,7 +489,7 @@ input,select,textarea,button{font-family:inherit}
         </div>
       </div>
     </div>
-    <button class="btnp ak" id="s0btn" onclick="goPlay()">Empezar →</button>
+    <button class="btnp ak" id="s0btn" onclick="goPlay()">＋ Crear nueva ronda</button>
     <button class="btns" onclick="closePlay()">Cancelar</button>
   </div>
 </div>
@@ -618,6 +630,8 @@ const MAC_AGUILON = {"id": "r_aguilon_falcon_mac_jun2026", "player": "mac", "dat
 
 const AK_AGUILON2 = {"id": "r_aguilon2_ak_jun2026", "player": "ak", "date": "2026-06-13", "course": "Aguilon Golf", "courseId": "aguilon", "city": "Almería", "tee": "falcon", "tournament": false, "holes": [{"h": 1, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 2, "par": 4, "score": 6, "putts": 3, "fw": true, "gir": false, "bk": true, "bkSave": false, "pen": false}, {"h": 3, "par": 3, "score": 3, "putts": 1, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 4, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 5, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 6, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 7, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 8, "par": 3, "score": 3, "putts": 1, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 9, "par": 5, "score": 7, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": true}, {"h": 10, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 11, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 12, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": true, "bkSave": false, "pen": false}, {"h": 13, "par": 4, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 14, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 15, "par": 4, "score": 6, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 16, "par": 4, "score": 4, "putts": 2, "fw": false, "gir": true, "bk": true, "bkSave": true, "pen": false}, {"h": 17, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 18, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": true, "bkSave": true, "pen": false}]};
 
+const AK_VALLE_IGUANA2 = {"id": "r_valle_iguana2_ak_jun2026", "player": "ak", "date": "2026-06-14", "course": "Valle del Este Golf", "courseId": "valle_del_este", "city": "Almería", "tee": "iguana", "tournament": false, "holes": [{"h": 1, "par": 4, "score": 6, "putts": 3, "fw": false, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 2, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 3, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 4, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 5, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 6, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 7, "par": 4, "score": 6, "putts": 2, "fw": false, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 8, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 9, "par": 5, "score": 6, "putts": 3, "fw": true, "gir": true, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 10, "par": 5, "score": 5, "putts": 1, "fw": false, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": true}, {"h": 11, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 12, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 13, "par": 4, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 14, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 15, "par": 4, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 16, "par": 4, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": true}, {"h": 17, "par": 4, "score": 4, "putts": 1, "fw": true, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 18, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}]};
+
 const MAC_VALLE_IGUANA = {"id": "r_valle_iguana_mac_jun2026", "player": "mac", "date": "2026-06-13", "course": "Valle del Este Golf", "courseId": "valle_del_este", "city": "Almería", "tee": "iguana", "tournament": false, "holes": [{"h": 1, "par": 4, "score": 6, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 2, "par": 3, "score": 5, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 3, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 4, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 5, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 6, "par": 3, "score": 3, "putts": 1, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 7, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 8, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 9, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 10, "par": 5, "score": 6, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 11, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 12, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 13, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 14, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 15, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 16, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 17, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 18, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}]};
 
 
@@ -699,6 +713,7 @@ const AK_REFS={
     falcon:{par:71,total:2823,cr:71.3,slope:132,holes:[{"h": 1, "par": 4, "m": 401, "hcp": 4}, {"h": 2, "par": 4, "m": 322, "hcp": 12}, {"h": 3, "par": 3, "m": 148, "hcp": 16}, {"h": 4, "par": 4, "m": 282, "hcp": 6}, {"h": 5, "par": 5, "m": 377, "hcp": 10}, {"h": 6, "par": 4, "m": 337, "hcp": 2}, {"h": 7, "par": 4, "m": 338, "hcp": 8}, {"h": 8, "par": 3, "m": 154, "hcp": 14}, {"h": 9, "par": 5, "m": 395, "hcp": 18}, {"h": 10, "par": 5, "m": 435, "hcp": 1}, {"h": 11, "par": 4, "m": 321, "hcp": 7}, {"h": 12, "par": 3, "m": 152, "hcp": 11}, {"h": 13, "par": 4, "m": 318, "hcp": 3}, {"h": 14, "par": 3, "m": 120, "hcp": 17}, {"h": 15, "par": 4, "m": 368, "hcp": 5}, {"h": 16, "par": 4, "m": 340, "hcp": 13}, {"h": 17, "par": 3, "m": 150, "hcp": 15}, {"h": 18, "par": 5, "m": 435, "hcp": 9}]},
   }},
 };
+function gc(cond,a,b){return cond?a:b;}
 function getCH(cid,tee,h){
   const c=CR[cid];if(!c)return{par:4,m:null,hcp:null};
   const t=c.tees[tee||'amarillas'];if(!t)return{par:4,m:null,hcp:null};
@@ -884,7 +899,7 @@ const AK_VALLE = {"id": "r_valle_jun2026", "player": "ak", "date": "2026-06-13",
 let data={ak:{rounds:[]},mac:{rounds:[]}};
 let AP='ak',AR=0,AT='stats',EX=new Set();
 let pPl='ak',pRI=-1,pH=1,pSc=4,pPu=2;
-let pTog={tFW:false,tGIR:false,tBK:false,tBS:false,tPEN:false};
+let pTog={tFW:false,tGIR:false,tBK:false,tBS:false,tCS:false,tPEN:false};let pCurPar=4;let analMode='round';
 let sTv='amarillas';
 
 // ─────────────────────────────────────────
@@ -1388,7 +1403,9 @@ function renderVS(){
     H+=`</div>`;
   }
 
-  document.getElementById('scroll').innerHTML=H;
+  // Añadir al scroll (el toggle ya está ahí)
+  const sc=document.getElementById('scroll');
+  if(sc) sc.innerHTML+=H;
 }
 
 function load(){
@@ -1397,14 +1414,14 @@ function load(){
     try{data=JSON.parse(s);}catch(e){}
     // Si AK no tiene rondas, restaurar las precargadas
     if(!data.ak||!data.ak.rounds||data.ak.rounds.length===0){
-      data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2]},mac:{rounds:[MAC_VALLE_IGUANA, MAC_AGUILON]}};
+      data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2, AK_VALLE_IGUANA2]},mac:{rounds:[MAC_VALLE_IGUANA, MAC_AGUILON]}};
       save();
     }
     if(!data.ak.range) data.ak.range=[];
     if(!data.mac) data.mac={rounds:[MAC_VALLE_IGUANA, MAC_AGUILON],range:[]};
     if(!data.mac.range) data.mac.range=[];
   }
-  else{data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2]},mac:{rounds:[MAC_VALLE_IGUANA, MAC_AGUILON]}};save();}
+  else{data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2, AK_VALLE_IGUANA2]},mac:{rounds:[MAC_VALLE_IGUANA, MAC_AGUILON]}};save();}
 }
 function save(){
   try{localStorage.setItem('gtkow7',JSON.stringify(data));}catch(e){}
@@ -1539,12 +1556,12 @@ function avgDist(dists){
 // ═══════════════════════════════════════════════════════
 // COLOR HELPERS
 // ═══════════════════════════════════════════════════════
-function qC(q){return q==='bueno'?'var(--ak)':q==='ok'?'var(--yellow)':'var(--red)'}
+function qC(q){return q==='bueno'?'var(--ak)':q==='ok'?'var(--yel)':'var(--red)'}
 function qI(q){return q==='bueno'?'✓':q==='ok'?'·':'✗'}
 function hC(h){return h.score<h.par?'var(--ak)':h.score===h.par?'var(--blu)':h.score===h.par+1?'var(--yel)':h.score>=h.par+2?'var(--red)':'var(--red)'}
 function hL(h){return h.score<h.par?'BIRDIE':h.score===h.par?'PAR':h.score===h.par+1?'BOGEY':`+${h.score-h.par}`}
 function hLF(h){return h.score<=h.par-2?'EAGLE':h.score===h.par-1?'BIRDIE':h.score===h.par?'PAR':h.score===h.par+1?'BOGEY':h.score===h.par+2?'DOBLE':'TRIPLE+'}
-function dC(d){return d<0?'var(--ak)':d===0?'var(--blue)':d===1?'var(--yellow)':'var(--red)'}
+function dC(d){return d<0?'var(--ak)':d===0?'var(--blu)':d===1?'var(--yel)':'var(--red)'}
 function sCl(s,p){const d=s-p;return d<0?'s-bir':d===0?'s-par':d===1?'s-bog':d===2?'s-dbl':'s-tri'}
 function sCl2(s,p){const d=s-p;if(d<=-2)return's-eag';return sCl(s,p);}
 function pac(p){return p==='mac'?'var(--mac)':'var(--ak)'}
@@ -1555,6 +1572,12 @@ function sgCl(v){return v>0?'pos':v<0?'neg':'neu'}
 // ═══════════════════════════════════════════════════════
 // RENDER
 // ═══════════════════════════════════════════════════════
+function getTeeInsight(stats){const fw=stats.fwPct;if(fw===null)return{neg:'Registra FW para análisis del driver.',pos:'Tee sólido.'};if(fw<40)return{neg:fw+'% de fairways — debajo de tu nivel. Revisa alineación de hombros y tempo en la bajada.',pos:fw+'% FW — buen control.'};if(fw<60)return{neg:fw+'% de fairways — margen de mejora. Considera dosificar en hoyos penalizadores.',pos:fw+'% FW — sólido.'};return{neg:fw+'% FW — bien.',pos:fw+'% de fairways — excelente. El driver te da plataforma de ataque.'};}
+function getAppInsight(stats){const gir=stats.girPct;if(gir===null)return{neg:'Registra GIR para análisis de approach.',pos:'Approach funcionando.'};if(gir<30)return{neg:gir+'% GIR — el approach es tu área más rentable. Cada 10 puntos de GIR = 1.5 golpes menos por ronda.',pos:gir+'% GIR.'};if(gir<50)return{neg:gir+'% GIR — el error puede ser distancia, dirección o contacto. Identifícalo.',pos:gir+'% GIR — razonable.'};return{neg:gir+'% GIR — bien.',pos:gir+'% GIR — excelente approach. Llegas con opciones de birdie.'};}
+function getShortInsight(stats){const sc=stats.scramblePct;if(sc===null)return{neg:'Registra GIR para calcular scrambling.',pos:'Juego corto activo.'};if(sc<33)return{neg:sc+'% scrambling — subir al 50% vale -3 golpes. Chip con variedad de palos, no solo SW.',pos:sc+'% — margen importante.'};if(sc<50)return{neg:sc+'% scrambling — cerca del umbral. La diferencia entre 40% y 55% son 2-3 golpes.',pos:sc+'% scrambling — bien.'};return{neg:sc+'% scrambling — bueno.',pos:sc+'% scrambling — excelente. Estás salvando rondas que otros perderían.'};}
+function getPuttInsight(stats){const avg=parseFloat(stats.avgP)||2,t3=stats.tp3;if(avg>2.2)return{neg:avg+' putts/hoyo — '+t3+' three-putts. Trabaja velocidad desde 6m+: terminar a menos de 1m del hoyo.',pos:avg+' p/h.'};if(avg>2.0)return{neg:avg+' putts/hoyo — ligeramente por encima. '+(t3>0?'Los '+t3+' three-putts son golpes regalados.':'Sin 3-putts, bien.'),pos:avg+' p/h — bien.'};return{neg:avg+' p/h — buen putting.',pos:avg+' putts/hoyo — excelente. El putting está compensando errores del juego largo.'};}
+
+
 function render(){
   // Si hay una sesión pendiente de continuar, mostrar botón de resume
   if(window._pendingResume){
@@ -1685,7 +1708,7 @@ function render(){
         <div class="hcp-info">
           <div class="hcp-label">Handicap estimado</div>
           <div class="hcp-sub">${rounds.length} ronda${rounds.length!==1?'s':''} · cálculo simplificado
-          ${trend?`<br><span style="color:${trend.dir>0?'var(--red)':'var(--ak)'};font-weight:600">${trend.dir>0?'↑':'↓'} ${Math.abs(trend.val)} vs ronda anterior</span>`:''}
+          ${trend?`<br><span style="color:${gc(trend.dir>0,'var(--red)','var(--ak)')};font-weight:600">${trend.dir>0?'↑':'↓'} ${Math.abs(trend.val)} vs ronda anterior</span>`:''}
           </div>
         </div>
       </div>`;
@@ -1751,17 +1774,17 @@ function render(){
           <div style="width:80px;height:80px;flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center">
             <svg viewBox="0 0 76 76" width="76" height="76" style="position:absolute;inset:0;transform:rotate(-90deg)">
               <circle cx="38" cy="38" r="${r}" fill="none" stroke="var(--sep2)" stroke-width="5"/>
-              <circle cx="38" cy="38" r="${r}" fill="none" stroke="${good?'var(--blu)':'var(--yel)'}" stroke-width="5"
+              <circle cx="38" cy="38" r="${r}" fill="none" stroke="${gc(good,'var(--blu)','var(--yel)')}" stroke-width="5"
                 stroke-dasharray="${circ}" stroke-dashoffset="${circ*(1-pct/100)}" stroke-linecap="round"/>
             </svg>
             <div style="text-align:center">
-              <div style="font-size:24px;font-weight:800;letter-spacing:-.5px;color:${good?'var(--blu)':'var(--yel)'}">${stats.avgP}</div>
+              <div style="font-size:24px;font-weight:800;letter-spacing:-.5px;color:${gc(good,'var(--blu)','var(--yel)')}">${stats.avgP}</div>
               <div style="font-size:10px;color:var(--t3);font-weight:600;letter-spacing:.3px">P/HOYO</div>
             </div>
           </div>
           <div style="flex:1;display:flex;flex-direction:column;gap:9px">
             <div style="display:flex;justify-content:space-between"><span style="font-size:16px;color:var(--t2)">Total putts</span><span style="font-size:16px;font-weight:700">${stats.tpu}</span></div>
-            <div style="display:flex;justify-content:space-between"><span style="font-size:16px;color:var(--t2)">3-putts</span><span style="font-size:16px;font-weight:700;color:${stats.tp3>1?'var(--red)':'var(--t1)'}">${stats.tp3}</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="font-size:16px;color:var(--t2)">3-putts</span><span style="font-size:16px;font-weight:700;color:${gc(stats.tp3>1,'var(--red)','var(--t1)')}">${stats.tp3}</span></div>
             <div style="display:flex;justify-content:space-between"><span style="font-size:16px;color:var(--t2)">Objetivo</span><span style="font-size:16px;font-weight:700;color:var(--t3)">≤ 2.0</span></div>
           </div>
         </div>
@@ -1771,7 +1794,7 @@ function render(){
     // Bunker
     if(stats.bkCt>0||stats.chipSaves>0){
       H+=`<div class="bignum-row" style="border-left:3px solid var(--yel)">
-        <div class="bignum" style="color:${stats.bkPct>=50?'var(--ak)':'var(--red)'}">${stats.bkPct}%</div>
+        <div class="bignum" style="color:${gc(stats.bkPct>=50,'var(--ak)','var(--red)')}">${stats.bkPct}%</div>
         <div class="bignum-info">
           <div class="bignum-lbl">Bunker saves</div>
           <div class="bignum-sub">${stats.bkSaves} de ${stats.bkCt} bunkers · Objetivo ≥ 50%</div>
@@ -1783,15 +1806,15 @@ function render(){
     // Scrambling
     if(stats.scramblePct!=null){
       const sc=stats.scramblePct, ok=sc>=50;
-      H+=`<div class="bignum-row" style="border-left:3px solid ${ok?'var(--ak)':'var(--red)'}">
-        <div class="bignum" style="color:${ok?'var(--ak)':'var(--red)'}">${sc}%</div>
+      H+=`<div class="bignum-row" style="border-left:3px solid ${gc(ok,'var(--ak)','var(--red)')}">
+        <div class="bignum" style="color:${gc(ok,'var(--ak)','var(--red)')}">${sc}%</div>
         <div class="bignum-info">
           <div class="bignum-lbl">Scrambling</div>
           <div class="bignum-sub">${stats.scrambleSaves} pares o mejor de ${stats.missGIR} greens fallados<br>
-            <span style="color:${ok?'var(--ak)':'var(--t3)'}">Objetivo ≥ 50%${ok?'' : ' · Subir al 50% = −3 golpes'}</span>
+            <span style="color:${gc(ok,'var(--ak)','var(--t3)')}">Objetivo ≥ 50%${ok?'' : ' · Subir al 50% = −3 golpes'}</span>
           </div>
           <div style="background:var(--sep);border-radius:3px;height:4px;overflow:hidden;margin-top:7px">
-            <div style="width:${Math.min(100,sc)}%;height:100%;background:${ok?'var(--ak)':'var(--red)'};border-radius:3px"></div>
+            <div style="width:${Math.min(100,sc)}%;height:100%;background:${gc(ok,'var(--ak)','var(--red)')};border-radius:3px"></div>
           </div>
         </div>
       </div>`;
@@ -1870,8 +1893,8 @@ function render(){
             ${h.putts!=null?`<span>🎯 ${h.putts} putts</span>`:''}
             ${h.pinDist?`<span>📍 ${h.pinDist}m al pin</span>`:''}
             ${h.lie?`<span>⛳ ${h.lie}</span>`:''}
-            ${h.fw!=null?`<span style="color:${h.fw?'var(--ak)':'var(--red)'}">${h.fw?'✓':'✗'} FW</span>`:''}
-            ${h.gir!=null?`<span style="color:${h.gir?'var(--ak)':'var(--red)'}">${h.gir?'✓':'✗'} GIR</span>`:''}
+            ${h.fw!=null?`<span style="color:${gc(h.fw,'var(--ak)','var(--red)')}">${h.fw?'✓':'✗'} FW</span>`:''}
+            ${h.gir!=null?`<span style="color:${gc(h.gir,'var(--ak)','var(--red)')}">${h.gir?'✓':'✗'} GIR</span>`:''}
           </div>
           ${(h.shots||[]).map(s=>`<div class="shot-line">
             <div class="shot-dot2" style="background:${qC(s.q)}">${qI(s.q)}</div>
@@ -1973,155 +1996,93 @@ function render(){
   // ── ANÁLISIS ──
   else if(AT==='analisis'&&stats){
     const sg=stats.sg;
-    // SG hero
-    H+=`<div style="padding:20px 16px 8px;background:var(--white);border-bottom:1px solid var(--sep)">
-      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">
-        <div style="font-size:52px;font-weight:800;letter-spacing:-2px;color:${sgC(sg.total)}">${sg.total>0?'+':''}${sg.total}</div>
-        <div style="font-size:16px;color:var(--t3)">Strokes Gained total</div>
-      </div>`;
+    const nR=rounds.length;
+    H+='<div class="anal-toggle">';
+    H+='<button data-mode="round" onclick="setAnalRound()" class="'+(analMode==='round'?'on':'')+'">Esta ronda</button>';
+    H+='<button data-mode="all" onclick="setAnalAll()" class="'+(analMode==='all'?'on':'')+'">'+(nR)+' ronda'+(nR!==1?'s':'')+'</button>';
+    H+='</div>';
+    if(analMode==='all'){document.getElementById('scroll').innerHTML=H;renderAnalisisAcumulado(rounds);return;}
+    H+='<div style="padding:20px 16px 8px;background:var(--white);border-bottom:1px solid var(--sep)">';
+    H+='<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">';
+    H+='<div style="font-size:52px;font-weight:800;letter-spacing:-2px;color:'+sgC(sg.total)+'">'+(sg.total>0?'+':'')+sg.total+'</div>';
+    H+='<div style="font-size:16px;color:var(--t3)">Strokes Gained total</div></div>';
     const sgCats=[{k:'tee',l:'Salida'},{k:'app',l:'Approach'},{k:'short',l:'Juego corto'},{k:'putt',l:'Putting'}];
-    sgCats.forEach(cat=>{
-      const v=sg[cat.k], pct=Math.min(100,Math.abs(v)/2*100);
-      H+=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-        <div style="font-size:16px;color:var(--t2);min-width:100px">${cat.l}</div>
-        <div style="flex:1;height:6px;background:var(--bg);border-radius:3px;position:relative">
-          <div style="position:absolute;top:-5px;bottom:-5px;left:50%;width:1px;background:var(--sep2)"></div>
-          <div style="position:absolute;top:0;height:6px;border-radius:3px;background:${sgC(v)};width:${pct/2}%;${v>=0?'left:50%':'right:50%'}"></div>
-        </div>
-        <div style="font-size:16px;font-weight:700;min-width:40px;text-align:right;color:${sgC(v)}">${v>0?'+':''}${v}</div>
-      </div>`;
+    sgCats.forEach(function(cat){
+      const v=sg[cat.k],pct=Math.min(100,Math.abs(v)/2*100);
+      H+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><div style="font-size:16px;color:var(--t2);min-width:100px">'+cat.l+'</div>';
+      H+='<div style="flex:1;height:6px;background:var(--bg);border-radius:3px;position:relative"><div style="position:absolute;top:-5px;bottom:-5px;left:50%;width:1px;background:var(--sep2)"></div>';
+      H+='<div style="position:absolute;top:0;height:6px;border-radius:3px;background:'+sgC(v)+';width:'+(pct/2)+'%;'+(v>=0?'left:50%':'right:50%')+'"></div></div>';
+      H+='<div style="font-size:16px;font-weight:700;min-width:40px;text-align:right;color:'+sgC(v)+'">'+(v>0?'+':'')+v+'</div></div>';
     });
-    H+=`</div>`;
-
-    // SG cards 2x2
-    H+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--sep)">`;
-    sgCats.forEach(cat=>{
+    H+='</div>';
+    H+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--sep)">';
+    sgCats.forEach(function(cat){
       const v=sg[cat.k];
-      H+=`<div style="background:var(--white);padding:16px;position:relative;overflow:hidden">
-        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${sgC(v)}"></div>
-        <div style="font-size:12px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${cat.l}</div>
-        <div style="font-size:36px;font-weight:800;letter-spacing:-1px;color:${sgC(v)}">${v>0?'+':''}${v}</div>
-      </div>`;
+      H+='<div style="background:var(--white);padding:16px;position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:'+sgC(v)+'"></div>';
+      H+='<div style="font-size:12px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">'+cat.l+'</div>';
+      H+='<div style="font-size:36px;font-weight:800;letter-spacing:-1px;color:'+sgC(v)+'">'+(v>0?'+':'')+v+'</div></div>';
     });
-    H+=`</div>`;
-
-    // Coach diagnosis
-    function getTeeInsight(){const fw=stats.fwPct;if(fw===null)return{neg:'Registra FW para análisis del driver.',pos:'Tee sólido.'};if(fw<40)return{neg:`${fw}% de fairways — debajo de tu nivel. Revisa alineación de hombros y tempo en la bajada. ¿Estás atacando desde dentro?`,pos:`${fw}% FW — buen control.`};if(fw<60)return{neg:`${fw}% de fairways — margen de mejora. Considera dosificar en hoyos penalizadores.`,pos:`${fw}% FW — sólido.`};return{neg:`${fw}% FW — bien.`,pos:`${fw}% de fairways — excelente. El driver te da plataforma de ataque.`};}
-    function getAppInsight(){const gir=stats.girPct;if(gir===null)return{neg:'Registra GIR para análisis de approach.',pos:'Approach funcionando.'};if(gir<30)return{neg:`${gir}% GIR — el approach es tu área más rentable. Cada 10 puntos de GIR = 1.5 golpes menos por ronda.`,pos:`${gir}% GIR.`};if(gir<50)return{neg:`${gir}% GIR — ¿el error es de distancia, dirección o contacto? Identificarlo es la mitad del trabajo.`,pos:`${gir}% GIR — razonable.`};return{neg:`${gir}% GIR — bien.`,pos:`${gir}% GIR — excelente approach. Llegas con opciones de birdie.`};}
-    function getShortInsight(){const sc=stats.scramblePct;if(sc===null)return{neg:'Registra GIR para calcular scrambling.',pos:'Juego corto activo.'};if(sc<33)return{neg:`${sc}% scrambling — a tu nivel, subir al 50% vale −3 golpes. El juego corto es creatividad: chip con variedad de palos, no solo SW.`,pos:`${sc}% — margen importante.`};if(sc<50)return{neg:`${sc}% scrambling — cerca del umbral. La diferencia entre 40% y 55% son 2-3 golpes por ronda.`,pos:`${sc}% scrambling — bien.`};return{neg:`${sc}% scrambling — bueno.`,pos:`${sc}% scrambling — excelente. Estás salvando rondas que otros perderían.`};}
-    function getPuttInsight(){const avg=parseFloat(stats.avgP)||2,t3=stats.tp3;if(avg>2.2)return{neg:`${avg} putts/hoyo — los ${t3} three-putts te costaron ${t3} golpes. Trabaja velocidad desde 6+ metros: objetivo terminar a menos de 1m del hoyo.`,pos:`${avg} p/h.`};if(avg>2.0)return{neg:`${avg} putts/hoyo — ligeramente por encima. ${t3>0?`Los ${t3} three-putts son golpes directos regalados.`:'Sin 3-putts — bien.'}`,pos:`${avg} p/h — bien.`};return{neg:`${avg} p/h — buen putting.`,pos:`${avg} putts/hoyo — excelente. Tu putting está compensando errores del juego largo.`};}
-    const ins={tee:getTeeInsight(),app:getAppInsight(),short:getShortInsight(),putt:getPuttInsight()};
-    const weakest=sgCats.reduce((a,c)=>sg[c.k]<sg[a.k]?c:a,sgCats[0]);
-    const strongest=sgCats.reduce((a,c)=>sg[c.k]>sg[a.k]?c:a,sgCats[0]);
-
-    H+=`<div class="group-header">Diagnóstico</div>
-    <div class="group">
-      <div class="coach-section">
-        <div class="coach-tag"><div class="coach-color-dot" style="background:var(--red)"></div><div class="coach-tag-lbl">Zona a trabajar · ${weakest.l}</div></div>
-        <div class="coach-body">${ins[weakest.k].neg}</div>
-      </div>
-      <div class="coach-section">
-        <div class="coach-tag"><div class="coach-color-dot" style="background:var(--ak)"></div><div class="coach-tag-lbl">Punto fuerte · ${strongest.l}</div></div>
-        <div class="coach-body">${ins[strongest.k].pos}</div>
-      </div>
-      ${stats.bigNumbers>0?`<div class="coach-section">
-        <div class="coach-tag"><div class="coach-color-dot" style="background:var(--yel)"></div><div class="coach-tag-lbl">Gestión de riesgo</div></div>
-        <div class="coach-body">Tuviste ${stats.bigNumbers} doble${stats.bigNumbers!==1?'s':''} bogey o peor. Con tu nivel, estos hoyos no son de mala técnica sino de decisiones: cuando estés fuera de posición, acepta el bogey y protege la tarjeta.</div>
-      </div>`:''}
-    </div>`;
-
-    // Practice plan
+    H+='</div>';
+    const ins={tee:getTeeInsight(stats),app:getAppInsight(stats),short:getShortInsight(stats),putt:getPuttInsight(stats)};
+    const weakest=sgCats.reduce(function(a,c2){return sg[c2.k]<sg[a.k]?c2:a;},sgCats[0]);
+    const strongest=sgCats.reduce(function(a,c2){return sg[c2.k]>sg[a.k]?c2:a;},sgCats[0]);
+    H+='<div class="group-header">Diagnóstico</div><div class="group">';
+    H+='<div class="coach-section"><div class="coach-tag"><div class="coach-color-dot" style="background:var(--red)"></div><div class="coach-tag-lbl">Zona a trabajar · '+weakest.l+'</div></div><div class="coach-body">'+ins[weakest.k].neg+'</div></div>';
+    H+='<div class="coach-section"><div class="coach-tag"><div class="coach-color-dot" style="background:var(--ak)"></div><div class="coach-tag-lbl">Punto fuerte · '+strongest.l+'</div></div><div class="coach-body">'+ins[strongest.k].pos+'</div></div>';
+    if(stats.bigNumbers>0){H+='<div class="coach-section"><div class="coach-tag"><div class="coach-color-dot" style="background:var(--yel)"></div><div class="coach-tag-lbl">Gestión de riesgo</div></div><div class="coach-body">Tuviste '+stats.bigNumbers+' doble'+(stats.bigNumbers!==1?'s':'')+' bogey o peor. Cuando estés fuera de posición, acepta el bogey y protege la tarjeta.</div></div>';}
+    H+='</div>';
     const practice=[];
-    if(stats.scramblePct!=null&&stats.scramblePct<50)practice.push({a:'Juego corto',t:'20 min',d:`Scrambling actual: ${stats.scramblePct}%. Chips con diferentes palos desde rough y fringe. Objetivo: 50%+ de saves.`});
-    if(stats.tp3>1)practice.push({a:'Putting — lag',t:'15 min',d:`${stats.tp3} three-putts. Desde 8-15 metros: objetivo zona de 60cm alrededor del hoyo. La velocidad es la variable clave.`});
-    if(stats.girPct!=null&&stats.girPct<40)practice.push({a:'Approach',t:'20 min',d:`GIR: ${stats.girPct}%. El GIR no mejora con más potencia, mejora con más precisión y mejor lectura del lie y el viento.`});
-    if(stats.noC>2)practice.push({a:'Rutina pre-shot',t:'Sin coste',d:`${stats.noC} golpes sin commit. Comprométete con el palo y el objetivo ANTES de entrar a la bola.`});
+    if(stats.scramblePct!=null&&stats.scramblePct<50)practice.push({a:'Juego corto',t:'20 min',d:'Scrambling: '+stats.scramblePct+'%. Chips desde rough y fringe. Objetivo 50%+'});
+    if(stats.tp3>1)practice.push({a:'Putting lag',t:'15 min',d:stats.tp3+' three-putts. Desde 8-15m: terminar a menos de 60cm del hoyo.'});
+    if(stats.girPct!=null&&stats.girPct<40)practice.push({a:'Approach',t:'20 min',d:'GIR: '+stats.girPct+'%. Precisión y selección de palo, no potencia.'});
+    if(stats.noC>2)practice.push({a:'Rutina pre-shot',t:'Sin coste',d:stats.noC+' golpes sin commit. Comprométete ANTES de entrar a la bola.'});
     if(practice.length){
-      H+=`<div class="group-header">Plan de práctica</div><div class="group">`;
-      practice.slice(0,3).forEach((p,i)=>{
-        H+=`<div class="practice-row">
-          <div class="practice-top">
-            <div class="practice-title2">${i+1}. ${p.a}</div>
-            <div class="practice-time2">${p.t}/día</div>
-          </div>
-          <div class="practice-body">${p.d}</div>
-        </div>`;
-      });
-      H+=`</div>`;
+      H+='<div class="group-header">Plan de práctica</div><div class="group">';
+      practice.slice(0,3).forEach(function(p,pi){H+='<div class="practice-row"><div class="practice-top"><div class="practice-title2">'+(pi+1)+'. '+p.a+'</div><div class="practice-time2">'+p.t+'/día</div></div><div class="practice-body">'+p.d+'</div></div>';});
+      H+='</div>';
     }
-
-    // Club distances
-    const clubs=Object.entries(stats.cm).sort((a,b)=>b[1].t-a[1].t);
-    const clubsWithDist=clubs.filter(([,d])=>d.dists&&d.dists.length>0);
-    if(clubsWithDist.length){
+    const clubsArr=Object.entries(stats.cm).sort(function(a,b){return b[1].t-a[1].t;});
+    const clubsWD=clubsArr.filter(function(x){return x[1].dists&&x[1].dists.length>0;});
+    if(clubsWD.length){
       const refs=AP==='ak'?AK_REFS:{};
-      const maxD=Math.max(...clubsWithDist.map(([,d])=>avgDist(d.dists)||0),...Object.values(refs).map(r=>r.carry||0),1);
-      H+=`<div class="group-header">Distancias por palo</div>
-      <div style="font-size:12px;color:var(--t3);padding:6px 16px;background:var(--white);border-bottom:1px solid var(--sep)">Ref = carry máximo · 25°C · llano · sin viento</div>
-      <div class="group">`;
-      const allC=[...new Set([...clubsWithDist.map(([cl])=>cl),...Object.keys(refs)])].sort((a,b)=>(refs[b]?.carry||0)-(refs[a]?.carry||0));
-      allC.forEach(cl=>{
-        const d=stats.cm[cl], avg=d?avgDist(d.dists):null, ref=refs[cl];
-        if(!avg&&!ref)return;
-        const avgW=avg?Math.round(avg/maxD*100):0, refW=ref?Math.round(ref.carry/maxD*100):0;
-        const diff=avg&&ref?avg-ref.carry:null;
-        let clr='var(--blu)';
-        if(cl==='Driver'||cl.includes('M'))clr='var(--pur)';
-        else if(cl.endsWith('H'))clr='var(--ak)';
-        else if(['PW','AW','GW','SW','LW'].includes(cl))clr='var(--yel)';
-        H+=`<div class="dist-anal-item">
-          <div class="dist-anal-club">${clubDisplay(cl)}</div>
-          <div style="flex:1;margin:0 10px">
-            <div style="position:relative;background:var(--bg);border-radius:5px;height:8px;overflow:hidden">
-              ${ref?`<div style="position:absolute;top:0;left:0;width:${refW}%;height:100%;background:var(--sep2);border-radius:5px"></div>`:''}
-              ${avg?`<div style="position:absolute;top:0;left:0;width:${avgW}%;height:100%;background:${clr};border-radius:5px;opacity:.85"></div>`:''}
-            </div>
-            <div style="display:flex;gap:12px;margin-top:4px">
-              ${avg?`<span style="font-size:12px;color:${clr}">━ Campo ${avg}m</span>`:'<span style="font-size:12px;color:var(--t4)">Sin datos campo</span>'}
-              ${ref?`<span style="font-size:12px;color:var(--t3)">━ Carry ref ${ref.carry}m</span>`:''}
-            </div>
-          </div>
-          <div style="font-size:14px;font-weight:600;color:${diff!=null?(diff>=-10?'var(--ak)':'var(--red)'):'var(--t3)'};text-align:right;white-space:nowrap">
-            ${avg?`${avg}m`:'—'}
-            ${diff!=null?`<br><span style="font-size:12px">${diff>0?'+':''}${diff}m</span>`:''}
-          </div>
-        </div>`;
+      const maxD=Math.max.apply(null,clubsWD.map(function(x){return avgDist(x[1].dists)||0;}).concat(Object.values(refs).map(function(r){return r.carry||0;})).concat([1]));
+      H+='<div class="group-header">Distancias por palo</div>';
+      H+='<div style="font-size:12px;color:var(--t3);padding:6px 16px;background:var(--white);border-bottom:1px solid var(--sep)">Ref = carry maximo sin viento</div><div class="group">';
+      const allC2=[...new Set(clubsWD.map(function(x){return x[0];}).concat(Object.keys(refs)))].sort(function(a,b){return (refs[b]?refs[b].carry:0)-(refs[a]?refs[a].carry:0);});
+      allC2.forEach(function(cl){
+        const d2=stats.cm[cl],avg2=d2?avgDist(d2.dists):null,ref2=refs[cl];
+        if(!avg2&&!ref2)return;
+        const aw=avg2?Math.round(avg2/maxD*100):0,rw=ref2?Math.round(ref2.carry/maxD*100):0;
+        const diff2=avg2&&ref2?Math.round(avg2-ref2.carry):null;
+        let clr2='var(--blu)';
+        if(cl==='Driver'||cl.includes('M'))clr2='var(--pur)';
+        else if(['PW','AW','GW','SW','LW'].includes(cl))clr2='var(--yel)';
+        H+='<div class="dist-anal-item"><div class="dist-anal-club">'+clubDisplay(cl)+'</div>';
+        H+='<div style="flex:1;margin:0 10px"><div style="position:relative;background:var(--bg);border-radius:5px;height:8px;overflow:hidden">';
+        if(ref2)H+='<div style="position:absolute;top:0;left:0;width:'+rw+'%;height:100%;background:var(--sep2);border-radius:5px"></div>';
+        if(avg2)H+='<div style="position:absolute;top:0;left:0;width:'+aw+'%;height:100%;background:'+clr2+';border-radius:5px;opacity:.85"></div>';
+        H+='</div><div style="display:flex;gap:12px;margin-top:4px">';
+        H+=avg2?('<span style="font-size:12px;color:'+clr2+'">━ '+avg2+'m</span>'):'<span style="font-size:12px;color:var(--t4)">Sin datos</span>';
+        if(ref2)H+='<span style="font-size:12px;color:var(--t3)">━ Ref '+ref2.carry+'m</span>';
+        H+='</div></div>';
+        H+='<div style="font-size:14px;font-weight:600;color:'+(diff2!=null?(diff2>=-10?'var(--ak)':'var(--red)'):'var(--t3)')+';text-align:right">';
+        H+=avg2?avg2+'m':'—';
+        if(diff2!=null)H+='<br><span style="font-size:12px">'+(diff2>0?'+':'')+diff2+'m</span>';
+        H+='</div></div>';
       });
-      H+=`</div>`;
+      H+='</div>';
     }
-
-    // Club usage
-    if(clubs.length){
-      const totalShots=clubs.reduce((a,[,d])=>a+d.t,0);
-      const maxSh=clubs[0][1].t;
-      H+=`<div class="group-header">Uso de palos</div><div class="group">`;
-      clubs.forEach(([cl,d])=>{
-        const pct=Math.round(d.t/totalShots*100), w=Math.round(d.t/maxSh*100);
-        const qPct=v=>d.t?Math.round(v/d.t*100):0;
-        let clr='var(--blu)';
-        if(cl==='Driver'||cl.includes('M'))clr='var(--pur)';
-        else if(cl.endsWith('H'))clr='var(--ak)';
-        else if(['PW','AW','GW','SW','LW'].includes(cl))clr='var(--yel)';
-        H+=`<div style="padding:13px 16px;border-bottom:1px solid var(--sep)">
-          <div style="display:flex;justify-content:space-between;margin-bottom:7px">
-            <span style="font-size:16px;font-weight:700">${clubDisplay(cl)}</span>
-            <span style="font-size:13px;color:var(--t3)">${d.t} golpes · ${pct}%</span>
-          </div>
-          <div style="background:var(--bg);border-radius:5px;height:7px;overflow:hidden;margin-bottom:5px">
-            <div style="width:${w}%;height:100%;background:${clr};border-radius:5px"></div>
-          </div>
-          <div style="display:flex;gap:10px">
-            <span style="font-size:13px;color:var(--ak)">✓ ${d.bueno} (${qPct(d.bueno)}%)</span>
-            <span style="font-size:13px;color:var(--yel)">~ ${d.ok} (${qPct(d.ok)}%)</span>
-            <span style="font-size:13px;color:var(--red)">✗ ${d.malo} (${qPct(d.malo)}%)</span>
-          </div>
-        </div>`;
+    if(clubsArr.length){
+      H+='<div class="group-header">Palos más usados</div><div class="group">';
+      const maxT=clubsArr[0][1].t;
+      clubsArr.slice(0,8).forEach(function(x2){
+        H+='<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--sep)"><div style="font-size:15px;font-weight:600;min-width:80px">'+clubDisplay(x2[0])+'</div>';
+        H+='<div style="flex:1;height:6px;background:var(--bg);border-radius:3px"><div style="height:100%;background:var(--blu);border-radius:3px;width:'+Math.round(x2[1].t/maxT*100)+'%"></div></div>';
+        H+='<div style="font-size:14px;color:var(--t3);min-width:30px;text-align:right">'+x2[1].t+'</div></div>';
       });
-      H+=`</div>`;
+      H+='</div>';
     }
   }
-
-  // ── EVOLUCIÓN ──
   else if(AT==='evo'){
     const allStats=rounds.map(r=>({r,s:cS(r.holes)})).filter(x=>x.s);
     if(allStats.length<2){
@@ -2130,7 +2091,7 @@ function render(){
       const mxS=Math.max(...allStats.map(x=>x.s.ts)), mnS=Math.min(...allStats.map(x=>x.s.ts));
       const first=allStats[0].s.ts, last=allStats[allStats.length-1].s.ts, diff=first-last;
       H+=`<div class="trend-row">
-        <div class="trend-num2" style="color:${diff>0?'var(--ak)':diff<0?'var(--red)':'var(--t3)'}">
+        <div class="trend-num2" style="color:${gc(diff>0,'var(--ak)',gc(diff<0,'var(--red)','var(--t3)'))}">
           ${diff>0?'↓':'↑'}${Math.abs(diff)}
         </div>
         <div class="trend-info">
@@ -2182,7 +2143,7 @@ function render(){
 
       H+=`<div class="group-header">Estadísticas acumuladas</div>
       <div class="par-grid">
-        <div class="par-cell"><div class="par-val" style="color:${avgScore<=officialPar?'var(--ak)':'var(--red)'}">${avgScore}</div><div class="par-lbl">Media</div><div class="par-sub">Objetivo ${Math.round(officialPar)}</div></div>
+        <div class="par-cell"><div class="par-val" style="color:${gc(avgScore<=officialPar,'var(--ak)','var(--red)')}">${avgScore}</div><div class="par-lbl">Media</div><div class="par-sub">Objetivo ${Math.round(officialPar)}</div></div>
         <div class="par-cell"><div class="par-val" style="color:var(--blu)">${avgPutts}</div><div class="par-lbl">Putts/H</div><div class="par-sub">Objetivo ≤2.0</div></div>
         <div class="par-cell"><div class="par-val" style="color:var(--pur)">${avgFW}%</div><div class="par-lbl">FW%</div><div class="par-sub">Media</div></div>
         <div class="par-cell"><div class="par-val" style="color:var(--yel)">${avgGIR}%</div><div class="par-lbl">GIR%</div><div class="par-sub">Media</div></div>
@@ -2236,11 +2197,11 @@ function render(){
           <div class="coach-body">${gir_analysis}</div>
         </div>
         <div class="coach-section">
-          <div class="coach-tag"><div class="coach-color-dot" style="background:${parseFloat(avgPutts)<=2.0?'var(--ak)':'var(--red)'}"></div><div class="coach-tag-lbl">Putting — ${avgPutts} p/h</div></div>
+          <div class="coach-tag"><div class="coach-color-dot" style="background:${gc(parseFloat(avgPutts)<=2.0,'var(--ak)','var(--red)')}"></div><div class="coach-tag-lbl">Putting — ${avgPutts} p/h</div></div>
           <div class="coach-body">${putt_analysis}</div>
         </div>
         <div class="coach-section">
-          <div class="coach-tag"><div class="coach-color-dot" style="background:${avgScr>=50?'var(--ak)':'var(--red)'}"></div><div class="coach-tag-lbl">Juego corto — ${avgScr}% scrambling</div></div>
+          <div class="coach-tag"><div class="coach-color-dot" style="background:${gc(avgScr>=50,'var(--ak)','var(--red)')}"></div><div class="coach-tag-lbl">Juego corto — ${avgScr}% scrambling</div></div>
           <div class="coach-body">${scr_analysis}</div>
         </div>
         <div class="coach-section" style="background:rgba(0,122,255,.04);border-radius:12px;padding:14px;margin-top:4px">
@@ -2251,7 +2212,9 @@ function render(){
     }
   }
 
-  document.getElementById('scroll').innerHTML=H;
+  // Añadir al scroll (el toggle ya está ahí)
+  const sc=document.getElementById('scroll');
+  if(sc) sc.innerHTML+=H;
 }
 
 function calcTrend(rounds){
@@ -2271,54 +2234,89 @@ function tab(t){
   if(t==='range'){renderRange();return;}
   render();
 }
-function selR(i){AR=i;EX.clear();render();}
+function selR(i){AR=i;EX.clear();analMode='round';render();}
 function togExp(h){EX.has(h)?EX.delete(h):EX.add(h);render();}
-function setPlayer(p){AP=p;AR=0;EX.clear();if(p!=='vs')AT='stats';render();}
+function setPlayer(p){AP=p;AR=0;EX.clear();analMode='round';if(p!=='vs')AT='stats';render();}
 
 // ─────────────────────────────────────────────────────
 // PLAY MODAL
 // ─────────────────────────────────────────────────────
 function openPlay(){
-  try {
-  pPl=AP==='mac'?'mac':'ak';sTv='amarillas';pSc=4;pPu=2;
-  Object.keys(pTog).forEach(k=>{pTog[k]=false;});
-  document.getElementById('pNotes').value='';
-  document.getElementById('pDate').value=new Date().toISOString().split('T')[0];
-  if(document.getElementById('pCourseSelect')){
-    document.getElementById('pCourseSelect').value='';
-    document.getElementById('pCourse').style.display='none';
-    document.getElementById('pCourse').value='';
-    document.getElementById('pCity').value='';
-  }
-  const hbEl=document.getElementById('hBox');if(hbEl)hbEl.className='hbox';
+  pPl=AP==='mac'?'mac':'ak';
   const isMac=pPl==='mac';
-  document.getElementById('s0t').textContent=isMac?'Nueva ronda — Macarena':'Nueva ronda — AK';
+  const ac=isMac?'mac':'ak';
+  const rounds=data[pPl].rounds;
+
+  // Título
+  document.getElementById('s0t').textContent=isMac?'Rondas — Macarena':'Rondas — AK';
+
+  // Mostrar rondas existentes para editar
+  const erDiv=document.getElementById('existingRounds');
+  if(rounds.length){
+    erDiv.style.display='';
+    erDiv.innerHTML='<div style="font-size:11px;font-weight:700;color:var(--t4);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">Abrir ronda existente</div>'+
+    rounds.map((r,i)=>{
+      const s=cS(r.holes);
+      const nH=r.holes?r.holes.length:0;
+      const emoji=r.tee==='iguana'?'🦎':r.tee==='falcon'?'🦅':r.tee==='rojas'?'🔴':'🟡';
+      const pct=Math.round(nH/18*100);
+      const statusColor=nH===18?'var(--ak)':nH>0?'var(--yel)':'var(--t4)';
+      const statusTxt=nH===18?'Completa':`${nH}/18 hoyos`;
+      return `<button onclick="openExistingRound(${i})" style="width:100%;background:var(--bg);border:1.5px solid var(--sep2);border-radius:14px;padding:14px 16px;margin-bottom:8px;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--t1)">${r.course}</div>
+          <div style="font-size:13px;color:var(--t3);margin-top:2px">${r.date} · ${emoji} ${r.tee}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;margin-left:12px">
+          <div style="font-size:22px;font-weight:800;color:var(--${ac})">${s?s.ts:'—'}</div>
+          <div style="font-size:12px;color:${statusColor};font-weight:600">${statusTxt}</div>
+        </div>
+      </button>`;
+    }).join('');
+  } else {
+    erDiv.style.display='none';
+  }
+
+  // Reset nueva ronda
+  pSc=4;pPu=2;sTv='amarillas';
+  Object.keys(pTog).forEach(k=>pTog[k]=false);
+  document.getElementById('pDate').value=new Date().toISOString().split('T')[0];
   document.getElementById('teeW').style.display='';
   const _tI=document.getElementById('teeI'),_tF=document.getElementById('teeF');
   if(_tI)_tI.style.display='none'; if(_tF)_tF.style.display='none';
-  sTv='amarillas';
   ['teeY','teeR','teeI','teeF'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('sel-y','sel-r');});
   const _tY=document.getElementById('teeY');if(_tY)_tY.classList.add('sel-y');
   const _cS=document.getElementById('pCourseSelect');if(_cS)_cS.value='';
   const _cIn=document.getElementById('pCourse');if(_cIn){_cIn.style.display='none';_cIn.value='';}
   const _cCi=document.getElementById('pCity');if(_cCi)_cCi.value='';
-  document.getElementById('s0btn').className='btn-main '+(isMac?'mac':'ak');
-  document.getElementById('saveBtn').className='btn-main '+(isMac?'mac':'ak');
-  const rounds=data[pPl].rounds;
-  const sel=document.getElementById('pRS');
-  sel.innerHTML=`<option value="new">+ Nueva ronda</option>`;
-  rounds.forEach((r,i)=>sel.innerHTML+=`<option value="${i}">${r.date} — ${r.course} (${r.tee==='rojas'?'🔴 Rojas':'🟡 Amarillas'})</option>`);
-  onRS();
+  document.getElementById('s0btn').className='btnp '+ac;
+  document.getElementById('saveBtn').className='btnp '+ac;
   document.getElementById('step0').style.display='';
   document.getElementById('step1').style.display='none';
   document.getElementById('playOv').classList.add('open');
-  } catch(e){ console.error('openPlay error:',e.message, e.stack); alert('Error al abrir: '+e.message); }
 }
-function onRS(){document.getElementById('nrf').style.display=document.getElementById('pRS').value==='new'?'':'none';}
+
+function openExistingRound(idx){
+  pRI=idx; pH=1;
+  const round=data[pPl].rounds[pRI];
+  // Si hay hoyos incompletos, ir al primero sin completar
+  const done=new Set(round.holes.map(h=>h.h));
+  for(let i=1;i<=18;i++){if(!done.has(i)){pH=i;break;}}
+  document.getElementById('step0').style.display='none';
+  document.getElementById('step1').style.display='';
+  loadHole();
+}
+function onRS(){const nrf=document.getElementById('nrf');if(nrf)nrf.style.display='';}
 function selTee(t){
   sTv=t;
-  document.getElementById('teeY').className='topt'+(t==='amarillas'?' sel-y':'');
-  document.getElementById('teeR').className='topt'+(t==='rojas'?' sel-r':'');
+  const tMap={amarillas:'teeY',rojas:'teeR',iguana:'teeI',falcon:'teeF'};
+  ['teeY','teeR','teeI','teeF'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.classList.remove('sel-y','sel-r');
+  });
+  const active=document.getElementById(tMap[t]);
+  if(active) active.classList.add(t==='rojas'?'sel-r':'sel-y');
 }
 // ─────────────────────────────────────────
 // SHOT ENTRY ESTRUCTURADO
@@ -2447,22 +2445,19 @@ function onCourseSelect(){
 }
 
 function goPlay(){
-  const rsSel=document.getElementById('pRS').value;
-  if(rsSel==='new'){
-    const cSel=document.getElementById('pCourseSelect');
-    const cVal=cSel?cSel.value:'';
-    const cMap={faisanera:'La Faisanera Golf',valle_del_este:'Valle del Este Golf',aguilon:'Aguilon Golf'};
-    const course=cMap[cVal]||document.getElementById('pCourse').value.trim()||'Campo';
-    const date=document.getElementById('pDate').value||new Date().toISOString().split('T')[0];
-    const city=document.getElementById('pCity').value.trim();
-    const tee=sTv||'amarillas';
-    const cid=(cVal&&cVal!=='otro')?cVal:'custom_'+Date.now();
-    data[pPl].rounds.push({id:'r'+Date.now(),player:pPl,date,course,courseId:cid,city,tee,holes:[],customPars:{}});
-    pRI=data[pPl].rounds.length-1; save();
-  } else {
-    pRI=parseInt(rsSel);
-  }
+  // Solo crea rondas nuevas — las existentes se abren con openExistingRound()
+  const cSel=document.getElementById('pCourseSelect');
+  const cVal=cSel?cSel.value:'';
+  const cMap={faisanera:'La Faisanera Golf',valle_del_este:'Valle del Este Golf',aguilon:'Aguilon Golf'};
+  const course=cMap[cVal]||document.getElementById('pCourse').value.trim()||'Campo';
+  const date=document.getElementById('pDate').value||new Date().toISOString().split('T')[0];
+  const city=document.getElementById('pCity').value.trim();
+  const tee=sTv||'amarillas';
+  const cid=(cVal&&cVal!=='otro')?cVal:'custom_'+Date.now();
+  data[pPl].rounds.push({id:'r'+Date.now(),player:pPl,date,course,courseId:cid,city,tee,holes:[],customPars:{}});
+  pRI=data[pPl].rounds.length-1;
   AR=pRI; pH=1;
+  save();
   document.getElementById('step0').style.display='none';
   document.getElementById('step1').style.display='';
   loadHole();
@@ -2477,6 +2472,7 @@ function loadHole(){
   document.getElementById('phN').style.color=ac;
   document.getElementById('phD').textContent=ch.m?`${ch.m}m`:'—';
   const customPar=round.customPars&&round.customPars[pH]!=null?round.customPars[pH]:ch.par;
+  pCurPar=customPar;
   document.getElementById('phP').textContent=`Par ${customPar}`;
   document.getElementById('phHcp').textContent=ch.hcp?`HCP ${ch.hcp} · ${tee==='rojas'?'🔴':'🟡'}`:'';
   pSc=customPar;pPu=2;
@@ -2519,8 +2515,8 @@ function loadHole(){
   // Actualizar resumen visual
   const sumLbl=document.getElementById('holeSumLbl');
   const sumSc=document.getElementById('holeSumScore');
-  if(sumLbl) sumLbl.textContent='Hoyo '+pH+' · Par '+customPar;
-  if(sumSc){ sumSc.textContent=pSc; sumSc.style.color=pSc<customPar?'var(--ak)':pSc===customPar?'var(--blu)':pSc===customPar+1?'var(--yel)':'var(--red)'; }
+  if(sumLbl) sumLbl.textContent='Hoyo '+pH+' · Par '+pCurPar;
+  if(sumSc){ sumSc.textContent=pSc; sumSc.style.color=pSc<pCurPar?'var(--ak)':pSc===pCurPar?'var(--blu)':pSc===pCurPar+1?'var(--yel)':'var(--red)'; }
 }
 function adjPar(d){
   const round=data[pPl].rounds[pRI];
@@ -2529,6 +2525,7 @@ function adjPar(d){
   const current=round.customPars[pH]!=null?round.customPars[pH]:ch.par;
   const newPar=Math.max(3,Math.min(5,current+d));
   round.customPars[pH]=newPar;
+  pCurPar=newPar;
   document.getElementById('phP').textContent=`Par ${newPar}`;
   // Actualizar score default si no se ha tocado
   if(pSc===current) { pSc=newPar; document.getElementById('scV').textContent=pSc; }
@@ -2545,8 +2542,8 @@ function step(f,d){
   // Actualizar resumen visual
   const sumLbl=document.getElementById('holeSumLbl');
   const sumSc=document.getElementById('holeSumScore');
-  if(sumLbl) sumLbl.textContent='Hoyo '+pH+' · Par '+customPar;
-  if(sumSc){ sumSc.textContent=pSc; sumSc.style.color=pSc<customPar?'var(--ak)':pSc===customPar?'var(--blu)':pSc===customPar+1?'var(--yel)':'var(--red)'; }
+  if(sumLbl) sumLbl.textContent='Hoyo '+pH+' · Par '+pCurPar;
+  if(sumSc){ sumSc.textContent=pSc; sumSc.style.color=pSc<pCurPar?'var(--ak)':pSc===pCurPar?'var(--blu)':pSc===pCurPar+1?'var(--yel)':'var(--red)'; }
 }
 function updateSU(){
   const round=data[pPl].rounds[pRI];if(!round)return;
@@ -2561,6 +2558,217 @@ function tog(id){
   pTog[id]=!pTog[id];
   document.getElementById(id).className='tog'+(pTog[id]?(isMac?' mon':' on'):'');
 }
+function setAnalMode(m){
+  analMode=m;
+  AT='analisis';
+  render();
+}
+function setAnalRound(){setAnalMode('round');}
+function setAnalAll(){setAnalMode('all');}
+
+function renderAnalisisAcumulado(rounds){
+  const allStats=rounds.map(r=>cS(r.holes)).filter(Boolean);
+  if(!allStats.length){document.getElementById('scroll').innerHTML='<div class="empty2">Sin rondas completas.</div>';return;}
+  const n=allStats.length;
+  const avg=fn=>Math.round(allStats.reduce((a,s)=>a+(fn(s)||0),0)/n*10)/10;
+  const avgPct=fn=>{const valid=allStats.filter(s=>fn(s)!=null);return valid.length?Math.round(valid.reduce((a,s)=>a+fn(s),0)/valid.length):null;};
+
+  const avgScore=avg(s=>s.ts);
+  const avgPutts=avg(s=>parseFloat(s.avgP)||0);
+  const avgFW=avgPct(s=>s.fwPct);
+  const avgGIR=avgPct(s=>s.girPct);
+  const avgScr=avgPct(s=>s.scramblePct);
+  const tot3p=allStats.reduce((a,s)=>a+(s.tp3||0),0);
+  const totBk=allStats.reduce((a,s)=>a+(s.bkCt||0),0);
+  const totBkS=allStats.reduce((a,s)=>a+(s.bkSaves||0),0);
+  const totChipS=allStats.reduce((a,s)=>a+(s.chipSaves||0),0);
+  const totBird=allStats.reduce((a,s)=>a+(s.bir||0),0);
+  const totPar=allStats.reduce((a,s)=>a+(s.par||0),0);
+  const totBog=allStats.reduce((a,s)=>a+(s.bog||0),0);
+  const totDbl=allStats.reduce((a,s)=>a+(s.dbl||0),0);
+  const totBig=allStats.reduce((a,s)=>a+(s.bigNumbers||0),0);
+  const offHcp=AP==='ak'?11.5:6.5;
+  const expectedScore=71+offHcp;
+
+  // Acumular SG
+  const avgSG={};
+  ['tee','app','short','putt','total'].forEach(k=>{
+    const valid=allStats.filter(s=>s.sg&&s.sg[k]!=null);
+    avgSG[k]=valid.length?Math.round(valid.reduce((a,s)=>a+s.sg[k],0)/valid.length*10)/10:0;
+  });
+
+  // Acumular distancias por palo
+  const cumCM={};
+  allStats.forEach(s=>{
+    if(!s.cm)return;
+    Object.entries(s.cm).forEach(([cl,d])=>{
+      if(!cumCM[cl])cumCM[cl]={t:0,dists:[]};
+      cumCM[cl].t+=d.t||0;
+      cumCM[cl].dists.push(...(d.dists||[]));
+    });
+  });
+
+  const ac=AP==='ak'?'var(--ak)':'var(--mac)';
+  let H='';
+
+  // Hero SG acumulado
+  H+=`<div style="padding:20px 16px 8px;background:var(--white);border-bottom:1px solid var(--sep)">
+    <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">
+      <div style="font-size:52px;font-weight:800;letter-spacing:-2px;color:${sgC(avgSG.total)}">${avgSG.total>0?'+':''}${avgSG.total}</div>
+      <div style="font-size:16px;color:var(--t3)">SG promedio · ${n} rondas</div>
+    </div>`;
+  ['tee','app','short','putt'].forEach(k=>{
+    const l={tee:'Salida',app:'Approach',short:'Juego corto',putt:'Putting'}[k];
+    const v=avgSG[k], pct=Math.min(100,Math.abs(v)/2*100);
+    H+=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+      <div style="font-size:16px;color:var(--t2);min-width:100px">${l}</div>
+      <div style="flex:1;height:6px;background:var(--bg);border-radius:3px;position:relative">
+        <div style="position:absolute;top:-5px;bottom:-5px;left:50%;width:1px;background:var(--sep2)"></div>
+        <div style="position:absolute;top:0;height:6px;border-radius:3px;background:${sgC(v)};width:${pct/2}%;${v>=0?'left:50%':'right:50%'}"></div>
+      </div>
+      <div style="font-size:16px;font-weight:700;min-width:40px;text-align:right;color:${sgC(v)}">${v>0?'+':''}${v}</div>
+    </div>`;
+  });
+  H+=`</div>`;
+
+  // Stats acumuladas
+  H+=`<div class="group-header">Medias acumuladas (${n} rondas)</div>
+  <div class="par-grid">
+    <div class="par-cell">
+      <div class="par-val" style="color:${avgScore<=expectedScore?ac:'var(--red)'}">${avgScore}</div>
+      <div class="par-lbl">Media</div>
+      <div class="par-sub">Ref: ${Math.round(expectedScore)}</div>
+    </div>
+    <div class="par-cell">
+      <div class="par-val" style="color:${avgPutts<=2.0?ac:'var(--red)'}">${avgPutts}</div>
+      <div class="par-lbl">Putts/H</div>
+      <div class="par-sub">Obj: ≤2.0</div>
+    </div>
+    <div class="par-cell">
+      <div class="par-val" style="color:${avgFW>=60?ac:'var(--red)'}">${avgFW!=null?avgFW+'%':'—'}</div>
+      <div class="par-lbl">FW%</div>
+      <div class="par-sub">Obj: ≥60%</div>
+    </div>
+    <div class="par-cell">
+      <div class="par-val" style="color:${avgGIR>=44?ac:'var(--red)'}">${avgGIR!=null?avgGIR+'%':'—'}</div>
+      <div class="par-lbl">GIR%</div>
+      <div class="par-sub">Obj: ≥44%</div>
+    </div>
+  </div>`;
+
+  // Totales
+  H+=`<div class="group-header">Totales acumulados</div>
+  <div class="par-grid">
+    <div class="par-cell">
+      <div class="par-val" style="color:var(--ak)">${totBird}</div>
+      <div class="par-lbl">Birdies</div>
+      <div class="par-sub">${(totBird/n).toFixed(1)}/ronda</div>
+    </div>
+    <div class="par-cell">
+      <div class="par-val" style="color:var(--blu)">${totPar}</div>
+      <div class="par-lbl">Pares</div>
+      <div class="par-sub">${(totPar/n).toFixed(1)}/ronda</div>
+    </div>
+    <div class="par-cell">
+      <div class="par-val" style="color:var(--yel)">${totBog}</div>
+      <div class="par-lbl">Bogeys</div>
+      <div class="par-sub">${(totBog/n).toFixed(1)}/ronda</div>
+    </div>
+    <div class="par-cell">
+      <div class="par-val" style="color:var(--red)">${totBig}</div>
+      <div class="par-lbl">+2 o más</div>
+      <div class="par-sub">${(totBig/n).toFixed(1)}/ronda</div>
+    </div>
+  </div>`;
+
+  // Bunkers y juego corto acumulado
+  const bkPct=totBk?Math.round(totBkS/totBk*100):null;
+  H+=`<div class="group-header">Juego corto acumulado</div>
+  <div class="group">
+    ${avgScr!=null?`<div class="bignum-row" style="border-left:3px solid var(--yel)">
+      <div class="bignum" style="color:${avgScr>=50?ac:'var(--red)'}">${avgScr}%</div>
+      <div class="bignum-info">
+        <div class="bignum-lbl">Scrambling medio</div>
+        <div class="bignum-sub">Objetivo ≥50% · ${n} rondas</div>
+      </div>
+    </div>`:''}
+    ${bkPct!=null?`<div class="bignum-row" style="border-left:3px solid var(--yel)">
+      <div class="bignum" style="color:${bkPct>=50?ac:'var(--red)'}">${bkPct}%</div>
+      <div class="bignum-info">
+        <div class="bignum-lbl">Bunker saves</div>
+        <div class="bignum-sub">${totBkS} de ${totBk} bunkers · ${tot3p} three-putts totales</div>
+        ${totChipS>0?`<div style="margin-top:4px;font-size:14px;color:${ac}">🏌️ ${totChipS} chip saves totales</div>`:''}
+      </div>
+    </div>`:''}
+  </div>`;
+
+  // Diagnóstico acumulado
+  const weakKey=['tee','app','short','putt'].reduce((a,k)=>avgSG[k]<avgSG[a]?k:a,'tee');
+  const weakLbl={tee:'Salida',app:'Approach',short:'Juego corto',putt:'Putting'}[weakKey];
+  const strongKey=['tee','app','short','putt'].reduce((a,k)=>avgSG[k]>avgSG[a]?k:a,'tee');
+  const strongLbl={tee:'Salida',app:'Approach',short:'Juego corto',putt:'Putting'}[strongKey];
+
+  const diagMap={
+    tee:fw=>`${n} rondas de FW promedio: ${fw!=null?fw+'%':'sin datos'}. ${fw!=null&&fw<60?'Debajo del objetivo 60%. El driver sigue siendo la principal pérdida de posición.':'FW sólido — la salida te da plataforma de ataque.'}`,
+    app:gir=>`GIR medio: ${gir!=null?gir+'%':'sin datos'}. ${gir!=null&&gir<44?`Debajo del objetivo 44%. Cada punto de GIR vale ~0.15 golpes por ronda — subir de ${gir}% a 50% son 2 golpes menos.`:'GIR excelente — llegas con opciones de birdie.'}`,
+    short:sc=>`Scrambling medio: ${sc!=null?sc+'%':'sin datos'}. ${sc!=null&&sc<50?`Por debajo del 50% objetivo. Con ${Math.round(n*18*(1-avgGIR/100))} greens fallados en ${n} rondas, el juego corto es tu mayor palanca.`:'Scrambling sólido — salvas rondas que otros perderían.'}`,
+    putt:p=>`${p} putts/hoyo de media. ${tot3p} three-putts en ${n} rondas. ${tot3p>n?'Los 3-putts aparecen más de una vez por ronda — trabaja la velocidad desde 8m+.':'Buen control de distancia en putting.'}`,
+  };
+
+  H+=`<div class="group-header">Diagnóstico acumulado</div>
+  <div class="group">
+    <div class="coach-section">
+      <div class="coach-tag"><div class="coach-color-dot" style="background:var(--red)"></div><div class="coach-tag-lbl">Área más débil · ${weakLbl}</div></div>
+      <div class="coach-body">${diagMap[weakKey](weakKey==='tee'?avgFW:weakKey==='app'?avgGIR:weakKey==='short'?avgScr:avgPutts)}</div>
+    </div>
+    <div class="coach-section">
+      <div class="coach-tag"><div class="coach-color-dot" style="background:${ac}"></div><div class="coach-tag-lbl">Punto más fuerte · ${strongLbl}</div></div>
+      <div class="coach-body">${diagMap[strongKey](strongKey==='tee'?avgFW:strongKey==='app'?avgGIR:strongKey==='short'?avgScr:avgPutts)}</div>
+    </div>
+    ${totBig>0?`<div class="coach-section">
+      <div class="coach-tag"><div class="coach-color-dot" style="background:var(--yel)"></div><div class="coach-tag-lbl">Gestión de riesgo</div></div>
+      <div class="coach-body">${totBig} dobles bogey o peor en ${n} rondas (${(totBig/n).toFixed(1)}/ronda). Con tu HCP, el objetivo es ≤1 doble por ronda. La mayoría vienen de un drive fuera seguido de una decisión agresiva.</div>
+    </div>`:''}
+  </div>`;
+
+  // Distancias acumuladas por palo
+  const refs=AP==='ak'?AK_REFS:{};
+  const clubsWithDist=Object.entries(cumCM).filter(([,d])=>d.dists&&d.dists.length>0);
+  if(clubsWithDist.length){
+    const maxD=Math.max(...clubsWithDist.map(([,d])=>avgDist(d.dists)||0),...Object.values(refs).map(r=>r.carry||0),1);
+    H+=`<div class="group-header">Distancias promedio (${n} rondas)</div>
+    <div style="font-size:12px;color:var(--t3);padding:6px 16px;background:var(--white);border-bottom:1px solid var(--sep)">Carry promedio en campo vs carry referencia</div>
+    <div class="group">`;
+    const clubOrder=['Driver','3M','5M','5I','6I','7I','8I','9I','PW','AW','SW'];
+    clubOrder.forEach(cl=>{
+      const d=cumCM[cl]; const avg=d?avgDist(d.dists):null; const ref=refs[cl];
+      if(!avg&&!ref)return;
+      const avgW=avg?Math.round(avg/maxD*100):0, refW=ref?Math.round(ref.carry/maxD*100):0;
+      const diff=avg&&ref?avg-ref.carry:null;
+      H+=`<div class="dist-anal-item">
+        <div class="dist-anal-club">${clubDisplay(cl)}</div>
+        <div style="flex:1;margin:0 10px">
+          <div style="position:relative;background:var(--bg);border-radius:5px;height:8px;overflow:hidden">
+            ${ref?`<div style="position:absolute;top:0;left:0;width:${refW}%;height:100%;background:var(--sep2);border-radius:5px"></div>`:''}
+            ${avg?`<div style="position:absolute;top:0;left:0;width:${avgW}%;height:100%;background:var(--blu);border-radius:5px;opacity:.85"></div>`:''}
+          </div>
+          <div style="display:flex;gap:12px;margin-top:4px">
+            ${avg?`<span style="font-size:12px;color:var(--blu)">━ Campo ${avg}m (${d.dists.length} golpes)</span>`:'<span style="font-size:12px;color:var(--t4)">Sin datos</span>'}
+            ${ref?`<span style="font-size:12px;color:var(--t3)">━ Ref ${ref.carry}m</span>`:''}
+          </div>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:${diff!=null?(diff>=-10?ac:'var(--red)'):'var(--t3)'};text-align:right;white-space:nowrap">
+          ${avg?avg+'m':'—'}${diff!=null?`<br><span style="font-size:12px">${diff>0?'+':''}${diff}m</span>`:''}
+        </div>
+      </div>`;
+    });
+    H+=`</div>`;
+  }
+
+  // Añadir al scroll (el toggle ya está ahí)
+  const sc=document.getElementById('scroll');
+  if(sc) sc.innerHTML+=H;
+}
 function toggleHint(){
   const b=document.getElementById('hBox');
   if(b) b.className=b.className.includes('open')?'hbox':'hbox open';
@@ -2570,6 +2778,7 @@ function saveHole(){
   const round=data[pPl].rounds[pRI];
   const ch=getCH(round.courseId,round.tee,pH);
   const customPar=round.customPars&&round.customPars[pH]!=null?round.customPars[pH]:ch.par;
+  pCurPar=customPar;
   const shots=typeof getShotsFromEntries==='function'?getShotsFromEntries():[];
   const hole={
     h:pH,par:customPar,score:pSc,putts:pPu,
@@ -2635,6 +2844,15 @@ try {
   document.body.innerHTML = '<div style="padding:20px;font-family:monospace;font-size:14px;color:red">' +
     '<h2>Error de inicio</h2><pre>' + (e.message||e) + '\n\n' + (e.stack||'') + '</pre></div>';
 }
+
+// Capturar errores no capturados
+window.onerror = function(msg, src, line, col, err) {
+  const div = document.createElement('div');
+  div.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#1a0000;color:#ff6b6b;font-family:monospace;font-size:12px;padding:10px;z-index:99999;max-height:120px;overflow:auto';
+  div.textContent = 'L' + line + ':' + col + ' — ' + msg;
+  document.body.appendChild(div);
+  return false;
+};
 
 </script>
 </body>
