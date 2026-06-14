@@ -1505,6 +1505,8 @@ function load(){
     if(!data.mac.range) data.mac.range=[];
   }
   else{data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2, AK_VALLE_IGUANA2]},mac:{rounds:[MAC_VALLE_IGUANA, MAC_AGUILON]}};save();}
+  // Siempre mostrar la última ronda
+  if(data[AP]&&data[AP].rounds&&data[AP].rounds.length>0) AR=data[AP].rounds.length-1;
 }
 function save(){
   try{localStorage.setItem('gtkow7',JSON.stringify(data));}catch(e){}
@@ -2381,7 +2383,7 @@ function setAnalRound(){subTab('stats');}
 function setAnalAll(){tab('acumulado');}
 function selR(i){AR=i;EX.clear();analMode='round';subAT='stats';AT='ronda';render();}
 function togExp(h){EX.has(h)?EX.delete(h):EX.add(h);render();}
-function setPlayer(p){AP=p;AR=0;EX.clear();analMode='round';subAT='stats';if(p!=='vs'){AT='ronda';}const sr=document.getElementById('subTabsRonda');if(sr)sr.style.display='flex';render();}
+function setPlayer(p){AP=p;AR=data[p]&&data[p].rounds?Math.max(0,data[p].rounds.length-1):0;EX.clear();analMode='round';subAT='stats';if(p!=='vs'){AT='ronda';}const sr=document.getElementById('subTabsRonda');if(sr)sr.style.display='flex';render();}
 
 // ─────────────────────────────────────────────────────
 // PLAY MODAL
