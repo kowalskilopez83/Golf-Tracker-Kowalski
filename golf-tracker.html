@@ -432,12 +432,16 @@ input,select,textarea,button{font-family:inherit}
   </div>
   <div id="rcWrap" style="display:none"><div class="rchips" id="rc"></div></div>
   <div class="tabs" id="tabs">
-    <button class="tabB on" onclick="tab('stats')">Stats</button>
+    <button class="tabB on" onclick="tab('ronda')">Ronda</button>
     <button class="tabB" onclick="tab('card')">Tarjeta</button>
-    <button class="tabB" onclick="tab('analisis')">Análisis</button>
-    <button class="tabB" onclick="tab('evo')">Evolución</button>
+    <button class="tabB" onclick="tab('acumulado')">Análisis</button>
     <button class="tabB" onclick="tab('range')" id="tabRange">Range</button>
     <button class="tabB tab-new" id="tabNew" onclick="openPlay()">＋</button>
+  </div>
+  <!-- Sub-tabs de Ronda -->
+  <div id="subTabsRonda" style="display:flex;background:var(--bg);border-bottom:1px solid var(--sep);padding:4px 12px;gap:4px">
+    <button id="stStats" onclick="subTab('stats')" style="flex:1;padding:8px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;background:var(--white);color:var(--t1);box-shadow:0 1px 3px rgba(0,0,0,.08)">Stats</button>
+    <button id="stAnalisis" onclick="subTab('analisis')" style="flex:1;padding:8px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;background:transparent;color:var(--t3)">Análisis</button>
   </div>
 </div>
 
@@ -1244,6 +1248,85 @@ function deleteRound(idx){
   );
 }
 
+function renderAcumulado(){
+  const rounds=data[AP].rounds;
+  const allStats=rounds.map(function(r){return {r:r,s:cS(r.holes)};}).filter(function(x){return x.s;});
+  let H='';
+
+  // Actualizar tab activo
+  document.querySelectorAll('.tabB:not(.tab-new)').forEach(function(b){
+    if(b.id&&b.id.startsWith('st')) return;
+    var oc=b.getAttribute('onclick')||'';
+    b.classList.toggle('on', oc.includes("'acumulado'"));
+  });
+  const subRow=document.getElementById('subTabsRonda');
+  if(subRow) subRow.style.display='none';
+
+  if(allStats.length<2){
+    H='<div class="empty2"><span class="empty2-ico">📈</span><p>Necesitas 2+ rondas completas para ver el acumulado.</p></div>';
+    document.getElementById('scroll').innerHTML=H;
+    return;
+  }
+
+  // Evolución — tendencia
+  const mxS=Math.max.apply(null,allStats.map(function(x){return x.s.ts;}));
+  const mnS=Math.min.apply(null,allStats.map(function(x){return x.s.ts;}));
+  const first=allStats[0].s.ts, last=allStats[allStats.length-1].s.ts, diff=first-last;
+  const ac=AP==='ak'?'var(--ak)':'var(--mac)';
+
+  H+='<div class="trend-row">';
+  H+='<div class="trend-num2" style="color:'+(diff>0?'var(--ak)':diff<0?'var(--red)':'var(--t3)')+'">'+( diff>0?'↓':'↑')+Math.abs(diff)+'</div>';
+  H+='<div class="trend-info">';
+  H+='<div style="font-size:16px;font-weight:600;color:var(--t1)">'+(diff>0?'Mejoraste '+diff+' golpes':'Subiste '+Math.abs(diff)+' golpes')+' en '+allStats.length+' rondas</div>';
+  H+='<div style="font-size:13px;color:var(--t3)">Score mas bajo: '+mnS+' · Mas alto: '+mxS+'</div>';
+  H+='</div></div>';
+
+  // Gráfico de barras evolución
+  H+='<div style="background:var(--white);border-bottom:1px solid var(--sep);padding:16px">';
+  H+='<div style="display:flex;align-items:flex-end;gap:6px;height:80px">';
+  allStats.forEach(function(x){
+    var pct=Math.round((x.s.ts-mnS+2)/(mxS-mnS+4)*100);
+    var clr=x.s.ts<=mnS?ac:x.s.ts>=mxS?'var(--red)':'var(--sep2)';
+    H+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">';
+    H+='<div style="font-size:11px;font-weight:700;color:var(--t3)">'+x.s.ts+'</div>';
+    H+='<div style="width:100%;height:'+pct+'%;background:'+clr+';border-radius:4px 4px 0 0;min-height:8px"></div>';
+    H+='</div>';
+  });
+  H+='</div></div>';
+
+  // Historial rondas
+  document.getElementById('scroll').innerHTML=H;
+
+  // Añadir análisis acumulado debajo
+  renderAnalisisAcumulado(rounds);
+
+  // Historial de rondas al final
+  var H2='';
+  H2+='<div class="group-header">Todas las rondas ('+allStats.length+')</div><div class="group">';
+  allStats.forEach(function(x){
+    var s=x.s, r=x.r;
+    var emoji=r.tee==='iguana'?'🦎':r.tee==='falcon'?'🦅':r.tee==='rojas'?'🔴':'🟡';
+    H2+='<div style="display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-bottom:1px solid var(--sep)">';
+    H2+='<div>';
+    H2+='<div style="font-size:15px;font-weight:600;color:var(--t1)">'+r.course+' '+emoji+'</div>';
+    H2+='<div style="font-size:12px;color:var(--t3);margin-top:2px">'+r.date+(r.tournament?' · Torneo':'')+'</div>';
+    H2+='<div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">';
+    if(s.bir>0) H2+='<span style="font-size:12px;color:var(--ak);font-weight:600">🦅 '+s.bir+' birdie'+(s.bir>1?'s':'')+'</span>';
+    if(s.avgP) H2+='<span style="font-size:12px;color:var(--t3)">'+s.avgP+' p/h</span>';
+    if(s.fwPct!=null) H2+='<span style="font-size:12px;color:var(--t3)">'+s.fwPct+'% FW</span>';
+    if(s.girPct!=null) H2+='<span style="font-size:12px;color:var(--t3)">'+s.girPct+'% GIR</span>';
+    H2+='</div></div>';
+    H2+='<div style="text-align:right;flex-shrink:0;margin-left:12px">';
+    H2+='<div style="font-size:32px;font-weight:800;color:'+ac+'">'+s.ts+'</div>';
+    H2+='<div style="font-size:13px;color:var(--t3)">'+(s.diff>=0?'+':'')+s.diff+'</div>';
+    H2+='</div></div>';
+  });
+  H2+='</div>';
+  var sc2=document.getElementById('scroll');
+  if(sc2) sc2.innerHTML+=H2;
+}
+
+
 function renderVS(){
   const akR=data.ak.rounds, macR=data.mac.rounds;
   const hAK=eH(akR), hMAC=eH(macR);
@@ -1444,6 +1527,9 @@ function cS(holes){
   const gH=holes.filter(h=>h.gir!=null),gOk=gH.filter(h=>h.gir).length;
   const bkH=holes.filter(h=>h.bk),bkS=bkH.filter(h=>h.bs).length;
   const tp3=pH2.filter(h=>h.putts>=3).length;
+  const op1=pH2.filter(h=>h.putts===1).length;
+  const op2=pH2.filter(h=>h.putts===2).length;
+  const totalPutts=tpu;
   const bir=holes.filter(h=>h.score<h.par).length;
   const par=holes.filter(h=>h.score===h.par).length;
   const bog=holes.filter(h=>h.score===h.par+1).length;
@@ -1467,6 +1553,39 @@ function cS(holes){
   // BIRDIE CONVERSIONS: GIR holes where we made birdie or better
   const girHoles=holes.filter(h=>h.gir===true);
   const birConv=girHoles.length?Math.round(girHoles.filter(h=>h.score<h.par).length/girHoles.length*100):null;
+
+  // ANÁLISIS POR CATEGORÍA DE PALO
+  const longIrons   = ['5I','6I','7I','8I'];
+  const shortIrons  = ['9I','PW','AW','SW']; // SW hasta ~80m = approach
+  const wedges      = ['SW','PW','AW'];
+  const ironStats   = {long:{shots:0,gir:0,miss:0}, short:{shots:0,gir:0,miss:0}, wedge:{shots:0,chip:0}};
+
+  holes.forEach(h=>{
+    if(!h.shots||!h.shots.length) return;
+    const lastShot = h.shots[h.shots.length-1];
+    const isPutt = s=>s.c==='Putter';
+    const nonPutts = h.shots.filter(s=>!isPutt(s));
+    nonPutts.forEach((s,idx)=>{
+      const isLast = idx===nonPutts.length-1; // último golpe antes de putts = approach/chip
+      if(longIrons.includes(s.c)){
+        ironStats.long.shots++;
+        if(isLast && h.gir) ironStats.long.gir++;
+        if(isLast && !h.gir) ironStats.long.miss++;
+      }
+      if(shortIrons.includes(s.c)){
+        ironStats.short.shots++;
+        if(isLast && h.gir) ironStats.short.gir++;
+        if(isLast && !h.gir) ironStats.short.miss++;
+      }
+      if(wedges.includes(s.c)){
+        // Si hay más de 2 golpes no-putt antes, es chip/pitch
+        if(nonPutts.length>=3 && idx===nonPutts.length-1){
+          ironStats.wedge.chip++;
+        }
+        ironStats.wedge.shots++;
+      }
+    });
+  });
 
   // PAR 3 / PAR 4 / PAR 5 performance
   const byPar={};
@@ -1504,7 +1623,7 @@ function cS(holes){
     girPct:gH.length?Math.round(gOk/gH.length*100):null,
     bkCt:bkH.length,bkPct:bkH.length?Math.round(bkS/bkH.length*100):0,bkSaves:bkS,
     chipSaves:holes.filter(h=>h.cs).length,
-    tp3,bir,par,bog,dbl,tri,
+    tp3,op1,op2,totalPutts,bir,par,bog,dbl,tri,ironStats,
     scramblePct,scrambleSaves,missGIR:missGIR.length,
     upDownOpp,upDownMade,
     bigNumbers:bigNumbers.length,strokesLostBig,
@@ -1689,7 +1808,7 @@ function render(){
   let H=''; // html
 
   // ── STATS ──
-  if(AT==='stats'&&stats){
+  if(AT==='ronda'&&subAT==='stats'&&stats){
     // Sin hoyos todavía
     if(stats.total===0){
       H+=`<div class="empty2">
@@ -1994,14 +2113,8 @@ function render(){
   }
 
   // ── ANÁLISIS ──
-  else if(AT==='analisis'&&stats){
+  else if(AT==='ronda'&&subAT==='analisis'&&stats){
     const sg=stats.sg;
-    const nR=rounds.length;
-    H+='<div class="anal-toggle">';
-    H+='<button data-mode="round" onclick="setAnalRound()" class="'+(analMode==='round'?'on':'')+'">Esta ronda</button>';
-    H+='<button data-mode="all" onclick="setAnalAll()" class="'+(analMode==='all'?'on':'')+'">'+(nR)+' ronda'+(nR!==1?'s':'')+'</button>';
-    H+='</div>';
-    if(analMode==='all'){document.getElementById('scroll').innerHTML=H;renderAnalisisAcumulado(rounds);return;}
     H+='<div style="padding:20px 16px 8px;background:var(--white);border-bottom:1px solid var(--sep)">';
     H+='<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">';
     H+='<div style="font-size:52px;font-weight:800;letter-spacing:-2px;color:'+sgC(sg.total)+'">'+(sg.total>0?'+':'')+sg.total+'</div>';
@@ -2229,14 +2342,46 @@ function calcTrend(rounds){
 // ─────────────────────────────────────────────────────
 // NAVIGATION
 // ─────────────────────────────────────────────────────
+let subAT='stats'; // sub-tab activo dentro de Ronda
+
 function tab(t){
-  AT=t;EX.clear();
+  // Mapear tabs viejos a nuevos
+  if(t==='stats'||t==='analisis') t='ronda';
+  if(t==='evo') t='acumulado';
+  AT=t; EX.clear();
+  // Mostrar/ocultar sub-tabs
+  const subRow=document.getElementById('subTabsRonda');
+  if(subRow) subRow.style.display=t==='ronda'?'flex':'none';
+  // Actualizar botones de tab
+  document.querySelectorAll('.tabB:not(.tab-new)').forEach(function(b){
+    if(!b.id||b.id==='tabNew'||b.id==='tabRange'||b.id.startsWith('st')) return;
+    var oc=b.getAttribute('onclick')||'';
+    b.classList.toggle('on', oc.includes("'"+t+"'"));
+  });
+  // Tab Ronda no tiene id fijo — marcarlo por texto
+  document.querySelectorAll('.tabB').forEach(function(b){
+    var oc=b.getAttribute('onclick')||'';
+    if(oc.includes("'ronda'")) b.classList.toggle('on', t==='ronda');
+  });
   if(t==='range'){renderRange();return;}
+  if(t==='acumulado'){renderAcumulado();return;}
   render();
 }
-function selR(i){AR=i;EX.clear();analMode='round';render();}
+
+function subTab(s){
+  subAT=s;
+  var sts=document.getElementById('stStats');
+  var sta=document.getElementById('stAnalisis');
+  if(sts){sts.style.background=s==='stats'?'var(--white)':'transparent';sts.style.color=s==='stats'?'var(--t1)':'var(--t3)';sts.style.boxShadow=s==='stats'?'0 1px 3px rgba(0,0,0,.08)':'';}
+  if(sta){sta.style.background=s==='analisis'?'var(--white)':'transparent';sta.style.color=s==='analisis'?'var(--t1)':'var(--t3)';sta.style.boxShadow=s==='analisis'?'0 1px 3px rgba(0,0,0,.08)':'';}
+  AT='ronda'; render();
+}
+
+function setAnalRound(){subTab('stats');}
+function setAnalAll(){tab('acumulado');}
+function selR(i){AR=i;EX.clear();analMode='round';subAT='stats';AT='ronda';render();}
 function togExp(h){EX.has(h)?EX.delete(h):EX.add(h);render();}
-function setPlayer(p){AP=p;AR=0;EX.clear();analMode='round';if(p!=='vs')AT='stats';render();}
+function setPlayer(p){AP=p;AR=0;EX.clear();analMode='round';subAT='stats';if(p!=='vs'){AT='ronda';}const sr=document.getElementById('subTabsRonda');if(sr)sr.style.display='flex';render();}
 
 // ─────────────────────────────────────────────────────
 // PLAY MODAL
@@ -2567,207 +2712,188 @@ function setAnalRound(){setAnalMode('round');}
 function setAnalAll(){setAnalMode('all');}
 
 function renderAnalisisAcumulado(rounds){
-  const allStats=rounds.map(r=>cS(r.holes)).filter(Boolean);
-  if(!allStats.length){document.getElementById('scroll').innerHTML='<div class="empty2">Sin rondas completas.</div>';return;}
-  const n=allStats.length;
-  const avg=fn=>Math.round(allStats.reduce((a,s)=>a+(fn(s)||0),0)/n*10)/10;
-  const avgPct=fn=>{const valid=allStats.filter(s=>fn(s)!=null);return valid.length?Math.round(valid.reduce((a,s)=>a+fn(s),0)/valid.length):null;};
+  var allStats=rounds.map(function(r){return cS(r.holes);}).filter(Boolean);
+  if(!allStats.length){document.getElementById('scroll').innerHTML+='<div class="empty2">Sin rondas completas.</div>';return;}
+  var n=allStats.length;
+  var ac=AP==='ak'?'var(--ak)':'var(--mac)';
 
-  const avgScore=avg(s=>s.ts);
-  const avgPutts=avg(s=>parseFloat(s.avgP)||0);
-  const avgFW=avgPct(s=>s.fwPct);
-  const avgGIR=avgPct(s=>s.girPct);
-  const avgScr=avgPct(s=>s.scramblePct);
-  const tot3p=allStats.reduce((a,s)=>a+(s.tp3||0),0);
-  const totBk=allStats.reduce((a,s)=>a+(s.bkCt||0),0);
-  const totBkS=allStats.reduce((a,s)=>a+(s.bkSaves||0),0);
-  const totChipS=allStats.reduce((a,s)=>a+(s.chipSaves||0),0);
-  const totBird=allStats.reduce((a,s)=>a+(s.bir||0),0);
-  const totPar=allStats.reduce((a,s)=>a+(s.par||0),0);
-  const totBog=allStats.reduce((a,s)=>a+(s.bog||0),0);
-  const totDbl=allStats.reduce((a,s)=>a+(s.dbl||0),0);
-  const totBig=allStats.reduce((a,s)=>a+(s.bigNumbers||0),0);
-  const offHcp=AP==='ak'?11.5:6.5;
-  const expectedScore=71+offHcp;
+  function avg(fn){return Math.round(allStats.reduce(function(a,s){return a+(fn(s)||0);},0)/n*10)/10;}
+  function avgPct(fn){var valid=allStats.filter(function(s){return fn(s)!=null;});return valid.length?Math.round(valid.reduce(function(a,s){return a+fn(s);},0)/valid.length):null;}
 
-  // Acumular SG
-  const avgSG={};
-  ['tee','app','short','putt','total'].forEach(k=>{
-    const valid=allStats.filter(s=>s.sg&&s.sg[k]!=null);
-    avgSG[k]=valid.length?Math.round(valid.reduce((a,s)=>a+s.sg[k],0)/valid.length*10)/10:0;
+  var avgScore=avg(function(s){return s.ts;});
+  var avgPutts=avg(function(s){return parseFloat(s.avgP)||0;});
+  var avgFW=avgPct(function(s){return s.fwPct;});
+  var avgGIR=avgPct(function(s){return s.girPct;});
+  var avgScr=avgPct(function(s){return s.scramblePct;});
+  var tot3p=allStats.reduce(function(a,s){return a+(s.tp3||0);},0);
+  var tot1p=allStats.reduce(function(a,s){return a+(s.op1||0);},0);
+  var totPuttsAll=allStats.reduce(function(a,s){return a+(s.totalPutts||0);},0);
+  var totHoles=allStats.reduce(function(a,s){return a+(s.total||0);},0);
+  var totBk=allStats.reduce(function(a,s){return a+(s.bkCt||0);},0);
+  var totBkS=allStats.reduce(function(a,s){return a+(s.bkSaves||0);},0);
+  var totChipS=allStats.reduce(function(a,s){return a+(s.chipSaves||0);},0);
+  var totBird=allStats.reduce(function(a,s){return a+(s.bir||0);},0);
+  var totPar=allStats.reduce(function(a,s){return a+(s.par||0);},0);
+  var totBog=allStats.reduce(function(a,s){return a+(s.bog||0);},0);
+  var totBig=allStats.reduce(function(a,s){return a+(s.bigNumbers||0);},0);
+  var bkPct=totBk?Math.round(totBkS/totBk*100):null;
+  var offHcp=AP==='ak'?11.5:6.5;
+  var expectedScore=71+offHcp;
+
+  // Iron stats acumulados
+  var totLong=allStats.reduce(function(a,s){return a+(s.ironStats?s.ironStats.long.shots:0);},0);
+  var totLongGIR=allStats.reduce(function(a,s){return a+(s.ironStats?s.ironStats.long.gir:0);},0);
+  var totShort=allStats.reduce(function(a,s){return a+(s.ironStats?s.ironStats.short.shots:0);},0);
+  var totShortGIR=allStats.reduce(function(a,s){return a+(s.ironStats?s.ironStats.short.gir:0);},0);
+  var totChips=allStats.reduce(function(a,s){return a+(s.ironStats?s.ironStats.wedge.chip:0);},0);
+  var totChipSaves=allStats.reduce(function(a,s){return a+(s.chipSaves||0);},0);
+  var longGIRpct=totLong?Math.round(totLongGIR/totLong*100):null;
+  var shortGIRpct=totShort?Math.round(totShortGIR/totShort*100):null;
+  var chipSavesPct=totChips?Math.round(totChipSaves/totChips*100):0;
+
+  var H='';
+
+  // SG promedio
+  var avgSG={tee:0,app:0,short:0,putt:0,total:0};
+  ['tee','app','short','putt','total'].forEach(function(k){
+    var valid=allStats.filter(function(s){return s.sg&&s.sg[k]!=null;});
+    avgSG[k]=valid.length?Math.round(valid.reduce(function(a,s){return a+s.sg[k];},0)/valid.length*10)/10:0;
   });
 
-  // Acumular distancias por palo
-  const cumCM={};
-  allStats.forEach(s=>{
-    if(!s.cm)return;
-    Object.entries(s.cm).forEach(([cl,d])=>{
-      if(!cumCM[cl])cumCM[cl]={t:0,dists:[]};
-      cumCM[cl].t+=d.t||0;
-      cumCM[cl].dists.push(...(d.dists||[]));
-    });
+  H+='<div style="padding:20px 16px 8px;background:var(--white);border-bottom:1px solid var(--sep)">';
+  H+='<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">';
+  H+='<div style="font-size:52px;font-weight:800;letter-spacing:-2px;color:'+sgC(avgSG.total)+'">'+(avgSG.total>0?'+':'')+avgSG.total+'</div>';
+  H+='<div style="font-size:16px;color:var(--t3)">SG promedio · '+n+' rondas</div></div>';
+  ['tee','app','short','putt'].forEach(function(k){
+    var lbl={tee:'Salida',app:'Approach',short:'Juego corto',putt:'Putting'}[k];
+    var v=avgSG[k], pct=Math.min(100,Math.abs(v)/2*100);
+    H+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">';
+    H+='<div style="font-size:16px;color:var(--t2);min-width:100px">'+lbl+'</div>';
+    H+='<div style="flex:1;height:6px;background:var(--bg);border-radius:3px;position:relative">';
+    H+='<div style="position:absolute;top:-5px;bottom:-5px;left:50%;width:1px;background:var(--sep2)"></div>';
+    H+='<div style="position:absolute;top:0;height:6px;border-radius:3px;background:'+sgC(v)+';width:'+(pct/2)+'%;'+(v>=0?'left:50%':'right:50%')+'"></div></div>';
+    H+='<div style="font-size:16px;font-weight:700;min-width:40px;text-align:right;color:'+sgC(v)+'">'+(v>0?'+':'')+v+'</div></div>';
   });
+  H+='</div>';
 
-  const ac=AP==='ak'?'var(--ak)':'var(--mac)';
-  let H='';
+  // Medias
+  H+='<div class="group-header">Medias acumuladas ('+n+' rondas)</div>';
+  H+='<div class="par-grid">';
+  H+='<div class="par-cell"><div class="par-val" style="color:'+(avgScore<=expectedScore?ac:'var(--red)')+'">'+avgScore+'</div><div class="par-lbl">Media</div><div class="par-sub">Ref: '+Math.round(expectedScore)+'</div></div>';
+  H+='<div class="par-cell"><div class="par-val" style="color:'+(avgPutts<=2.0?ac:'var(--red)')+'">'+avgPutts+'</div><div class="par-lbl">Putts/H</div><div class="par-sub">Obj: le2.0</div></div>';
+  H+='<div class="par-cell"><div class="par-val" style="color:'+(avgFW!=null&&avgFW>=60?ac:'var(--red)')+'">'+( avgFW!=null?avgFW+'%':'—')+'</div><div class="par-lbl">FW%</div><div class="par-sub">Obj: ge60%</div></div>';
+  H+='<div class="par-cell"><div class="par-val" style="color:'+(avgGIR!=null&&avgGIR>=44?ac:'var(--red)')+'">'+( avgGIR!=null?avgGIR+'%':'—')+'</div><div class="par-lbl">GIR%</div><div class="par-sub">Obj: ge44%</div></div>';
+  H+='</div>';
 
-  // Hero SG acumulado
-  H+=`<div style="padding:20px 16px 8px;background:var(--white);border-bottom:1px solid var(--sep)">
-    <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">
-      <div style="font-size:52px;font-weight:800;letter-spacing:-2px;color:${sgC(avgSG.total)}">${avgSG.total>0?'+':''}${avgSG.total}</div>
-      <div style="font-size:16px;color:var(--t3)">SG promedio · ${n} rondas</div>
-    </div>`;
-  ['tee','app','short','putt'].forEach(k=>{
-    const l={tee:'Salida',app:'Approach',short:'Juego corto',putt:'Putting'}[k];
-    const v=avgSG[k], pct=Math.min(100,Math.abs(v)/2*100);
-    H+=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-      <div style="font-size:16px;color:var(--t2);min-width:100px">${l}</div>
-      <div style="flex:1;height:6px;background:var(--bg);border-radius:3px;position:relative">
-        <div style="position:absolute;top:-5px;bottom:-5px;left:50%;width:1px;background:var(--sep2)"></div>
-        <div style="position:absolute;top:0;height:6px;border-radius:3px;background:${sgC(v)};width:${pct/2}%;${v>=0?'left:50%':'right:50%'}"></div>
-      </div>
-      <div style="font-size:16px;font-weight:700;min-width:40px;text-align:right;color:${sgC(v)}">${v>0?'+':''}${v}</div>
-    </div>`;
-  });
-  H+=`</div>`;
+  // Resultados
+  H+='<div class="group-header">Resultados acumulados ('+n+' rondas)</div>';
+  H+='<div class="par-grid">';
+  H+='<div class="par-cell"><div class="par-val" style="color:var(--ak)">'+totBird+'</div><div class="par-lbl">Birdies</div><div class="par-sub">'+( totBird/n).toFixed(1)+'/ronda</div></div>';
+  H+='<div class="par-cell"><div class="par-val" style="color:var(--blu)">'+totPar+'</div><div class="par-lbl">Pares</div><div class="par-sub">'+(totPar/n).toFixed(1)+'/ronda</div></div>';
+  H+='<div class="par-cell"><div class="par-val" style="color:var(--yel)">'+totBog+'</div><div class="par-lbl">Bogeys</div><div class="par-sub">'+(totBog/n).toFixed(1)+'/ronda</div></div>';
+  H+='<div class="par-cell"><div class="par-val" style="color:var(--red)">'+totBig+'</div><div class="par-lbl">+2 o mas</div><div class="par-sub">'+(totBig/n).toFixed(1)+'/ronda</div></div>';
+  H+='</div>';
 
-  // Stats acumuladas
-  H+=`<div class="group-header">Medias acumuladas (${n} rondas)</div>
-  <div class="par-grid">
-    <div class="par-cell">
-      <div class="par-val" style="color:${avgScore<=expectedScore?ac:'var(--red)'}">${avgScore}</div>
-      <div class="par-lbl">Media</div>
-      <div class="par-sub">Ref: ${Math.round(expectedScore)}</div>
-    </div>
-    <div class="par-cell">
-      <div class="par-val" style="color:${avgPutts<=2.0?ac:'var(--red)'}">${avgPutts}</div>
-      <div class="par-lbl">Putts/H</div>
-      <div class="par-sub">Obj: ≤2.0</div>
-    </div>
-    <div class="par-cell">
-      <div class="par-val" style="color:${avgFW>=60?ac:'var(--red)'}">${avgFW!=null?avgFW+'%':'—'}</div>
-      <div class="par-lbl">FW%</div>
-      <div class="par-sub">Obj: ≥60%</div>
-    </div>
-    <div class="par-cell">
-      <div class="par-val" style="color:${avgGIR>=44?ac:'var(--red)'}">${avgGIR!=null?avgGIR+'%':'—'}</div>
-      <div class="par-lbl">GIR%</div>
-      <div class="par-sub">Obj: ≥44%</div>
-    </div>
-  </div>`;
+  // Putting
+  H+='<div class="group-header">Putting acumulado</div>';
+  H+='<div class="par-grid">';
+  H+='<div class="par-cell"><div class="par-val" style="color:var(--ak)">'+tot1p+'</div><div class="par-lbl">1-putts</div><div class="par-sub">'+(tot1p/n).toFixed(1)+'/ronda</div></div>';
+  H+='<div class="par-cell"><div class="par-val" style="color:'+(tot3p/n>1?'var(--red)':'var(--yel)')+'">'+tot3p+'</div><div class="par-lbl">3-putts</div><div class="par-sub">'+(tot3p/n).toFixed(1)+'/ronda</div></div>';
+  H+='<div class="par-cell"><div class="par-val" style="color:var(--blu)">'+(n>0?Math.round(totPuttsAll/n*10)/10:'—')+'</div><div class="par-lbl">Putts/ronda</div><div class="par-sub">Obj: le32</div></div>';
+  H+='<div class="par-cell"><div class="par-val" style="color:var(--t2)">'+(totHoles>0?Math.round(totPuttsAll/totHoles*100)/100:'—')+'</div><div class="par-lbl">Putts/H</div><div class="par-sub">Obj: le1.8</div></div>';
+  H+='</div>';
 
-  // Totales
-  H+=`<div class="group-header">Totales acumulados</div>
-  <div class="par-grid">
-    <div class="par-cell">
-      <div class="par-val" style="color:var(--ak)">${totBird}</div>
-      <div class="par-lbl">Birdies</div>
-      <div class="par-sub">${(totBird/n).toFixed(1)}/ronda</div>
-    </div>
-    <div class="par-cell">
-      <div class="par-val" style="color:var(--blu)">${totPar}</div>
-      <div class="par-lbl">Pares</div>
-      <div class="par-sub">${(totPar/n).toFixed(1)}/ronda</div>
-    </div>
-    <div class="par-cell">
-      <div class="par-val" style="color:var(--yel)">${totBog}</div>
-      <div class="par-lbl">Bogeys</div>
-      <div class="par-sub">${(totBog/n).toFixed(1)}/ronda</div>
-    </div>
-    <div class="par-cell">
-      <div class="par-val" style="color:var(--red)">${totBig}</div>
-      <div class="par-lbl">+2 o más</div>
-      <div class="par-sub">${(totBig/n).toFixed(1)}/ronda</div>
-    </div>
-  </div>`;
+  // Juego corto
+  H+='<div class="group-header">Juego corto acumulado</div><div class="group">';
+  if(avgScr!=null){
+    H+='<div class="bignum-row" style="border-left:3px solid var(--yel)">';
+    H+='<div class="bignum" style="color:'+(avgScr>=50?ac:'var(--red)')+'">'+avgScr+'%</div>';
+    H+='<div class="bignum-info"><div class="bignum-lbl">Scrambling medio</div><div class="bignum-sub">Objetivo ge50% · '+n+' rondas</div></div></div>';
+  }
+  if(bkPct!=null){
+    H+='<div class="bignum-row" style="border-left:3px solid var(--yel)">';
+    H+='<div class="bignum" style="color:'+(bkPct>=50?ac:'var(--red)')+'">'+bkPct+'%</div>';
+    H+='<div class="bignum-info"><div class="bignum-lbl">Bunker saves</div>';
+    H+='<div class="bignum-sub">'+totBkS+' de '+totBk+' bunkers · '+tot3p+' three-putts totales</div>';
+    if(totChipS>0) H+='<div style="margin-top:4px;font-size:14px;color:'+ac+'">🏌️ '+totChipS+' chip saves totales</div>';
+    H+='</div></div>';
+  }
+  H+='</div>';
 
-  // Bunkers y juego corto acumulado
-  const bkPct=totBk?Math.round(totBkS/totBk*100):null;
-  H+=`<div class="group-header">Juego corto acumulado</div>
-  <div class="group">
-    ${avgScr!=null?`<div class="bignum-row" style="border-left:3px solid var(--yel)">
-      <div class="bignum" style="color:${avgScr>=50?ac:'var(--red)'}">${avgScr}%</div>
-      <div class="bignum-info">
-        <div class="bignum-lbl">Scrambling medio</div>
-        <div class="bignum-sub">Objetivo ≥50% · ${n} rondas</div>
-      </div>
-    </div>`:''}
-    ${bkPct!=null?`<div class="bignum-row" style="border-left:3px solid var(--yel)">
-      <div class="bignum" style="color:${bkPct>=50?ac:'var(--red)'}">${bkPct}%</div>
-      <div class="bignum-info">
-        <div class="bignum-lbl">Bunker saves</div>
-        <div class="bignum-sub">${totBkS} de ${totBk} bunkers · ${tot3p} three-putts totales</div>
-        ${totChipS>0?`<div style="margin-top:4px;font-size:14px;color:${ac}">🏌️ ${totChipS} chip saves totales</div>`:''}
-      </div>
-    </div>`:''}
-  </div>`;
+  // Análisis por palo
+  if(totLong>0||totShort>0||totChips>0){
+    H+='<div class="group-header">Analisis por categoria de palo</div><div class="group">';
+    if(totLong>0){
+      H+='<div style="padding:14px 16px;border-bottom:1px solid var(--sep)">';
+      H+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+      H+='<div><div style="font-size:15px;font-weight:700">Hierros largos</div><div style="font-size:12px;color:var(--t3)">5I · 6I · 7I · 8I</div></div>';
+      H+='<div style="text-align:right"><div style="font-size:22px;font-weight:800;color:'+(longGIRpct>=50?ac:'var(--red)')+'">'+longGIRpct+'%</div>';
+      H+='<div style="font-size:12px;color:var(--t3)">GIR</div></div></div>';
+      H+='<div style="font-size:13px;color:var(--t3)">'+totLong+' golpes · '+totLongGIR+' greens</div></div>';
+    }
+    if(totShort>0){
+      H+='<div style="padding:14px 16px;border-bottom:1px solid var(--sep)">';
+      H+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+      H+='<div><div style="font-size:15px;font-weight:700">Approach</div><div style="font-size:12px;color:var(--t3)">9I · PW · AW · SW</div></div>';
+      H+='<div style="text-align:right"><div style="font-size:22px;font-weight:800;color:'+(shortGIRpct>=60?ac:'var(--red)')+'">'+shortGIRpct+'%</div>';
+      H+='<div style="font-size:12px;color:var(--t3)">GIR</div></div></div>';
+      H+='<div style="font-size:13px;color:var(--t3)">'+totShort+' golpes · '+totShortGIR+' greens</div></div>';
+    }
+    if(totChips>0){
+      H+='<div style="padding:14px 16px;border-bottom:1px solid var(--sep)">';
+      H+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+      H+='<div><div style="font-size:15px;font-weight:700">Juego corto</div><div style="font-size:12px;color:var(--t3)">SW · PW · AW chips</div></div>';
+      H+='<div style="text-align:right"><div style="font-size:22px;font-weight:800;color:'+(chipSavesPct>=50?ac:'var(--red)')+'">'+chipSavesPct+'%</div>';
+      H+='<div style="font-size:12px;color:var(--t3)">up & down</div></div></div>';
+      H+='<div style="font-size:13px;color:var(--t3)">'+totChips+' chips · obj ge50%</div></div>';
+    }
+    if(totBk>0){
+      var bkColor=bkPct>=50?ac:'var(--red)';
+      H+='<div style="padding:14px 16px">';
+      H+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+      H+='<div><div style="font-size:15px;font-weight:700">Sand saves</div><div style="font-size:12px;color:var(--t3)">Bunker · salida y par o mejor</div></div>';
+      H+='<div style="text-align:right"><div style="font-size:22px;font-weight:800;color:'+bkColor+'">'+bkPct+'%</div>';
+      H+='<div style="font-size:12px;color:var(--t3)">sand save</div></div></div>';
+      H+='<div style="font-size:13px;color:var(--t3)">'+totBkS+' saves de '+totBk+' bunkers · obj ge50%</div></div>';
+    }
+    H+='</div>';
 
-  // Diagnóstico acumulado
-  const weakKey=['tee','app','short','putt'].reduce((a,k)=>avgSG[k]<avgSG[a]?k:a,'tee');
-  const weakLbl={tee:'Salida',app:'Approach',short:'Juego corto',putt:'Putting'}[weakKey];
-  const strongKey=['tee','app','short','putt'].reduce((a,k)=>avgSG[k]>avgSG[a]?k:a,'tee');
-  const strongLbl={tee:'Salida',app:'Approach',short:'Juego corto',putt:'Putting'}[strongKey];
+    // Diagnóstico por palo
+    var dIrons='', dApproach='', dWedge='';
+    if(longGIRpct!=null) dIrons=longGIRpct<50?'Hierros largos: '+longGIRpct+'% GIR. Obj 50%+. Trabaja contacto limpio y seleccion de distancia.':'Buen GIR con hierros largos ('+longGIRpct+'%).';
+    if(shortGIRpct!=null) dApproach=shortGIRpct<60?'Approach (9I-AW-SW): '+shortGIRpct+'% GIR. Obj 60%+. Trabaja el carry exacto de cada palo desde 80-130m.':'Buen approach con hierros cortos y SW ('+shortGIRpct+'% GIR).';
+    if(totChips>0) dWedge=chipSavesPct<50?'Juego corto: '+chipSavesPct+'% up and down. Obj 50%+. Chips y pitches con SW y PW desde 10-30m.':'Buen juego corto ('+chipSavesPct+'% up and down).';
 
-  const diagMap={
-    tee:fw=>`${n} rondas de FW promedio: ${fw!=null?fw+'%':'sin datos'}. ${fw!=null&&fw<60?'Debajo del objetivo 60%. El driver sigue siendo la principal pérdida de posición.':'FW sólido — la salida te da plataforma de ataque.'}`,
-    app:gir=>`GIR medio: ${gir!=null?gir+'%':'sin datos'}. ${gir!=null&&gir<44?`Debajo del objetivo 44%. Cada punto de GIR vale ~0.15 golpes por ronda — subir de ${gir}% a 50% son 2 golpes menos.`:'GIR excelente — llegas con opciones de birdie.'}`,
-    short:sc=>`Scrambling medio: ${sc!=null?sc+'%':'sin datos'}. ${sc!=null&&sc<50?`Por debajo del 50% objetivo. Con ${Math.round(n*18*(1-avgGIR/100))} greens fallados en ${n} rondas, el juego corto es tu mayor palanca.`:'Scrambling sólido — salvas rondas que otros perderían.'}`,
-    putt:p=>`${p} putts/hoyo de media. ${tot3p} three-putts en ${n} rondas. ${tot3p>n?'Los 3-putts aparecen más de una vez por ronda — trabaja la velocidad desde 8m+.':'Buen control de distancia en putting.'}`,
-  };
-
-  H+=`<div class="group-header">Diagnóstico acumulado</div>
-  <div class="group">
-    <div class="coach-section">
-      <div class="coach-tag"><div class="coach-color-dot" style="background:var(--red)"></div><div class="coach-tag-lbl">Área más débil · ${weakLbl}</div></div>
-      <div class="coach-body">${diagMap[weakKey](weakKey==='tee'?avgFW:weakKey==='app'?avgGIR:weakKey==='short'?avgScr:avgPutts)}</div>
-    </div>
-    <div class="coach-section">
-      <div class="coach-tag"><div class="coach-color-dot" style="background:${ac}"></div><div class="coach-tag-lbl">Punto más fuerte · ${strongLbl}</div></div>
-      <div class="coach-body">${diagMap[strongKey](strongKey==='tee'?avgFW:strongKey==='app'?avgGIR:strongKey==='short'?avgScr:avgPutts)}</div>
-    </div>
-    ${totBig>0?`<div class="coach-section">
-      <div class="coach-tag"><div class="coach-color-dot" style="background:var(--yel)"></div><div class="coach-tag-lbl">Gestión de riesgo</div></div>
-      <div class="coach-body">${totBig} dobles bogey o peor en ${n} rondas (${(totBig/n).toFixed(1)}/ronda). Con tu HCP, el objetivo es ≤1 doble por ronda. La mayoría vienen de un drive fuera seguido de una decisión agresiva.</div>
-    </div>`:''}
-  </div>`;
-
-  // Distancias acumuladas por palo
-  const refs=AP==='ak'?AK_REFS:{};
-  const clubsWithDist=Object.entries(cumCM).filter(([,d])=>d.dists&&d.dists.length>0);
-  if(clubsWithDist.length){
-    const maxD=Math.max(...clubsWithDist.map(([,d])=>avgDist(d.dists)||0),...Object.values(refs).map(r=>r.carry||0),1);
-    H+=`<div class="group-header">Distancias promedio (${n} rondas)</div>
-    <div style="font-size:12px;color:var(--t3);padding:6px 16px;background:var(--white);border-bottom:1px solid var(--sep)">Carry promedio en campo vs carry referencia</div>
-    <div class="group">`;
-    const clubOrder=['Driver','3M','5M','5I','6I','7I','8I','9I','PW','AW','SW'];
-    clubOrder.forEach(cl=>{
-      const d=cumCM[cl]; const avg=d?avgDist(d.dists):null; const ref=refs[cl];
-      if(!avg&&!ref)return;
-      const avgW=avg?Math.round(avg/maxD*100):0, refW=ref?Math.round(ref.carry/maxD*100):0;
-      const diff=avg&&ref?avg-ref.carry:null;
-      H+=`<div class="dist-anal-item">
-        <div class="dist-anal-club">${clubDisplay(cl)}</div>
-        <div style="flex:1;margin:0 10px">
-          <div style="position:relative;background:var(--bg);border-radius:5px;height:8px;overflow:hidden">
-            ${ref?`<div style="position:absolute;top:0;left:0;width:${refW}%;height:100%;background:var(--sep2);border-radius:5px"></div>`:''}
-            ${avg?`<div style="position:absolute;top:0;left:0;width:${avgW}%;height:100%;background:var(--blu);border-radius:5px;opacity:.85"></div>`:''}
-          </div>
-          <div style="display:flex;gap:12px;margin-top:4px">
-            ${avg?`<span style="font-size:12px;color:var(--blu)">━ Campo ${avg}m (${d.dists.length} golpes)</span>`:'<span style="font-size:12px;color:var(--t4)">Sin datos</span>'}
-            ${ref?`<span style="font-size:12px;color:var(--t3)">━ Ref ${ref.carry}m</span>`:''}
-          </div>
-        </div>
-        <div style="font-size:14px;font-weight:600;color:${diff!=null?(diff>=-10?ac:'var(--red)'):'var(--t3)'};text-align:right;white-space:nowrap">
-          ${avg?avg+'m':'—'}${diff!=null?`<br><span style="font-size:12px">${diff>0?'+':''}${diff}m</span>`:''}
-        </div>
-      </div>`;
-    });
-    H+=`</div>`;
+    if(dIrons||dApproach||dWedge){
+      H+='<div class="group-header">Diagnostico por palo</div><div class="group">';
+      if(dIrons) H+='<div class="coach-section"><div class="coach-tag"><div class="coach-color-dot" style="background:var(--blu)"></div><div class="coach-tag-lbl">Hierros 5-8I</div></div><div class="coach-body">'+dIrons+'</div></div>';
+      if(dApproach) H+='<div class="coach-section"><div class="coach-tag"><div class="coach-color-dot" style="background:var(--pur)"></div><div class="coach-tag-lbl">Approach 9I-AW</div></div><div class="coach-body">'+dApproach+'</div></div>';
+      if(dWedge) H+='<div class="coach-section"><div class="coach-tag"><div class="coach-color-dot" style="background:var(--yel)"></div><div class="coach-tag-lbl">Juego corto SW/PW</div></div><div class="coach-body">'+dWedge+'</div></div>';
+      H+='</div>';
+    }
   }
 
-  // Asignar al scroll
-  const sc=document.getElementById('scroll');
-  if(sc) sc.innerHTML=H;
+  // Diagnóstico acumulado general
+  var weakKey=['tee','app','short','putt'].reduce(function(a,k){return avgSG[k]<avgSG[a]?k:a;},'tee');
+  var strongKey=['tee','app','short','putt'].reduce(function(a,k){return avgSG[k]>avgSG[a]?k:a;},'tee');
+  var lblMap={tee:'Salida',app:'Approach',short:'Juego corto',putt:'Putting'};
+
+  H+='<div class="group-header">Diagnostico acumulado</div><div class="group">';
+  H+='<div class="coach-section"><div class="coach-tag"><div class="coach-color-dot" style="background:var(--red)"></div>';
+  H+='<div class="coach-tag-lbl">Area mas debil: '+lblMap[weakKey]+'</div></div>';
+  H+='<div class="coach-body">SG promedio '+avgSG[weakKey]+' en '+n+' rondas. Prioridad de practica numero 1.</div></div>';
+  H+='<div class="coach-section"><div class="coach-tag"><div class="coach-color-dot" style="background:'+ac+'"></div>';
+  H+='<div class="coach-tag-lbl">Punto mas fuerte: '+lblMap[strongKey]+'</div></div>';
+  H+='<div class="coach-body">SG promedio +'+avgSG[strongKey]+' en '+n+' rondas. Sigue manteniendolo.</div></div>';
+  if(totBig>0){
+    H+='<div class="coach-section"><div class="coach-tag"><div class="coach-color-dot" style="background:var(--yel)"></div>';
+    H+='<div class="coach-tag-lbl">Gestion de riesgo</div></div>';
+    H+='<div class="coach-body">'+totBig+' dobles bogey o peor en '+n+' rondas ('+(totBig/n).toFixed(1)+'/ronda). Cuando estes fuera de posicion, acepta el bogey y protege la tarjeta.</div></div>';
+  }
+  H+='</div>';
+
+  var sc=document.getElementById('scroll');
+  if(sc) sc.innerHTML+=H;
 }
 function toggleHint(){
   const b=document.getElementById('hBox');
