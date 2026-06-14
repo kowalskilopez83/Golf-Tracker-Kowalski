@@ -4,7 +4,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Golf">
@@ -239,7 +239,7 @@ input,select,textarea,button{font-family:inherit}
 .pat-tip2{font-size:13px;color:var(--t3);line-height:1.6;padding-top:7px;border-top:1px solid var(--sep)}
 
 /* SCORECARD */
-.sc-wrap2{background:var(--white);margin-top:0}
+.sc-wrap2{overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--white);margin-top:0}
 .sc-table2{width:100%;border-collapse:collapse;font-size:14px}
 .sc-table2 th{background:var(--bg);color:var(--t3);font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:9px 6px;text-align:center;border-bottom:1px solid var(--sep)}
 .sc-table2 td{padding:11px 6px;text-align:center;border-bottom:1px solid var(--sep);color:var(--t1);font-size:14px}
@@ -316,7 +316,7 @@ input,select,textarea,button{font-family:inherit}
 .sbody{padding:0 20px calc(var(--sb)+28px)}
 .fl{font-size:13px;font-weight:600;color:var(--t3);letter-spacing:.3px;text-transform:uppercase;margin-bottom:6px;margin-top:20px;display:block}
 .fl:first-child{margin-top:0}
-.fi{background:var(--bg);border:1px solid var(--sep2);border-radius:12px;padding:14px 16px;color:var(--t1);font-size:17px;outline:none;width:100%;-webkit-appearance:none;transition:border-color .15s}
+.fi{box-sizing:border-box;background:var(--bg);border:1px solid var(--sep2);border-radius:12px;padding:14px 16px;color:var(--t1);font-size:17px;outline:none;width:100%;-webkit-appearance:none;transition:border-color .15s}
 .fi:focus{border-color:var(--blu)}
 .fi.mac:focus{border-color:var(--mac)}
 .frow{display:flex;gap:8px}.frow>div{flex:1}
@@ -1403,9 +1403,9 @@ function renderVS(){
     H+=`</div>`;
   }
 
-  // Añadir al scroll (el toggle ya está ahí)
+  // Asignar al scroll
   const sc=document.getElementById('scroll');
-  if(sc) sc.innerHTML+=H;
+  if(sc) sc.innerHTML=H;
 }
 
 function load(){
@@ -2212,9 +2212,9 @@ function render(){
     }
   }
 
-  // Añadir al scroll (el toggle ya está ahí)
+  // Asignar al scroll
   const sc=document.getElementById('scroll');
-  if(sc) sc.innerHTML+=H;
+  if(sc) sc.innerHTML=H;
 }
 
 function calcTrend(rounds){
@@ -2765,9 +2765,9 @@ function renderAnalisisAcumulado(rounds){
     H+=`</div>`;
   }
 
-  // Añadir al scroll (el toggle ya está ahí)
+  // Asignar al scroll
   const sc=document.getElementById('scroll');
-  if(sc) sc.innerHTML+=H;
+  if(sc) sc.innerHTML=H;
 }
 function toggleHint(){
   const b=document.getElementById('hBox');
