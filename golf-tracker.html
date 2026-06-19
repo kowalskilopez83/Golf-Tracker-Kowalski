@@ -2758,12 +2758,10 @@ function step(f,d){
 }
 function updateSU(){
   const round=data[pPl].rounds[pRI];if(!round)return;
-  const ch=getCH(round.courseId,round.tee,pH);
-  const d=pSc-pCurPar;  // usar pCurPar (par editado) no ch.par del registry
+  const d=pSc-pCurPar;
   document.getElementById('scV').style.color=dC(d);
-  document.getElementById('phR').textContent=hLF({score:pSc,par:ch.par});
+  document.getElementById('phR').textContent=hLF({score:pSc,par:pCurPar});
   document.getElementById('phR').style.color=dC(d);
-  // Mostrar indicador si la ronda está completa (modo edición)
   const editBadge=document.getElementById('editModeBadge');
   if(editBadge) editBadge.style.display=editMode?'flex':'none';
 }
