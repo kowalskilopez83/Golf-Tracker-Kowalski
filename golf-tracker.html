@@ -2663,7 +2663,9 @@ function loadHole(){
   document.getElementById('phN').textContent=`Hoyo ${pH}`;
   document.getElementById('phN').style.color=ac;
   document.getElementById('phD').textContent=ch.m?`${ch.m}m`:'—';
-  const customPar=round.customPars&&round.customPars[pH]!=null?round.customPars[pH]:ch.par;
+  // Par definitivo: lo que está en pantalla (pCurPar) tiene prioridad absoluta
+  var savedH=round.holes.find(function(h){return h.h===pH;});
+  const customPar=pCurPar||(round.customPars&&round.customPars[pH]!=null?round.customPars[pH]:(savedH?savedH.par:ch.par));
   pCurPar=customPar;
   document.getElementById('phP').textContent=`Par ${customPar}`;
   document.getElementById('phHcp').textContent=ch.hcp?`HCP ${ch.hcp} · ${tee==='rojas'?'🔴':'🟡'}`:'';
@@ -2681,6 +2683,13 @@ function loadHole(){
   }).join('');
   const existHole=round.holes.find(h=>h.h===pH);
   if(existHole){
+    // Si el hoyo tiene par guardado, sincronizar con customPars
+    if(existHole.par&&existHole.par!==customPar){
+      if(!round.customPars) round.customPars={};
+      round.customPars[pH]=existHole.par;
+      pCurPar=existHole.par;
+      document.getElementById('phP').textContent='Par '+existHole.par;
+    }
     pSc=existHole.score||customPar; pPu=existHole.putts!=null?existHole.putts:2;
     document.getElementById('scV').textContent=pSc;
     document.getElementById('puV').textContent=pPu;
@@ -2718,11 +2727,22 @@ function adjPar(d){
   const newPar=Math.max(3,Math.min(5,current+d));
   round.customPars[pH]=newPar;
   pCurPar=newPar;
-  document.getElementById('phP').textContent=`Par ${newPar}`;
+  document.getElementById('phP').textContent='Par '+newPar;
+  // Actualizar el hoyo guardado si existe
+  var existH2=round.holes.find(function(h){return h.h===pH;});
+  if(existH2){
+    existH2.par=newPar;
+    // Recalcular resultado visual inmediatamente
+    var d2=existH2.score-newPar;
+    var resEl=document.getElementById('phR');
+    if(resEl){resEl.textContent=hLF({score:existH2.score,par:newPar});resEl.style.color=dC(d2);}
+  }
   // Actualizar score default si no se ha tocado
-  if(pSc===current) { pSc=newPar; document.getElementById('scV').textContent=pSc; }
+  if(pSc===current){pSc=newPar;document.getElementById('scV').textContent=pSc;}
   // Ocultar/mostrar FW según par
   document.getElementById('trFW').style.display=newPar===3?'none':'flex';
+  // Sincronizar: si el score actual es el par viejo, actualizar al par nuevo
+  // Esto evita que al cambiar par de 4→3 el score se quede en 4 (bogey en vez de par)
   save();
 }
 
@@ -2740,7 +2760,7 @@ function step(f,d){
 function updateSU(){
   const round=data[pPl].rounds[pRI];if(!round)return;
   const ch=getCH(round.courseId,round.tee,pH);
-  const d=pSc-ch.par;
+  const d=pSc-pCurPar;  // usar pCurPar (par editado) no ch.par del registry
   document.getElementById('scV').style.color=dC(d);
   document.getElementById('phR').textContent=hLF({score:pSc,par:ch.par});
   document.getElementById('phR').style.color=dC(d);
@@ -2982,7 +3002,9 @@ function onFT(){ /* no-op: usando shot entries estructurados */ }
 function saveHole(){
   const round=data[pPl].rounds[pRI];
   const ch=getCH(round.courseId,round.tee,pH);
-  const customPar=round.customPars&&round.customPars[pH]!=null?round.customPars[pH]:ch.par;
+  // Par definitivo: lo que está en pantalla (pCurPar) tiene prioridad absoluta
+  var savedH=round.holes.find(function(h){return h.h===pH;});
+  const customPar=pCurPar||(round.customPars&&round.customPars[pH]!=null?round.customPars[pH]:(savedH?savedH.par:ch.par));
   pCurPar=customPar;
   const shots=typeof getShotsFromEntries==='function'?getShotsFromEntries():[];
   const hole={
