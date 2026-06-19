@@ -499,14 +499,22 @@ input,select,textarea,button{font-family:inherit}
 </div>
 <div id="step1" style="display:none">
 <div class="sbody" style="padding-top:0">
-  <div class="phdr">
+  <div id="editModeBadge" style="display:none;background:var(--bg);border-bottom:1px solid var(--sep);padding:10px 16px;display:none;align-items:center;justify-content:space-between;gap:12px">
+  <div style="font-size:13px;color:var(--t3)">✏️ Editando ronda</div>
+  <button onclick="closeRoundFromEdit()" style="padding:8px 18px;background:var(--ak);color:#fff;border:none;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer">Cerrar ronda ✓</button>
+</div>
+<div class="phdr">
     <div><div class="phnum" id="phN">H1</div><div class="phres" id="phR"></div></div>
-    <div class="phinfo"><div class="phdist" id="phD">—</div><div class="phpar" id="phP">Par —</div><div class="phhcp" id="phHcp"></div></div>
+    <div class="phinfo"><div class="phdist" id="phD">—</div><div style="display:flex;align-items:center;gap:6px">
+  <button onclick="adjPar(-1)" style="width:24px;height:24px;border-radius:50%;border:1.5px solid var(--sep2);background:var(--white);font-size:16px;color:var(--t2);display:flex;align-items:center;justify-content:center;cursor:pointer">−</button>
+  <div class="phpar" id="phP">Par —</div>
+  <button onclick="adjPar(1)" style="width:24px;height:24px;border-radius:50%;border:1.5px solid var(--sep2);background:var(--white);font-size:16px;color:var(--t2);display:flex;align-items:center;justify-content:center;cursor:pointer">+</button>
+</div><div class="phhcp" id="phHcp"></div></div>
   </div>
   <div class="hnav" id="hnav"></div>
   <div class="steppers">
-    <div class="stepbox"><div class="steplbl">Score</div><div class="steprow"><button class="stepbtn" onclick="step('score',-1)">−</button><div class="stepval" id="scV">4</div><button class="stepbtn" onclick="step('score',1)">+</button></div></div>
-    <div class="stepbox"><div class="steplbl">Putts</div><div class="steprow"><button class="stepbtn" onclick="step('putts',-1)">−</button><div class="stepval" id="puV" style="color:var(--blu)">2</div><button class="stepbtn" onclick="step('putts',1)">+</button></div></div>
+    <div class="stepbox"><div class="steplbl">Score total</div><div class="steprow"><button class="stepbtn" onclick="step('score',-1)">−</button><div class="stepval" id="scV">4</div><button class="stepbtn" onclick="step('score',1)">+</button></div></div>
+    <div class="stepbox"><div class="steplbl">Putts en green</div><div class="steprow"><button class="stepbtn" onclick="step('putts',-1)">−</button><div class="stepval" id="puV" style="color:var(--blu)">2</div><button class="stepbtn" onclick="step('putts',1)">+</button></div></div>
   </div>
   <div style="margin-bottom:18px">
     <div class="togrow" id="trFW"><span class="toglbl">Fairway</span><button class="tog" id="tFW" onclick="tog('tFW')"></button></div>
@@ -635,6 +643,8 @@ const MAC_AGUILON = {"id": "r_aguilon_falcon_mac_jun2026", "player": "mac", "dat
 const AK_AGUILON2 = {"id": "r_aguilon2_ak_jun2026", "player": "ak", "date": "2026-06-13", "course": "Aguilon Golf", "courseId": "aguilon", "city": "Almería", "tee": "falcon", "tournament": false, "holes": [{"h": 1, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 2, "par": 4, "score": 6, "putts": 3, "fw": true, "gir": false, "bk": true, "bkSave": false, "pen": false}, {"h": 3, "par": 3, "score": 3, "putts": 1, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 4, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 5, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 6, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 7, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 8, "par": 3, "score": 3, "putts": 1, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 9, "par": 5, "score": 7, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": true}, {"h": 10, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 11, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 12, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": true, "bkSave": false, "pen": false}, {"h": 13, "par": 4, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 14, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 15, "par": 4, "score": 6, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 16, "par": 4, "score": 4, "putts": 2, "fw": false, "gir": true, "bk": true, "bkSave": true, "pen": false}, {"h": 17, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 18, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": true, "bkSave": true, "pen": false}]};
 
 const AK_VALLE_IGUANA2 = {"id": "r_valle_iguana2_ak_jun2026", "player": "ak", "date": "2026-06-14", "course": "Valle del Este Golf", "courseId": "valle_del_este", "city": "Almería", "tee": "iguana", "tournament": false, "holes": [{"h": 1, "par": 4, "score": 6, "putts": 3, "fw": false, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 2, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 3, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 4, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 5, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 6, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 7, "par": 4, "score": 6, "putts": 2, "fw": false, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 8, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 9, "par": 5, "score": 6, "putts": 3, "fw": true, "gir": true, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 10, "par": 5, "score": 5, "putts": 1, "fw": false, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": true}, {"h": 11, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 12, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 13, "par": 4, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 14, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 15, "par": 4, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 16, "par": 4, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": true}, {"h": 17, "par": 4, "score": 4, "putts": 1, "fw": true, "gir": false, "bk": true, "bkSave": true, "cs": false, "pen": false}, {"h": 18, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}]};
+
+const AK_LOS_ANGELES = {"id": "r_losangeles_ak_jun2026", "player": "ak", "date": "2026-06-18", "course": "Los Angeles de San Rafael", "courseId": "los_angeles", "city": "Segovia", "tee": "amarillas", "tournament": false, "holes": [{"h": 1, "par": 5, "score": 6, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 2, "par": 4, "score": 4, "putts": 2, "fw": false, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 3, "par": 3, "score": 4, "putts": 3, "fw": false, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 4, "par": 4, "score": 4, "putts": 2, "fw": false, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 5, "par": 4, "score": 6, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 6, "par": 3, "score": 4, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 7, "par": 5, "score": 8, "putts": 5, "fw": true, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 8, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 9, "par": 4, "score": 6, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 10, "par": 4, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 11, "par": 5, "score": 6, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 12, "par": 4, "score": 4, "putts": 1, "fw": false, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 13, "par": 4, "score": 5, "putts": 1, "fw": false, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 14, "par": 3, "score": 4, "putts": 3, "fw": null, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 15, "par": 5, "score": 5, "putts": 2, "fw": false, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 16, "par": 4, "score": 5, "putts": 2, "fw": false, "gir": false, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 17, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}, {"h": 18, "par": 4, "score": 3, "putts": 1, "fw": false, "gir": true, "bk": false, "bkSave": false, "cs": false, "pen": false}]};
 
 const MAC_VALLE_IGUANA = {"id": "r_valle_iguana_mac_jun2026", "player": "mac", "date": "2026-06-13", "course": "Valle del Este Golf", "courseId": "valle_del_este", "city": "Almería", "tee": "iguana", "tournament": false, "holes": [{"h": 1, "par": 4, "score": 6, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 2, "par": 3, "score": 5, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 3, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 4, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 5, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 6, "par": 3, "score": 3, "putts": 1, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 7, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 8, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 9, "par": 5, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 10, "par": 5, "score": 6, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 11, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 12, "par": 3, "score": 4, "putts": 2, "fw": null, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 13, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 14, "par": 3, "score": 3, "putts": 2, "fw": null, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 15, "par": 4, "score": 4, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}, {"h": 16, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 17, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": false, "bk": false, "bkSave": false, "pen": false}, {"h": 18, "par": 4, "score": 5, "putts": 2, "fw": true, "gir": true, "bk": false, "bkSave": false, "pen": false}]};
 
@@ -1497,14 +1507,14 @@ function load(){
     try{data=JSON.parse(s);}catch(e){}
     // Si AK no tiene rondas, restaurar las precargadas
     if(!data.ak||!data.ak.rounds||data.ak.rounds.length===0){
-      data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2, AK_VALLE_IGUANA2]},mac:{rounds:[MAC_VALLE_IGUANA, MAC_AGUILON]}};
+      data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2, AK_VALLE_IGUANA2, AK_LOS_ANGELES]},mac:{rounds:[MAC_VALLE_IGUANA, MAC_AGUILON]}};
       save();
     }
     if(!data.ak.range) data.ak.range=[];
     if(!data.mac) data.mac={rounds:[MAC_VALLE_IGUANA, MAC_AGUILON],range:[]};
     if(!data.mac.range) data.mac.range=[];
   }
-  else{data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2, AK_VALLE_IGUANA2]},mac:{rounds:[MAC_VALLE_IGUANA, MAC_AGUILON]}};save();}
+  else{data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2, AK_VALLE_IGUANA2, AK_LOS_ANGELES]},mac:{rounds:[MAC_VALLE_IGUANA, MAC_AGUILON]}};save();}
   // Siempre mostrar la última ronda
   if(data[AP]&&data[AP].rounds&&data[AP].rounds.length>0) AR=data[AP].rounds.length-1;
 }
@@ -2446,9 +2456,16 @@ function openPlay(){
 function openExistingRound(idx){
   pRI=idx; pH=1;
   const round=data[pPl].rounds[pRI];
-  // Si hay hoyos incompletos, ir al primero sin completar
   const done=new Set(round.holes.map(h=>h.h));
-  for(let i=1;i<=18;i++){if(!done.has(i)){pH=i;break;}}
+  if(round.holes.length>=18){
+    // Ronda completa — modo edición
+    editMode=true;
+    pH=round.holes.length>0?round.holes[0].h:1;
+  } else {
+    editMode=false;
+    // Ir al primer hoyo sin completar
+    for(let i=1;i<=18;i++){if(!done.has(i)){pH=i;break;}}
+  }
   document.getElementById('step0').style.display='none';
   document.getElementById('step1').style.display='';
   loadHole();
@@ -2483,7 +2500,7 @@ function addShotEntry(shot, idx){
   const isPutt = shot && shot.c === 'Putter';
   const lbl = n <= 1 ? 'Salida' : isPutt ? `Putt ${n}` : `Golpe ${n}`;
   
-  const clubs = ['Driver','3M','5M','5I','6I','7I','8I','9I','PW','AW','SW','Putter'];
+  const clubs = ['Driver','3M','5M','5I','6I','7I','8I','9I','PW','AW','SW'];
   const clubOpts = clubs.map(c=>`<option value="${c}"${shot&&shot.c===c?' selected':''}>${clubDisplay(c)}</option>`).join('');
   
   const div = document.createElement('div');
@@ -2699,6 +2716,9 @@ function updateSU(){
   document.getElementById('scV').style.color=dC(d);
   document.getElementById('phR').textContent=hLF({score:pSc,par:ch.par});
   document.getElementById('phR').style.color=dC(d);
+  // Mostrar indicador si la ronda está completa (modo edición)
+  const editBadge=document.getElementById('editModeBadge');
+  if(editBadge) editBadge.style.display=editMode?'flex':'none';
 }
 function tog(id){
   const isMac=pPl==='mac';
@@ -2875,6 +2895,35 @@ function renderAnalisisAcumulado(rounds){
     }
   }
 
+  // Distancias de referencia por palo
+  var refs=AP==='ak'?AK_REFS:{};
+  var refClubs=['5I','6I','7I','8I','9I','PW','AW','SW'];
+  var hasRefs=refClubs.some(function(c){return refs[c];});
+  if(hasRefs){
+    H+='<div class="group-header">Distancias de referencia (simulador)</div>';
+    H+='<div style="background:var(--white);border-top:1px solid var(--sep);border-bottom:1px solid var(--sep)">';
+    H+='<div style="padding:10px 16px 6px;font-size:12px;color:var(--t3)">Carry · Total · Velocidad de bola</div>';
+    refClubs.forEach(function(cl){
+      var r=refs[cl];
+      if(!r) return;
+      var isApproach=['9I','PW','AW','SW'].includes(cl);
+      var isLong=['5I','6I','7I','8I'].includes(cl);
+      var dotColor=isLong?'var(--blu)':isApproach?'var(--pur)':'var(--t3)';
+      H+='<div style="display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid var(--sep)">';
+      H+='<div style="width:8px;height:8px;border-radius:50%;background:'+dotColor+';margin-right:10px;flex-shrink:0"></div>';
+      H+='<div style="font-size:15px;font-weight:700;color:var(--t1);min-width:36px">'+cl+'</div>';
+      H+='<div style="flex:1">';
+      H+='<div style="height:5px;background:var(--bg);border-radius:3px;overflow:hidden">';
+      H+='<div style="height:100%;width:'+(Math.round(r.carry/147*100))+'%;background:'+dotColor+';border-radius:3px"></div>';
+      H+='</div></div>';
+      H+='<div style="text-align:right;margin-left:12px">';
+      H+='<div style="font-size:15px;font-weight:700;color:var(--t1)">'+r.carry+'m</div>';
+      H+='<div style="font-size:12px;color:var(--t3)">total '+r.total+'m</div>';
+      H+='</div></div>';
+    });
+    H+='</div>';
+  }
+
   // Diagnóstico acumulado general
   var weakKey=['tee','app','short','putt'].reduce(function(a,k){return avgSG[k]<avgSG[a]?k:a;},'tee');
   var strongKey=['tee','app','short','putt'].reduce(function(a,k){return avgSG[k]>avgSG[a]?k:a;},'tee');
@@ -2922,16 +2971,59 @@ function saveHole(){
   const btn=document.getElementById('saveBtn');
   if(btn){const orig=btn.textContent;btn.textContent='✓';btn.style.background='#34c759';
     setTimeout(()=>{btn.textContent=orig;btn.style.background='';},600);}
-  if(round.holes.length>=18){
-    document.getElementById('playOv').classList.remove('open');
-    AR=pRI; render();
+  if(round.holes.length>=18&&!editMode){
+    // Primera vez que completa 18 hoyos — mostrar sheet
+    const rcEl=document.getElementById('roundCompleteSheet');
+    if(rcEl){
+      const sc=round.holes.reduce((a,h)=>a+h.score,0);
+      const par=round.holes.reduce((a,h)=>a+h.par,0);
+      const diff=sc-par;
+      document.getElementById('rcTitle').textContent=round.course+' · '+sc;
+      document.getElementById('rcSub').textContent=(diff>=0?'+':'')+diff+' · '+round.date;
+      rcEl.classList.add('open');
+    } else {
+      document.getElementById('playOv').classList.remove('open');
+      AR=pRI; render();
+    }
   } else {
+    // En edición o ronda incompleta — avanzar al siguiente hoyo
     const done=new Set(round.holes.map(h=>h.h));
     let next=pH>=18?1:pH+1;
     for(let i=1;i<=18;i++){const n=(pH+i-1)%18+1;if(!done.has(n)){next=n;break;}}
+    // En edición, avanzar circular por todos los hoyos
+    if(editMode){
+      next=pH>=18?1:pH+1;
+    }
     pH=next; loadHole();
   }
 }
+function closeRoundFromEdit(){
+  editMode=false;
+  document.getElementById('playOv').classList.remove('open');
+  AR=pRI; AT='ronda'; subAT='stats';
+  render();
+}
+
+function finishRound(action){
+  const rcEl=document.getElementById('roundCompleteSheet');
+  if(rcEl) rcEl.classList.remove('open');
+  if(action==='close'){
+    document.getElementById('playOv').classList.remove('open');
+    AR=pRI; AT='ronda'; subAT='stats';
+    render();
+  } else {
+    // Revisar — ir al primer hoyo de la ronda en modo edición
+    editMode=true;
+    const round=data[pPl].rounds[pRI];
+    if(round&&round.holes&&round.holes.length>0){
+      pH=round.holes[0].h;
+    } else {
+      pH=1;
+    }
+    loadHole();
+  }
+}
+
 function closePlay(){
   // Si estamos en step1 (jugando), verificar estado de la ronda
   const step1=document.getElementById('step1');
@@ -2943,7 +3035,7 @@ function closePlay(){
       // Ronda incompleta — mostrar opciones
       const el=document.getElementById('confirmIncSheet');
       if(el){
-        document.getElementById('cfIncTitle').textContent='Ronda incompleta — '+nH+'/18 hoyos';
+        document.getElementById('cfIncTitle').textContent='Ronda incompleta — '+nH+' de 18 hoyos';
         document.getElementById('cfIncSub').textContent=r.course+' · '+r.date;
         el.classList.add('open');
         return;
