@@ -2690,7 +2690,7 @@ function loadHole(){
       pCurPar=existHole.par;
       document.getElementById('phP').textContent='Par '+existHole.par;
     }
-    pSc=existHole.score||customPar; pPu=existHole.putts!=null?existHole.putts:2;
+    pSc=existHole.score!=null?existHole.score:pCurPar; pPu=existHole.putts!=null?existHole.putts:2;
     document.getElementById('scV').textContent=pSc;
     document.getElementById('puV').textContent=pPu;
     pTog.tFW=existHole.fw||false; pTog.tGIR=existHole.gir||false;
@@ -2723,26 +2723,25 @@ function adjPar(d){
   const round=data[pPl].rounds[pRI];
   if(!round.customPars) round.customPars={};
   const ch=getCH(round.courseId,round.tee||'amarillas',pH);
-  const current=round.customPars[pH]!=null?round.customPars[pH]:ch.par;
+  const current=pCurPar||(round.customPars[pH]!=null?round.customPars[pH]:ch.par);
   const newPar=Math.max(3,Math.min(5,current+d));
+  // Guardar nuevo par
   round.customPars[pH]=newPar;
   pCurPar=newPar;
   document.getElementById('phP').textContent='Par '+newPar;
-  // Actualizar el hoyo guardado si existe
+  // Actualizar par en el hoyo guardado (NO tocar el score)
   var existH2=round.holes.find(function(h){return h.h===pH;});
   if(existH2){
     existH2.par=newPar;
-    // Recalcular resultado visual inmediatamente
-    var d2=existH2.score-newPar;
-    var resEl=document.getElementById('phR');
-    if(resEl){resEl.textContent=hLF({score:existH2.score,par:newPar});resEl.style.color=dC(d2);}
   }
-  // Actualizar score default si no se ha tocado
-  if(pSc===current){pSc=newPar;document.getElementById('scV').textContent=pSc;}
-  // Ocultar/mostrar FW según par
+  // Actualizar color del score según nuevo par
+  var d2=pSc-newPar;
+  document.getElementById('scV').style.color=dC(d2);
+  // Actualizar resultado relativo (phR)
+  var resEl=document.getElementById('phR');
+  if(resEl){resEl.textContent=hLF({score:pSc,par:newPar});resEl.style.color=dC(d2);}
+  // Mostrar/ocultar FW según par
   document.getElementById('trFW').style.display=newPar===3?'none':'flex';
-  // Sincronizar: si el score actual es el par viejo, actualizar al par nuevo
-  // Esto evita que al cambiar par de 4→3 el score se quede en 4 (bogey en vez de par)
   save();
 }
 
