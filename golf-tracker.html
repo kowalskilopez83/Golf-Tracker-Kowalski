@@ -723,6 +723,24 @@ const AK_REFS={
   'PW':{carry:99, total:105,ballSpeed:89},
   'AW':{carry:87, total:92, ballSpeed:81},
   'SW':{carry:78, total:80, ballSpeed:76},
+  'los_angeles':{id:'los_angeles',name:'Los Angeles de San Rafael',city:'Segovia',tees:{
+    amarillas:{par:71,total:5398,cr:69.1,slope:132,holes:[
+      {"h":1,"par":5,"m":421,"hcp":2},{"h":2,"par":4,"m":317,"hcp":6},{"h":3,"par":3,"m":133,"hcp":18},
+      {"h":4,"par":4,"m":259,"hcp":10},{"h":5,"par":4,"m":292,"hcp":8},{"h":6,"par":3,"m":158,"hcp":16},
+      {"h":7,"par":5,"m":451,"hcp":12},{"h":8,"par":3,"m":166,"hcp":14},{"h":9,"par":4,"m":338,"hcp":4},
+      {"h":10,"par":4,"m":359,"hcp":5},{"h":11,"par":5,"m":496,"hcp":3},{"h":12,"par":4,"m":345,"hcp":1},
+      {"h":13,"par":4,"m":327,"hcp":15},{"h":14,"par":3,"m":153,"hcp":7},{"h":15,"par":5,"m":457,"hcp":9},
+      {"h":16,"par":4,"m":337,"hcp":11},{"h":17,"par":3,"m":124,"hcp":17},{"h":18,"par":4,"m":265,"hcp":13}
+    ]},
+    rojas:{par:71,total:4872,cr:69.1,slope:132,holes:[
+      {"h":1,"par":5,"m":383},{"h":2,"par":4,"m":300},{"h":3,"par":3,"m":123},
+      {"h":4,"par":4,"m":251},{"h":5,"par":4,"m":254},{"h":6,"par":3,"m":134},
+      {"h":7,"par":5,"m":417},{"h":8,"par":3,"m":131},{"h":9,"par":4,"m":308},
+      {"h":10,"par":4,"m":329},{"h":11,"par":5,"m":463},{"h":12,"par":4,"m":301},
+      {"h":13,"par":4,"m":272},{"h":14,"par":3,"m":121},{"h":15,"par":5,"m":415},
+      {"h":16,"par":4,"m":261},{"h":17,"par":3,"m":96},{"h":18,"par":4,"m":243}
+    ]}
+  }},
   'aguilon':{id:'aguilon',name:'Aguilon Golf',city:'Almería',tees:{
     falcon:{par:71,total:2823,cr:71.3,slope:132,holes:[{"h": 1, "par": 4, "m": 401, "hcp": 4}, {"h": 2, "par": 4, "m": 322, "hcp": 12}, {"h": 3, "par": 3, "m": 148, "hcp": 16}, {"h": 4, "par": 4, "m": 282, "hcp": 6}, {"h": 5, "par": 5, "m": 377, "hcp": 10}, {"h": 6, "par": 4, "m": 337, "hcp": 2}, {"h": 7, "par": 4, "m": 338, "hcp": 8}, {"h": 8, "par": 3, "m": 154, "hcp": 14}, {"h": 9, "par": 5, "m": 395, "hcp": 18}, {"h": 10, "par": 5, "m": 435, "hcp": 1}, {"h": 11, "par": 4, "m": 321, "hcp": 7}, {"h": 12, "par": 3, "m": 152, "hcp": 11}, {"h": 13, "par": 4, "m": 318, "hcp": 3}, {"h": 14, "par": 3, "m": 120, "hcp": 17}, {"h": 15, "par": 4, "m": 368, "hcp": 5}, {"h": 16, "par": 4, "m": 340, "hcp": 13}, {"h": 17, "par": 3, "m": 150, "hcp": 15}, {"h": 18, "par": 5, "m": 435, "hcp": 9}]},
   }},
@@ -910,7 +928,7 @@ const AK_VALLE = {"id": "r_valle_jun2026", "player": "ak", "date": "2026-06-13",
 // ═══════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════
-let data={ak:{rounds:[]},mac:{rounds:[]}};
+let data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2, AK_VALLE_IGUANA2, AK_LOS_ANGELES]},mac:{rounds:[MAC_VALLE_IGUANA, MAC_AGUILON],range:[]}};
 let AP='ak',AR=0,AT='stats',EX=new Set();
 let pPl='ak',pRI=-1,pH=1,pSc=4,pPu=2;
 let pTog={tFW:false,tGIR:false,tBK:false,tBS:false,tCS:false,tPEN:false};let pCurPar=4;let analMode='round';
@@ -1505,10 +1523,20 @@ function load(){
   const s=localStorage.getItem('gtkow7');
   if(s){
     try{data=JSON.parse(s);}catch(e){}
-    // Si AK no tiene rondas, restaurar las precargadas
-    if(!data.ak||!data.ak.rounds||data.ak.rounds.length===0){
-      data={ak:{rounds:[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2, AK_VALLE_IGUANA2, AK_LOS_ANGELES]},mac:{rounds:[MAC_VALLE_IGUANA, MAC_AGUILON]}};
-      save();
+    // Asegurar que todas las rondas precargadas están presentes
+    if(!data.ak||!data.ak.rounds) data.ak={rounds:[],range:[]};
+    if(!data.mac||!data.mac.rounds) data.mac={rounds:[],range:[]};
+    var preloadedAK=[AK_FAIS, AK_VALLE_IGUANA, AK_AGUILON, AK_AGUILON2, AK_VALLE_IGUANA2, AK_LOS_ANGELES];
+    var preloadedMAC=[MAC_VALLE_IGUANA, MAC_AGUILON];
+    var existingIDs=new Set(data.ak.rounds.map(function(r){return r.id;}));
+    preloadedAK.forEach(function(r){if(!existingIDs.has(r.id)) data.ak.rounds.unshift(r);});
+    var existingMACIDs=new Set(data.mac.rounds.map(function(r){return r.id;}));
+    preloadedMAC.forEach(function(r){if(!existingMACIDs.has(r.id)) data.mac.rounds.unshift(r);});
+    // Ordenar por fecha
+    data.ak.rounds.sort(function(a,b){return a.date>b.date?1:-1;});
+    data.mac.rounds.sort(function(a,b){return a.date>b.date?1:-1;});
+    save();
+    if(false){// legacy
     }
     if(!data.ak.range) data.ak.range=[];
     if(!data.mac) data.mac={rounds:[MAC_VALLE_IGUANA, MAC_AGUILON],range:[]};
